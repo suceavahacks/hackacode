@@ -31,7 +31,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen flex flex-col items-center"></main>
+          <main className="">
+            Houdy! 🤠
+            <button className="btn">Default</button>
+          </main>
         </ThemeProvider>
       </body>
     </html>
