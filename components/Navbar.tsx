@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
+
 const Navbar: React.FC = () => {
 
     const links = [
@@ -28,7 +29,7 @@ const Navbar: React.FC = () => {
             </div>
             <Link
                 className="hover:bg-[#FF865B] hover:text-black transition-all duration-200 ease-in-out rounded-lg p-2"
-                href={"/sign-up"}
+                href={"/signin"}
             >
                 Sign Up →
             </Link>

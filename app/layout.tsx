@@ -16,14 +16,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning style={{
       background: 'linear-gradient(194deg, rgba(0, 0, 0, 0.00) 66.72%, rgba(0, 0, 0, 0.14) 99.56%), rgba(14, 23, 30, 0.90)'
     }}>
-      <body className="bg-background text-foreground h-screen">
+      <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="" >
+          <main className="min-h-screen">
             <Navbar />
             {children}
           </main>
