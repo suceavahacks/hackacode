@@ -1,6 +1,7 @@
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 export const metadata = {
   title: "Hackacode",
@@ -14,7 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning style={{
-      background: 'linear-gradient(194deg, rgba(0, 0, 0, 0.00) 66.72%, rgba(0, 0, 0, 0.14) 99.56%), rgba(14, 23, 30, 0.90)'
+      background: 'linear-gradient(194deg, rgba(0, 0, 0, 0.00) 66.72%, rgba(0, 0, 0, 0.14) 99.56%), rgba(14, 23, 30, 0.90)',
+      overflowX: 'hidden',
     }}>
       <body className="bg-background text-foreground">
         <ThemeProvider
@@ -27,6 +29,7 @@ export default function RootLayout({
             <Navbar />
             {children}
           </main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

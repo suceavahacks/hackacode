@@ -68,7 +68,7 @@ const SignIn = () => {
     }
 
     return (
-        <div className="w-screen flex flex-col items-center justify-center gap-10 h-screen p-5">
+        <div className="w-screen flex flex-col items-center justify-center gap-10 h-screen">
             <div className="flex flex-col">
                 <h1 className="text-7xl font-extrabold text-center">Welcome to <span style={{
                     color: '#FF865B',
