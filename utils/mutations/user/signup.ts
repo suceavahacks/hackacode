@@ -7,7 +7,7 @@ export const onSubmit = async (data: {
     setSuccess(false);
 
     try {
-        const res = await fetch("https://api-dev.hackacode.xyz/auth/signup", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
