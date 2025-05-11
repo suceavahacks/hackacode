@@ -10,7 +10,7 @@ const fetchUser = async (): Promise<any> => {
     throw new Error("No access token found");
   }
 
-  const res = await fetch(`https://api-dev.hackacode.xyz/auth/user`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
