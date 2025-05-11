@@ -1,6 +1,9 @@
 "use client"
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { useUser } from "@/utils/queries/user/getUser";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
 
@@ -12,7 +15,26 @@ export default function Home() {
   const isInViewLaptopText = useInView(refLaptopText, { once: true });
   const isInViewWaiting = useInView(refWaiting, { once: true });
 
-  return (
+  const { user, loading, error } = useUser();
+  const router = useRouter();
+  useEffect(() => {
+    if (user) {
+      router.push("/app");
+    }
+  }, [user, router]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  if (error) { 
+    return (
+      <p className="text-red-500">
+        Error: {error.message}
+      </p>
+    );
+  }
+
+  return !user && (
     <main className="text-center mt-20 p-3">
       <motion.span
         className="text-[48px] font-extrabold"
