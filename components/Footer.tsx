@@ -1,6 +1,6 @@
 export const Footer = () => {
     return (
-        <footer className="relative bottom-0 left-0 w-full bg-[#091319] text-white py-4">
+        <footer className="w-full bg-[#091319] text-white py-4">
             <div className="container mx-auto text-center">
                 <p className="text-lg">
                     &copy; {new Date().getFullYear()} Hackacode. All rights reserved.

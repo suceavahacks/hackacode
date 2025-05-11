@@ -6,12 +6,14 @@ export default function Home() {
 
   const refLaptop = useRef<HTMLDivElement>(null);
   const refLaptopText = useRef<HTMLDivElement>(null);
+  const refWaiting = useRef<HTMLDivElement>(null);
 
   const isInViewLaptop = useInView(refLaptop, { once: true });
   const isInViewLaptopText = useInView(refLaptopText, { once: true });
+  const isInViewWaiting = useInView(refWaiting, { once: true });
 
   return (
-    <main className="text-center mt-20">
+    <main className="text-center mt-20 p-3">
       <motion.span
         className="text-[48px] font-extrabold"
         initial={{ opacity: 0, y: -50 }}
@@ -128,7 +130,7 @@ export default function Home() {
       </div>
       <div className="flex flex-row justify-between items-center mt-10 container mx-auto max-md:flex-col">
         <motion.div
-          className="w-[50%] text-left leading-none"
+          className="w-[100%] lg:text-left leading-none"
           initial={{ opacity: 0, x: -50 }}
           animate={isInViewLaptopText ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -153,22 +155,31 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="h-[400px] bg-[#FF865B] my-20 container mx-auto rounded-3xl flex justify-center items-center text-black max-md:flex">
-        <p className="text-7xl p-10 pt-0 pb-0 font-bold text-left w-[50%] text-black">
-          🤠 So, what are you waiting for? Join us and start coding today!
-        </p>
-        <p className="text-2xl p-10 pt-0 text-left w-[50%]">
-           <span className="text-3xl font-bold">Sign up <br/></span>
-            It would be our pleasure to have you on board!
-            We are still in beta, so if you have any feedback, please let us know!
-            We are always looking for ways to improve our platform and make it better for you.
-            <button className="btn btn-lg rounded-lg mt-4">
-              <a href="/signup" target="_blank" rel="noopener noreferrer">
-                Sign up now!
-              </a>
-            </button>
-        </p>
-      </div>
+      <motion.div
+        className="bg-[#FF865B] my-20 container p-10 rounded-3xl mx-auto flex flex-wrap justify-between items-center text-black"
+        initial={{ opacity: 0, y: 50 }}
+        animate={isInViewLaptop ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, delay: 0.4 }}
+        ref={refWaiting}
+      >
+        <div className="w-full md:w-[50%] px-5 text-center md:text-left">
+          <p className="text-4xl md:text-5xl lg:text-7xl font-bold">
+            🤠 So, what are you waiting for? <br /> Join us and start coding today!
+          </p>
+        </div>
+
+        <div className="w-full md:w-[50%] px-5 mt-10 md:mt-0 text-center md:text-left">
+          <p className="text-lg md:text-2xl">
+            <span className="text-2xl md:text-3xl font-bold">Sign up <br /></span>
+            It would be our pleasure to have you on board! We are still in beta, so if you have any feedback, please let us know! We are always looking for ways to improve our platform and make it better for you.
+          </p>
+          <button className="btn btn-lg rounded-lg mt-6 bg-black text-white px-6 py-3 hover:bg-gray-800 transition-all">
+            <a href="/signup" target="_blank" rel="noopener noreferrer">
+              Sign up now!
+            </a>
+          </button>
+        </div>
+      </motion.div>
     </main>
   );
 }
