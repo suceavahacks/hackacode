@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { useUser } from "@/utils/queries/user/getUser.ts";
 import { useRouter } from "next/navigation";
 import { Loading } from "@/components/Loading";
+import { onSubmit } from "@/utils/mutations/user/signup";
 
 
 
@@ -34,55 +35,6 @@ const SignUp = () => {
         resolver: zodResolver(schema)
     });
 
-    
-    const onSubmit = async (data: FormData) => {
-        setLoading(true);
-        setError(null);
-        setSuccess(false);
-
-        try {
-            const res = await fetch("https://api-dev.hackacode.xyz/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data),
-                credentials: "include"
-            });
-
-            const result = await res.json();
-            console.log(result)
-            if(!result.user.user_metadata.email_verified) {
-                setError("Please verify your email before signing in. We do not want to have any bots in our system.");
-                setTimeout(() => {
-                    setError(null);
-                }, 3000);
-                return;
-            } else {
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                }, 3000);
-            }
-
-            if(!res.ok) {
-                throw new Error(result.message || "Something went wrong");
-            }
-
-            localStorage.setItem("access_token", result.session.access_token);
-            localStorage.setItem("refresh_token", result.session.refresh_token);
-            localStorage.setItem("expires_at", result.session.expires_at);
-
-        } catch (error) {
-            setError(error instanceof Error ? error.message : "Something went wrong");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
-        } finally {
-            setLoading(false);
-        }
-    }
-
     const { user, loading: userLoading, error: userError } = useUser()
     const router = useRouter();
     useEffect(() => {
@@ -94,7 +46,7 @@ const SignUp = () => {
     if (userLoading) {
         return <Loading />;
     }
-    
+
 
     return !user && (
         <div className="w-screen flex flex-col items-center justify-center gap-10 h-screen">
@@ -146,7 +98,7 @@ const SignUp = () => {
                     <button
                         type="submit"
                         className="bg-[#FF865B] text-white w-full rounded-lg p-2 mt-5 hover:opacity-75 transition-all duration-200 ease-in-out"
-                        onClick={handleSubmit(onSubmit)}
+                        onClick={handleSubmit((data) => onSubmit(data, setLoading, setError, setSuccess))}
                         disabled={loading}
                     >
                         {loading ? "Loading..." : "Sign Up"}

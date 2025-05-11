@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Loading } from "@/components/Loading";
 
 export default function Home() {
 
@@ -24,14 +25,7 @@ export default function Home() {
   }, [user, router]);
 
   if (loading) {
-    return <p>Loading...</p>;
-  }
-  if (error) { 
-    return (
-      <p className="text-red-500">
-        Error: {error.message}
-      </p>
-    );
+    return <Loading />;
   }
 
   return !user && (
@@ -180,7 +174,7 @@ export default function Home() {
       <motion.div
         className="bg-[#FF865B] my-20 container p-10 rounded-3xl mx-auto flex flex-wrap justify-between items-center text-black"
         initial={{ opacity: 0, y: 50 }}
-        animate={isInViewLaptop ? { opacity: 1, y: 0 } : {}}
+        animate={isInViewWaiting ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.4 }}
         ref={refWaiting}
       >
