@@ -13,13 +13,11 @@ const Navbar: React.FC = () => {
     ];
 
     const { user, loading: userLoading } = useUser();
-    console.log(user);
+
+    
     return (
         <motion.div
             className="drawer drawer-end lg:w-[60%] mx-auto lg:p-5"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
         >
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">

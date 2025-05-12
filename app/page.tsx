@@ -1,4 +1,3 @@
-"use client"
 import { useRef } from "react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useRouter } from "next/navigation";
@@ -7,10 +6,10 @@ import { Loading } from "@/components/Loading";
 
 export default function Home() {
 
-  const refLaptop = useRef<HTMLDivElement>(null);
-  const refLaptopText = useRef<HTMLDivElement>(null);
-  const refWaiting = useRef<HTMLDivElement>(null);
-  const refAbout = useRef<HTMLDivElement>(null);
+  //const refLaptop = useRef<HTMLDivElement>(null);
+  //const refLaptopText = useRef<HTMLDivElement>(null);
+  //const refWaiting = useRef<HTMLDivElement>(null);
+  //const refAbout = useRef<HTMLDivElement>(null);
 
   //const isInViewLaptop = useInView(refLaptop, { once: true });
   //const isInViewLaptopText = useInView(refLaptopText, { once: true });
@@ -137,7 +136,6 @@ export default function Home() {
         </div>
         <div
           className="w-[30%]"
-          ref={refLaptop}
         >
           <img
             src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e4a06e09270ddc83e06c3471a97c8701f7466efe_laptop_work.svg"
