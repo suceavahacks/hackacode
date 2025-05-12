@@ -5,9 +5,9 @@ import { useEffect } from "react"
 const Logout = () => {
     
     useEffect(() => {
-        localStorage.removeItem("access_token")
-        localStorage.removeItem("refresh_token")
-        localStorage.removeItem("expires_at")
+        window.localStorage.removeItem("access_token")
+        window.localStorage.removeItem("refresh_token")
+        window.localStorage.removeItem("expires_at")
     }, [])
 
     window.location.href = "/"
