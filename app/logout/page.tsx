@@ -3,11 +3,13 @@
 import { useEffect } from "react"
 
 const Logout = () => {
-    
+
     useEffect(() => {
-        window.localStorage.removeItem("access_token")
-        window.localStorage.removeItem("refresh_token")
-        window.localStorage.removeItem("expires_at")
+        if (typeof window !== "undefined") {
+            window.localStorage.removeItem("access_token")
+            window.localStorage.removeItem("refresh_token")
+            window.localStorage.removeItem("expires_at")
+        }
     }, [])
 
     window.location.href = "/"
