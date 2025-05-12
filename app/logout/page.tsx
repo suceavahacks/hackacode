@@ -1,9 +1,14 @@
 "use client"
 
+import { useEffect } from "react"
+
 const Logout = () => {
-    localStorage && localStorage.removeItem("access_token")
-    localStorage && localStorage.removeItem("refresh_token")
-    localStorage && localStorage.removeItem("expires_at")
+    
+    useEffect(() => {
+        localStorage.removeItem("access_token")
+        localStorage.removeItem("refresh_token")
+        localStorage.removeItem("expires_at")
+    }, [])
 
     window.location.href = "/"
     return (
