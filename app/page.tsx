@@ -11,10 +11,12 @@ export default function Home() {
   const refLaptop = useRef<HTMLDivElement>(null);
   const refLaptopText = useRef<HTMLDivElement>(null);
   const refWaiting = useRef<HTMLDivElement>(null);
+  const refAbout = useRef<HTMLDivElement>(null);
 
   const isInViewLaptop = useInView(refLaptop, { once: true });
   const isInViewLaptopText = useInView(refLaptopText, { once: true });
   const isInViewWaiting = useInView(refWaiting, { once: true });
+  const isInViewAbout = useInView(refAbout, { once: true });
 
   const { user, loading, error } = useUser();
   const router = useRouter();
@@ -28,40 +30,33 @@ export default function Home() {
     return <Loading />;
   }
 
+
   return !user && (
     <main className="text-center mt-20 p-3">
-      <motion.span
+      <span
         className="text-[48px] font-extrabold"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 2 }}
-
       >
         Code smarter. Solve harder.
         <span style={{ color: '#FF865B', display: 'inline-block', textAlign: 'center' }}>
           Hackacode
-          <motion.img
+          <img
             src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/715d41dacbd45c35484059b4e69dc02d5f71df28_line3.png"
             style={{ display: 'block', margin: '0 auto', width: '250px' }}
             alt="Line"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
           />
         </span>
-      </motion.span>
-      <motion.img
+      </span>
+      <img
         src={"https://hc-cdn.hel1.your-objectstorage.com/s/v3/877c50b3b3034492ed81b482ca015d55eb716a2b_terminal.png"}
         className="mx-auto mt-14 px-5"
         alt="Terminal"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
       >
 
-      </motion.img>
+      </img>
       <div className="flex flex-wrap justify-between items-center mt-16 container mx-auto mb-auto">
-        <div className="w-full md:w-[50%] px-5">
+        <div 
+          className="w-full md:w-[50%] px-5"
+        >
           <p className="text-3xl text-left">
             What is{" "}
             <span
@@ -135,7 +130,7 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full md:w-[50%] px-5 mt-10 md:mt-0 flex justify-center">
-          <motion.img
+          <img
             src={
               "https://hc-cdn.hel1.your-objectstorage.com/s/v3/bba1dfde0cb6b3fe66319c947773ebd0ccca7af9_terminal.png"
             }
@@ -145,38 +140,27 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-row justify-between items-center mt-10 container mx-auto max-md:flex-col">
-        <motion.div
+        <div
           className="w-[100%] lg:text-left leading-none"
-          initial={{ opacity: 0, x: -50 }}
-          animate={isInViewLaptopText ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          ref={refLaptopText}
         >
           <p className="font-extrabold text-[48px]">
             We know it’s tough, but with
-            <span style={{ color: '#FF865B' }}> Hackacode </span>, we’ve made it simple and fun!
+            <span style={{ color: '#FF865B' }}> Hackacode</span>, we’ve made it simple and fun!
           </p>
-        </motion.div>
+        </div>
         <div
           className="w-[30%]"
           ref={refLaptop}
         >
-          <motion.img
+          <img
             src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/e4a06e09270ddc83e06c3471a97c8701f7466efe_laptop_work.svg"
             alt="Laptop Work"
             className="w-full h-auto"
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInViewLaptop ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
           />
         </div>
       </div>
-      <motion.div
+      <div
         className="bg-[#FF865B] my-20 container p-10 rounded-3xl mx-auto flex flex-wrap justify-between items-center text-black"
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInViewWaiting ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        ref={refWaiting}
       >
         <div className="w-full md:w-[50%] px-5 text-center md:text-left">
           <p className="text-4xl md:text-5xl lg:text-7xl font-bold">
@@ -195,7 +179,7 @@ export default function Home() {
             </a>
           </button>
         </div>
-      </motion.div>
+      </div>
     </main>
   );
 }

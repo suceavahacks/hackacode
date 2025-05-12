@@ -12,12 +12,16 @@ export const Footer = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#FF865B] underline"
-                        style={{ textDecorationColor: '#FF865B', textDecorationStyle: 'wavy', textUnderlineOffset: '4px' }}
+                        style={{
+                            textDecorationColor: '#FF865B',
+                            textDecorationStyle: 'wavy',
+                            textUnderlineOffset: '4px',
+                        }}
                     >
                         Luigi & Adelin
                     </a>
                 </p>
             </div>
         </footer>
-    )
-}
+    );
+};

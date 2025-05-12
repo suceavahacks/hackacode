@@ -27,6 +27,9 @@ export const onSubmit = async (
     localStorage.setItem("access_token", result.session.access_token);
     localStorage.setItem("refresh_token", result.session.refresh_token);
     localStorage.setItem("expires_at", result.session.expires_at);
+
+    window.location.reload();
+
   } catch (error) {
     setError(error instanceof Error ? error.message : "Something went wrong");
     setTimeout(() => {

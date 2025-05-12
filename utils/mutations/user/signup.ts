@@ -17,7 +17,6 @@ export const onSubmit = async (data: {
         });
 
         const result = await res.json();
-        console.log(result);
 
         if (!result.user.user_metadata.email_verified) {
             setError("Please verify your email before signing in. We do not want to have any bots in our system.");
@@ -39,6 +38,9 @@ export const onSubmit = async (data: {
         localStorage.setItem("access_token", result.session.access_token);
         localStorage.setItem("refresh_token", result.session.refresh_token);
         localStorage.setItem("expires_at", result.session.expires_at);
+
+        window.location.reload();
+
 
     } catch (error) {
         setError(error instanceof Error ? error.message : "Something went wrong");
