@@ -1,9 +1,3 @@
-import { useRef } from "react";
-import { useUser } from "@/utils/queries/user/getUser";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Loading } from "@/components/Loading";
-
 export default function Home() {
 
   //const refLaptop = useRef<HTMLDivElement>(null);
