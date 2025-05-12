@@ -1,10 +1,9 @@
 "use client"
-import { useRouter } from "next/navigation"
 
 const Logout = () => {
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
-    localStorage.removeItem("expires_at")
+    localStorage && localStorage.removeItem("access_token")
+    localStorage && localStorage.removeItem("refresh_token")
+    localStorage && localStorage.removeItem("expires_at")
 
     window.location.href = "/"
     return (
