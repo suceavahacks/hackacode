@@ -5,13 +5,13 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Fira_Code } from "next/font/google"; 
+import { Fira_Code } from "next/font/google";
 
-  const firaCode = Fira_Code({
-    subsets: ["latin"],
-    variable: "--font-fira-code",
-    display: "swap",
-  });
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  variable: "--font-fira-code",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -33,12 +33,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className={`min-h-screen`}>
-            <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <main className={`min-h-screen`}>
               <Navbar />
               {children}
-            </QueryClientProvider>
-          </main>
+            </main>
+          </QueryClientProvider>
           <Footer />
         </ThemeProvider>
       </body>

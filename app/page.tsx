@@ -18,6 +18,8 @@ export default function Home() {
   //const isInViewAbout = useInView(refAbout, { once: true });
 
   const { user, loading, error } = useUser();
+  
+  console.log(user);
   const router = useRouter();
 
   useEffect(() => {
