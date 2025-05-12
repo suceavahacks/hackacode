@@ -12,7 +12,7 @@ export default function Home() {
 
 
   return (
-    <main className="text-center mt-20 p-3">
+    <div className="text-center mt-20 p-3">
       <span
         className="text-[48px] font-extrabold"
       >
@@ -159,6 +159,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
