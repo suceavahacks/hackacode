@@ -17,11 +17,8 @@ export default function Home() {
   //const isInViewWaiting = useInView(refWaiting, { once: true });
   //const isInViewAbout = useInView(refAbout, { once: true });
 
-  const { user, loading, error } = useUser();
-  const router = useRouter();
 
-
-  return !user && (
+  return (
     <main className="text-center mt-20 p-3">
       <span
         className="text-[48px] font-extrabold"
