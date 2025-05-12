@@ -18,26 +18,10 @@ export default function Home() {
   //const isInViewAbout = useInView(refAbout, { once: true });
 
   const { user, loading, error } = useUser();
-  
-  console.log(user);
   const router = useRouter();
 
-  useEffect(() => {
-    if (user) {
-      router.push("/app");
-    }
-  }, [user, router]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if(user) {
-    router.push("/app");
-    return null;
-  }
-
-  return (
+  return !user && (
     <main className="text-center mt-20 p-3">
       <span
         className="text-[48px] font-extrabold"
