@@ -1,5 +1,21 @@
 "use client";
+import { Loading } from "@/components/Loading";
+import { useUser } from "@/utils/queries/user/getUser";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+
+  const { user, loading, error } = useUser();
+  const router = useRouter();
+  if (loading) {
+    return <Loading />;
+  }
+
+  if(user) {
+    router.push("/app");
+    return null;
+  }
+
 
   //const refLaptop = useRef<HTMLDivElement>(null);
   //const refLaptopText = useRef<HTMLDivElement>(null);
@@ -12,13 +28,13 @@ export default function Home() {
   //const isInViewAbout = useInView(refAbout, { once: true });
 
 
-  return (
+  return !user && (
     <div className="text-center mt-20 p-3">
       <span
         className="text-[48px] font-extrabold"
       >
         Code smarter. Solve harder.
-        <span style={{ color: '#FF865B', display: 'inline-block', textAlign: 'center' }}>
+        <span className="color" style={{display: 'inline-block', textAlign: 'center' }}>
           Hackacode
           <img
             src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/715d41dacbd45c35484059b4e69dc02d5f71df28_line3.png"
@@ -42,12 +58,12 @@ export default function Home() {
             What is{" "}
             <span
               style={{
-                color: "#FF865B",
                 textDecoration: "underline",
                 textDecorationColor: "#FF865B",
                 textDecorationStyle: "wavy",
                 textUnderlineOffset: "4px",
               }}
+              className="color"
             >
               Hackacode
             </span>{" "}
@@ -57,12 +73,12 @@ export default function Home() {
             Hackacode is a platform meant to help you learn and practice coding in a
             <span
               style={{
-                color: "#FF865B",
                 textDecoration: "underline",
                 textDecorationColor: "#FF865B",
                 textDecorationStyle: "wavy",
                 textUnderlineOffset: "4px",
               }}
+              className="color"
             >
               {" "}
               fun and interactive way
@@ -71,40 +87,40 @@ export default function Home() {
             or just learn a new programming language, Hackacode is the place for you!
           </p>
           <div className="text-left mt-5 text-lg">
-            <span className="text-2xl font-bold text-[#FF865B]">
+            <span className="text-2xl font-bold color">
               What does Hackacode offer?
             </span>
             <ul className="list-disc list-inside mt-4 space-y-3">
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>A wide range of coding challenges to solve</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>A 1 vs 1 mode to challenge your friends</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>A leaderboard to see how you stack up against other users</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>An interactive IDE to write your code</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>A CLI that allows you to run your code in a terminal</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>AI powered code review to help you improve your code</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>Contests to compete with other users</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#FF865B]">✔</span>
+                <span className="color">✔</span>
                 <span>Articles and tutorials to help you learn</span>
               </li>
             </ul>
@@ -126,7 +142,7 @@ export default function Home() {
         >
           <p className="font-extrabold text-[48px]">
             We know it’s tough, but with
-            <span style={{ color: '#FF865B' }}> Hackacode</span>, we’ve made it simple and fun!
+            <span className="color"> Hackacode</span>, we’ve made it simple and fun!
           </p>
         </div>
         <div
@@ -140,7 +156,7 @@ export default function Home() {
         </div>
       </div>
       <div
-        className="bg-[#FF865B] my-20 container p-10 rounded-3xl mx-auto flex flex-wrap justify-between items-center text-black"
+        className="bg-accent my-20 container p-10 rounded-3xl mx-auto flex flex-wrap justify-between items-center text-black"
       >
         <div className="w-full md:w-[50%] px-5 text-center md:text-left">
           <p className="text-4xl md:text-5xl lg:text-7xl font-bold">

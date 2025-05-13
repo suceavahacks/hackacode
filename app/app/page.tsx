@@ -9,9 +9,8 @@ export default function App(){
         return <Loading />;
     }
 
-
     return user && (
-        <div>
+        <div className="container ml-[64px] mt-20">
             <h1>Welcome to the app</h1>
             {user ? (
                 <div>

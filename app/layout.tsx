@@ -5,13 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Fira_Code } from "next/font/google";
-
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  variable: "--font-fira-code",
-  display: "swap",
-});
+import Sidebar from "@/components/Sidebar";
 
 export default function RootLayout({
   children,
@@ -20,27 +14,26 @@ export default function RootLayout({
 }>) {
 
   const queryClient = new QueryClient();
-
   return (
     <html lang="en" suppressHydrationWarning style={{
-      background: 'linear-gradient(194deg, rgba(0, 0, 0, 0.00) 66.72%, rgba(0, 0, 0, 0.14) 99.56%), rgba(14, 23, 30, 0.90)',
       overflowX: 'hidden',
     }}>
-      <body className={`bg-background text-foreground ${firaCode.className}`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryClientProvider client={queryClient}>
+      <body className={`bg-primary text-foreground`}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             <main className={`min-h-screen`}>
               <Navbar />
+              <Sidebar />
               {children}
             </main>
-          </QueryClientProvider>
-          <Footer />
-        </ThemeProvider>
+            <Footer />
+          </ThemeProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

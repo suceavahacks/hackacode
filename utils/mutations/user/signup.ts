@@ -17,8 +17,15 @@ export const onSubmit = async (data: {
         });
 
         const result = await res.json();
+        if (Object.keys(result.user.user_metadata).length === 0) {
+            setError("You already set up an account with this email. Are you sure you are on the right page?");
+            setTimeout(() => {
+                setError(null);
+            }, 3000);
+            return;
+        }
 
-        if (!result.user.user_metadata.email_verified) {
+        if (!result?.user?.user_metadata?.email_verified) {
             setError("Please verify your email before signing in. We do not want to have any bots in our system.");
             setTimeout(() => {
                 setError(null);

@@ -1,10 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
 const fetchUser = async (): Promise<any> => {
-  if (typeof window === "undefined") {
-    throw new Error("localStorage is not available on the server");
-  }
-
   const token = localStorage.getItem("access_token");
   if (!token) {
     throw new Error("No access token found");
@@ -15,7 +12,7 @@ const fetchUser = async (): Promise<any> => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    },  
+    },
     credentials: "include",
   });
 
@@ -27,12 +24,23 @@ const fetchUser = async (): Promise<any> => {
 };
 
 export const useUser = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const { data: user, isLoading, isError, error } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: isMounted,
   });
+
+  if (!isMounted) {
+    return { user: null, loading: true, error: null };
+  }
 
   return { user, loading: isLoading, error: isError ? error : null };
 };

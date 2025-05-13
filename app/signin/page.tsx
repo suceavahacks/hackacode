@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Loading } from "@/components/Loading";
 import { onSubmit } from "@/utils/mutations/user/signin";
 import { motion } from "framer-motion";
+import googleAuth from "@/utils/mutations/user/googleAuth"; 
 
 const SignIn = () => {
     const [error, setError] = useState<string | null>(null);
@@ -39,7 +40,7 @@ const SignIn = () => {
         }
     }, [user, router]);
 
-    if (userLoading || user) {
+    if (userLoading) {
         return <Loading />;
     }
 
@@ -51,10 +52,8 @@ const SignIn = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <h1 className="text-7xl font-extrabold text-center max-md:text-5xl">Welcome to <span style={{
-                    color: '#FF865B',
+                <h1 className="text-7xl font-extrabold text-center max-md:text-5xl">Welcome to <span className="color" style={{
                     textDecoration: 'underline',
-                    textDecorationColor: '#FF865B',
                     textDecorationThickness: '2px',
                     textUnderlineOffset: '4px',
                     textDecorationStyle: 'wavy'
@@ -91,12 +90,18 @@ const SignIn = () => {
                     {errors.password && <p className="text-red-500 text-left mr-auto">{errors.password.message}</p>}
                     <button
                         type="submit"
-                        className="bg-[#FF865B] text-white w-full rounded-lg p-2 mt-5 hover:opacity-75 transition-all duration-200 ease-in-out"
+                        className="btn text-white w-full rounded-lg p-2 mt-5"
                         onClick={handleSubmit((data) => onSubmit(data, setLoading, setError))}
                         disabled={loading}
                     >
                         {loading ? "Loading..." : "Sign In"}
                     </button>
+                    <p className="text-lg text-center mt-5">
+                        Don't have an account?{" "}
+                        <a href="/signup" className="color font-bold underline decoration-2 underline-offset-4 decoration-wavy">
+                            Sign Up
+                        </a>
+                    </p>
                     {error && <div className="toast">
                         <div className="alert alert-error">
                             <span>{error}</span>
@@ -106,8 +111,16 @@ const SignIn = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-waypoints my-auto"><circle cx="12" cy="4.5" r="2.5"></circle><path d="m10.2 6.3-3.9 3.9"></path><circle cx="4.5" cy="12" r="2.5"></circle><path d="M7 12h10"></path><circle cx="19.5" cy="12" r="2.5"></circle><path d="m13.8 17.7 3.9-3.9"></path><circle cx="12" cy="19.5" r="2.5"></circle></svg>
 
                 <div className="flex flex-col gap-4 justify-center mt-10 max-md:mt-0 p-5">
-                    <button className="btn btn-lg bg-white text-black border-[#e5e5e5] w-[400px] max-md:w-[300px]">
-                        <svg aria-label="Google logo" width="32" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="#fff"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
+                    <button 
+                        className="btn btn-lg text-black w-[400px] max-md:w-[300px]"
+                        onClick={async () => {
+                            setLoading(true);
+                            await googleAuth();
+                            setLoading(false);
+                        }}
+                        disabled={loading}
+                    >
+                        <svg aria-label="Google logo" width="32" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="transparent"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
                         Continue with Google
                     </button>
                     <button className="btn btn-lg bg-[#622069] text-white border-[#591660] w-[400px] max-md:w-[300px]">

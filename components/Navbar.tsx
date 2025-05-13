@@ -12,16 +12,21 @@ const Navbar: React.FC = () => {
         { link: "/1v1", placeholder: "1 vs 1" },
     ];
 
-    const { user, loading: userLoading } = useUser();
+    const { user, loading: userLoading, error } = useUser();
 
+    if (userLoading) {
+        return (
+            <Loading />
+        );
+    }
     
     return (
         <motion.div
-            className="drawer drawer-end lg:w-[60%] mx-auto lg:p-5"
+            className="drawer drawer-end bg-primary"
         >
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
-                <div className="navbar bg-base-100 px-4 lg:rounded-lg">
+                <div className="navbar max-h-12 bg-secondary xl:px-96 lg:px-48 md:px-5 border-b-2 border-white border-opacity-50">
                     <div className="flex-none lg:hidden">
                         <label htmlFor="my-drawer" className="btn btn-square btn-ghost">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
@@ -31,35 +36,26 @@ const Navbar: React.FC = () => {
                             </svg>
                         </label>
                     </div>
-                    <Link href="/" className="text-3xl flex-1 font-bold hover:rotate-1 transition-transform duration-75" style={{ color: '#FF865B' }}>Hackacode</Link>
+                    <Link href="/" className="text-3xl flex-1 font-bold hover:rotate-1 transition-transform duration-75 color ml-5 max-md:ml-7">Hackacode</Link>
                     <div className="hidden lg:flex">
-                        <ul className="menu menu-horizontal">
+                        <ul className="menu menu-horizontal flex items-center justify-center">
                             {links.map((link, index) => (
-                                <li key={index}>
+                                <li key={index} className="mr-2">
                                     <a
                                         href={link.link}
-                                        className="hover:underline text-lg hover:bg-transparent decoration-[#FF865B] underline-offset-4 hover:decoration-wavy"
+                                        className="hover:underline text-lg hover:bg-transparent underline-offset-4 hover:decoration-wavy"
                                     >
                                         {link.placeholder}
                                     </a>
                                 </li>
                             ))}
-                            {!user ? (
+                            {!user && (
                                 <li key={links.length}>
                                     <a
                                         href="/signup"
-                                        className="btn btn-primary text-lg hover:bg-[#FF865B] bg-[#FF865B] hover:scale-105 transition-transform duration-75 text-black"
+                                        className="btn text-lg hover:scale-105 transition-transform duration-75 text-black"
                                     >
                                         Sign Up
-                                    </a>
-                                </li>
-                            ) : (
-                                <li key={links.length + 1}>
-                                    <a
-                                        href="/logout"
-                                        className="btn btn-primary text-lg hover:bg-[#FF865B] bg-[#FF865B] hover:scale-105 transition-transform duration-75 text-black"
-                                    >
-                                        Logout
                                     </a>
                                 </li>
                             )}
@@ -74,12 +70,22 @@ const Navbar: React.FC = () => {
                         <li key={index}>
                             <a
                                 href={link.link}
-                                className="hover:underline text-xl hover:bg-transparent decoration-[#FF865B] underline-offset-4 hover:decoration-wavy"
+                                className="hover:underline text-xl hover:bg-transparent underline-offset-4 hover:decoration-wavy"
                             >
                                 {link.placeholder}
                             </a>
                         </li>
                     ))}
+                    {user && (
+                        <>
+                            <li className="menu-title">
+                                <span>User</span>
+                            </li>
+                            <li><a href="/profile">Profile</a></li>
+                            <li><a href="/settings">Settings</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </>
+                    )}
                 </ul>
             </div>
         </motion.div>
