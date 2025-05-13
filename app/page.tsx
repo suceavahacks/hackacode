@@ -22,17 +22,5 @@ export default function Home() {
     return <Loading />;
   }
 
-
-  //const refLaptop = useRef<HTMLDivElement>(null);
-  //const refLaptopText = useRef<HTMLDivElement>(null);
-  //const refWaiting = useRef<HTMLDivElement>(null);
-  //const refAbout = useRef<HTMLDivElement>(null);
-
-  //const isInViewLaptop = useInView(refLaptop, { once: true });
-  //const isInViewLaptopText = useInView(refLaptopText, { once: true });
-  //const isInViewWaiting = useInView(refWaiting, { once: true });
-  //const isInViewAbout = useInView(refAbout, { once: true });
-
-
-  return <Loading />;
+  return null;
 }
