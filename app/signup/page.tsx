@@ -9,7 +9,7 @@ import { useUser } from "@/utils/queries/user/getUser.ts";
 import { useRouter } from "next/navigation";
 import { Loading } from "@/components/Loading";
 import { onSubmit } from "@/utils/mutations/user/signup";
-
+import googleAuth from "@/utils/mutations/user/googleAuth";
 
 
 const SignUp = () => {
@@ -49,7 +49,7 @@ const SignUp = () => {
 
     return !user && (
         <div className="w-screen flex flex-col items-center justify-center gap-10 min-h-screen max-md:mt-40">
-            <motion.div 
+            <motion.div
                 className="flex flex-col"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ const SignUp = () => {
                 }}>Hackacode</span>!</h1>
                 <p className="text-2xl opacity-60 text-center">The best place to learn and practice coding with your friends.</p>
             </motion.div>
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
@@ -112,7 +112,13 @@ const SignUp = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="transparent" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-waypoints my-auto"><circle cx="12" cy="4.5" r="2.5"></circle><path d="m10.2 6.3-3.9 3.9"></path><circle cx="4.5" cy="12" r="2.5"></circle><path d="M7 12h10"></path><circle cx="19.5" cy="12" r="2.5"></circle><path d="m13.8 17.7 3.9-3.9"></path><circle cx="12" cy="19.5" r="2.5"></circle></svg>
 
                 <div className="flex flex-col gap-4 justify-center mt-10 max-md:mt-0 p-5">
-                    <button className="btn btn-lg bg-white text-black w-[400px] max-md:w-[300px]">
+                    <button className="btn btn-lg bg-white text-black w-[400px] max-md:w-[300px]"
+                        onClick={async () => {
+                            setLoading(true);
+                            await googleAuth();
+                            setLoading(false);
+                        }}
+                    >
                         <svg aria-label="Google logo" width="32" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><path d="m0 0H512V512H0" fill="transparent"></path><path fill="#34a853" d="M153 292c30 82 118 95 171 60h62v48A192 192 0 0190 341"></path><path fill="#4285f4" d="m386 400a140 175 0 0053-179H260v74h102q-7 37-38 57"></path><path fill="#fbbc02" d="m90 341a208 200 0 010-171l63 49q-12 37 0 73"></path><path fill="#ea4335" d="m153 219c22-69 116-109 179-50l55-54c-78-75-230-72-297 55"></path></g></svg>
                         Continue with Google
                     </button>
