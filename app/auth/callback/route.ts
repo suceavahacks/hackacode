@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-    return NextResponse.redirect(new URL("/auth/handle-callback", request.url));
+    // https://hackacode.xyz/auth/handle-callback
+    return NextResponse.redirect("https://hackacode.xyz/auth/handle-callback");
 }
