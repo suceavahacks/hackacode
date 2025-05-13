@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
             <Loading />
         );
     }
-    
+
     return (
         <motion.div
             className="drawer drawer-end bg-primary"
@@ -27,16 +27,7 @@ const Navbar: React.FC = () => {
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
                 <div className="navbar max-h-12 bg-secondary xl:px-96 lg:px-48 md:px-5 border-b-2 border-white border-opacity-50">
-                    <div className="flex-none lg:hidden">
-                        <label htmlFor="my-drawer" className="btn btn-square btn-ghost">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                    d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </label>
-                    </div>
-                    <Link href="/" className="text-3xl flex-1 font-bold hover:rotate-1 transition-transform duration-75 color ml-5 max-md:ml-7">Hackacode</Link>
+                    <Link href="/" className="text-3xl flex-1 font-bold hover:rotate-1 transition-transform duration-75 color ml-12 max-md:ml-2">Hackacode</Link>
                     <div className="hidden lg:flex">
                         <ul className="menu menu-horizontal flex items-center justify-center">
                             {links.map((link, index) => (
@@ -61,6 +52,15 @@ const Navbar: React.FC = () => {
                             )}
                         </ul>
                     </div>
+                    <div className="flex-none hidden max-md:block">
+                        <label htmlFor="my-drawer" className="btn btn-square btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </label>
+                    </div>
                 </div>
             </div>
             <div className="drawer-side">
@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
                             </a>
                         </li>
                     ))}
-                    {user && (
+                    {user ? (
                         <>
                             <li className="menu-title">
                                 <span>User</span>
@@ -85,6 +85,25 @@ const Navbar: React.FC = () => {
                             <li><a href="/settings">Settings</a></li>
                             <li><a href="/logout">Logout</a></li>
                         </>
+                    ) : (
+                        <div className="flex flex-col gap-2 mt-auto">
+                            <li>
+                                <a
+                                    href="/signup"
+                                    className="btn text-lg hover:scale-105 transition-transform duration-75 text-black"
+                                >
+                                    Sign Up
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/signin"
+                                    className="btn text-lg hover:scale-105 transition-transform duration-75 text-black"
+                                >
+                                    Sign In
+                                </a>
+                            </li>
+                        </div>
                     )}
                 </ul>
             </div>
