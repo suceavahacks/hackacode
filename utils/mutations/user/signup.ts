@@ -17,6 +17,19 @@ export const onSubmit = async (data: {
             emailRedirectTo: `${process.env.NEXT_PUBLIC_URL}/app`,
         }
     });
+
+    const { error: insertError } = await supabase
+        .from("users")
+        .insert({
+            id: signUpData.user?.id,
+            username: data.email.split("@")[0],
+            profile_picture: 'null',
+            bio: 'hackacoder'
+        })
+        .select("*")
+        .single();
+
+    console.log("Insert Error: ", insertError);
     
     if (error) {
         setError(error.message);
@@ -36,7 +49,7 @@ export const onSubmit = async (data: {
                 return ;
             }
         }
-    }
+    }    
 
     setLoading(false);
     return signUpData;

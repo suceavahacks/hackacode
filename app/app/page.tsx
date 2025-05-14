@@ -9,7 +9,10 @@ export default function App(){
         return <Loading />;
     }
 
-    console.log("User data:", user);
+    if(!user) {
+        window.location.href = "/signin";
+        return null;
+    }
 
     return user && (
         <div className="container ml-[64px] mt-20">

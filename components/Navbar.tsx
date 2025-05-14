@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/utils/queries/user/getUser";
 import { Loading } from "./Loading";
+import Avatar from "./Avatar";
 
 const Navbar: React.FC = () => {
     const links = [
@@ -26,9 +27,9 @@ const Navbar: React.FC = () => {
         >
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
-                <div className="navbar max-h-12 bg-secondary xl:px-96 lg:px-48 md:px-5 border-b-2 border-white border-opacity-50">
+                <div className="navbar max-h-12 bg-secondary xl:px-96 lg:px-48 md:px-10 border-b-2 border-white border-opacity-50">
                     <Link href="/" className="text-3xl flex-1 font-bold hover:rotate-1 transition-transform duration-75 color ml-12 max-md:ml-2">Hackacode</Link>
-                    <div className="hidden lg:flex">
+                    <div className="flex max-md:hidden">
                         <ul className="menu menu-horizontal flex items-center justify-center">
                             {links.map((link, index) => (
                                 <li key={index} className="mr-2">
@@ -65,7 +66,7 @@ const Navbar: React.FC = () => {
             </div>
             <div className="drawer-side">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
-                <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+                <ul className="menu p-4 w-80 min-h-full bg-secondary text-base-content">
                     {links.map((link, index) => (
                         <li key={index}>
                             <a
@@ -78,12 +79,20 @@ const Navbar: React.FC = () => {
                     ))}
                     {user ? (
                         <>
-                            <li className="menu-title">
-                                <span>User</span>
-                            </li>
-                            <li><a href="/profile">Profile</a></li>
-                            <li><a href="/settings">Settings</a></li>
-                            <li><a href="/logout">Logout</a></li>
+                            <div className="flex flex-col gap-2 mt-auto">
+                                <a
+                                    href="/settings"
+                                    className="btn text-lg hover:scale-105 transition-transform duration-75 text-black"
+                                >
+                                    Settings
+                                </a>
+                                <a
+                                    href="/logout"
+                                    className="btn text-lg hover:scale-105 transition-transform duration-75 text-black"
+                                >
+                                    Logout
+                                </a>
+                            </div>
                         </>
                     ) : (
                         <div className="flex flex-col gap-2 mt-auto">

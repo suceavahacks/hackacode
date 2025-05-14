@@ -2,6 +2,8 @@ import { Home, User, Settings, LogOut, MessageCircleQuestion } from "lucide-reac
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
+import { createClient } from "@/utils/supabase/client";
+import Avatar from "@/components/Avatar";
 
 const Sidebar = () => {
     const { user, loading, error } = useUser();
@@ -31,16 +33,7 @@ const Sidebar = () => {
             <div className="flex flex-col items-center justify-between h-full py-6 border-r border-white border-opacity-20">
                 <div className="w-full">
                     <div className="relative w-10 h-10 mx-auto mb-8 overflow-hidden rounded-full bg-secondary ring-2 ring-white ring-opacity-30 transition-all duration-300 hover:ring-opacity-70">
-                        <img 
-                            src="https://ca.slack-edge.com/T0266FRGM-U078GC2JT53-d1bd6096fcba-512" 
-                            alt="Logo" 
-                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110" 
-                        />
-                        {isHovered && (
-                            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                <User size={16} className="text-white" />
-                            </div>
-                        )}
+                        <Avatar />
                     </div>
 
                     <div className="flex flex-col space-y-1 items-center px-2">

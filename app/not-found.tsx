@@ -14,7 +14,7 @@ export default function NotFound() {
             </p>
                 <span
                     className="text-3xl text-center mt-10 cursor-pointer bg-white btn px-5 py-2 rounded-lg hover:text-white transition-colors duration-300"
-                    onClick={() => router.push("/")}
+                    onClick={() => router.push("/app")}
                 >
                     Go back to home
                 </span>
