@@ -1,3 +1,5 @@
+import { createClient } from "@/utils/supabase/client";
+
 export const onSubmit = async (data: {
     email: string;
     password: string;
@@ -6,55 +8,36 @@ export const onSubmit = async (data: {
     setError(null);
     setSuccess(false);
 
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data),
-            credentials: "include"
-        });
+    const supabase = createClient();
 
-        const result = await res.json();
-        if (Object.keys(result.user.user_metadata).length === 0) {
-            setError("You already set up an account with this email. Are you sure you are on the right page?");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
-            return;
+    const { data: signUpData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL}/app`,
         }
-
-        if (!result?.user?.user_metadata?.email_verified) {
-            setError("Please verify your email before signing in. We do not want to have any bots in our system.");
-            setTimeout(() => {
-                setError(null);
-            }, 3000);
-            return;
-        } else {
-            setSuccess(true);
-            setTimeout(() => {
-                setSuccess(false);
-            }, 3000);
-        }
-
-        if (!res.ok) {
-            throw new Error(result.message || "Something went wrong");
-        }
-
-        localStorage.setItem("access_token", result.session.access_token);
-        localStorage.setItem("refresh_token", result.session.refresh_token);
-        localStorage.setItem("expires_at", result.session.expires_at);
-
-        window.location.reload();
-
-
-    } catch (error) {
-        setError(error instanceof Error ? error.message : "Something went wrong");
-        setTimeout(() => {
-            setError(null);
-        }, 3000);
-    } finally {
+    });
+    
+    if (error) {
+        setError(error.message);
         setLoading(false);
+        return ;
     }
+
+    if(signUpData.user) {
+        if(Object.keys(signUpData.user.user_metadata).length == 0) {
+            setError("You already have an account. Please sign in.");
+            setLoading(false);
+            return ;
+        }else {
+            if(!signUpData.user?.user_metadata?.email_verified) {
+                setError(`An email has been sent to ${data.email} for verification. Please check your inbox and verify your email address.`);
+                setLoading(false);
+                return ;
+            }
+        }
+    }
+
+    setLoading(false);
+    return signUpData;
 }

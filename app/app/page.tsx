@@ -9,13 +9,15 @@ export default function App(){
         return <Loading />;
     }
 
+    console.log("User data:", user);
+
     return user && (
         <div className="container ml-[64px] mt-20">
             <h1>Welcome to the app</h1>
             {user ? (
                 <div>
                     <h2>Hello, user</h2>
-                    <p>Your email is: {user.user.email}</p>
+                    <p>Your email is: {user.identities[0].email}</p>
                 </div>
             ) : (
                 <div>

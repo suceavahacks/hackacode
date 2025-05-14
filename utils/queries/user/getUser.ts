@@ -1,26 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 const fetchUser = async (): Promise<any> => {
-  const token = localStorage.getItem("access_token");
-  if (!token) {
-    throw new Error("No access token found");
-  }
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch user data");
-  }
-
-  return res.json();
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  return user;
 };
 
 export const useUser = () => {

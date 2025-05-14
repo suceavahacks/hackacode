@@ -1,25 +1,22 @@
-    "use client"
+"use client"
 
-    import { useEffect } from "react"
+import { useEffect } from "react"
+import { createClient } from "@/utils/supabase/client"
+const Logout = () => {
+    useEffect(() => {
+        const supabase = createClient()
+        const logout = async () => {
+            await supabase.auth.signOut()
+            window.location.href = "/"
+        }
+        logout()
+    }, [])
 
-    const Logout = () => {
+    return (
+        <div className="container ml-[64px] mt-20">
+            <h1>Logging out...</h1>
+        </div>
+    )
+}
 
-        useEffect(() => {
-            if (typeof window !== "undefined") {
-                window.localStorage.removeItem("access_token")
-                window.localStorage.removeItem("refresh_token")
-                window.localStorage.removeItem("expires_at")
-                window.location.href = "/"
-            }
-        }, [])
-
-        return (
-            <div className="w-screen flex flex-col items-center justify-center gap-10 min-h-screen max-md:mt-40">
-                <h1 className="text-7xl font-extrabold text-center max-md:text-5xl">You have been logged out</h1>
-                <p className="text-xl">Redirecting...</p>
-            </div>
-        )
-
-    }
-
-    export default Logout
+export default Logout
