@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   }
 
   if (redirectTo) {
-    return NextResponse.redirect(`${origin}${redirectTo}`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/app`);
   }
 
   // URL to redirect to after sign up process completes
