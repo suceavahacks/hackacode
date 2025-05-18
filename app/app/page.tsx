@@ -10,7 +10,6 @@ export default function App(){
     }
 
     if(!user) {
-        window.location.href = "/signin";
         return null;
     }
 
