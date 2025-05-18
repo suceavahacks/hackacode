@@ -47,7 +47,7 @@ const SignIn = () => {
     }
 
     return !user && (
-        <div className="w-screen flex flex-col items-center justify-center gap-10 min-h-screen max-md:mt-40">
+        <div className="w-screen flex flex-col items-center justify-center gap-10 min-h-screen max-md:mt-40 relative z-50">
             <motion.div
                 className="flex flex-col"
                 initial={{ opacity: 0, y: -50 }}

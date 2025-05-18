@@ -28,11 +28,9 @@ export const onSubmit = async (data: {
         })
         .select("*")
         .single();
-
-    console.log("Insert Error: ", insertError);
     
-    if (error) {
-        setError(error.message);
+    if (insertError) {
+        setError(insertError.message);
         setLoading(false);
         return ;
     }

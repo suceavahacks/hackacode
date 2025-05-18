@@ -8,19 +8,10 @@ export default function Home() {
 
   const { user, loading, error } = useUser();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-
-    if (user && mounted) {
+    if (user) {
       router.push("/app");
     }
-  }, [user, router, mounted]);
-
-  if (!mounted || loading) {
-    return <Loading />;
-  }
-
-  return null;
+  }, [user, router]);
 }

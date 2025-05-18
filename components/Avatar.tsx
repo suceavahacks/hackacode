@@ -138,7 +138,7 @@ const Avatar = () => {
                   input.click();
                 }}
               >
-                Or upload your own! NOT FUNCTIONAL
+                Or upload your own!
               </button>
               <button onClick={closeModal} className="btn font-normal">Close</button>
             </div>

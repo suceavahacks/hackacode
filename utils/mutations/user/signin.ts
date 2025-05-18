@@ -14,12 +14,12 @@ export const onSubmit = async (
   const supabase = await createClient();
   const { data: signInData, error } = await supabase.auth.signInWithPassword({
     email: data.email,
-    password: data.password,
+    password: data.password
   });
 
   if (error) {
-    console.error("Error during sign-in:", error);
     setError(error.message);
+    return ;
   }
 
   if(signInData.session) {
@@ -27,10 +27,7 @@ export const onSubmit = async (
       access_token: signInData.session.access_token,
       refresh_token: signInData.session.refresh_token,
     });
-
+      setLoading(false);
+    return;
   }
-
-  setLoading(false);
-  window.location.href = "/app";
-  return signInData;
 };

@@ -7,9 +7,18 @@ import { Footer } from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo} from "react";
 import { Loading } from "@/components/Loading";
 import { useUser } from "@/utils/queries/user/getUser";
+import { loadSlim } from "@tsparticles/slim"
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import {
+  type Container,
+  type ISourceOptions,
+  MoveDirection,
+  OutMode,
+} from "@tsparticles/engine";
+
 
 function AppContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -17,6 +26,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, loading } = useUser();
   const [mounted, setMounted] = useState(false);
+  const [init, setInit] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -27,19 +37,106 @@ function AppContent({ children }: { children: React.ReactNode }) {
     }
   }, [user, isHomePage, router, mounted]);
 
-  if (loading || !mounted) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    })
+  }, [])
 
-  if (isHomePage && user) {
+  const particlesLoaded = async (container?: Container): Promise<void> => {
+    console.log(container);
+  };
+
+  const options: ISourceOptions = useMemo(
+    () => ({
+      background: {
+        color: {
+          value: "transparent",
+        },
+      },
+      fpsLimit: 120,
+      interactivity: {
+        events: {
+          onClick: {
+            enable: true,
+            mode: "push",
+          },
+          onHover: {
+            enable: true,
+            mode: "repulse",
+          },
+        },
+        modes: {
+          push: {
+            quantity: 4,
+          },
+          repulse: {
+            distance: 200,
+            duration: 0.4,
+          },
+        },
+      },
+      particles: {
+        color: {
+          value: "#016339",
+        },
+        links: {
+          color: "#016339",
+          distance: 150,
+          enable: true,
+          opacity: 0.5,
+          width: 1,
+        },
+        move: {
+          direction: MoveDirection.none,
+          enable: true,
+          outModes: {
+            default: OutMode.out,
+          },
+          random: false,
+          speed: 2,
+          straight: false,
+        },
+        number: {
+          density: {
+            enable: true,
+          },
+          value: 150,
+        },
+        opacity: {
+          value: 0.5,
+        },
+        shape: {
+          type: "circle",
+        },
+        size: {
+          value: { min: 1, max: 5 },
+        },
+      },
+      detectRetina: true,
+    }),
+    [],
+  );
+
+  if (loading || !mounted) {
     return <Loading />;
   }
 
   return (
     <main className={`min-h-screen`}>
+      {init && (
+        <Particles
+          id="tsparticles"
+          options={options}
+          particlesLoaded={particlesLoaded}
+          className="z-10 relative"
+        />
+      )}
       <Navbar />
       {isHomePage && !user && (
-        <div className="text-center mt-20 p-3">
+        <div className="text-center mt-20 p-3 z-20 relative">
           <span className="text-[48px] font-extrabold">
             Code smarter. Solve harder.
             <span className="color" style={{ display: 'inline-block', textAlign: 'center' }}>

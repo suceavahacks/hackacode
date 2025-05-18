@@ -71,3 +71,8 @@
 .sidebar:hover .sidebar-hover\:w-auto {
     width: auto !important;
 }
+
+input {
+    background-color: var(--bg-secondary) !important;
+    color: white !important;
+}

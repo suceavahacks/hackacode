@@ -5,8 +5,23 @@ import { createClient } from "@/utils/supabase/client";
 const fetchUser = async (): Promise<any> => {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if(!user || !user?.id) {
+    return null;
+  }
+
+  const { data: userData, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
+
+  const combinedUser = { ...user, ...userData };
+  if(Object.keys(combinedUser).length === 0){
+    return null;
+  }
   
-  return user;
+  return combinedUser;
 };
 
 export const useUser = () => {
