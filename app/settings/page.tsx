@@ -278,7 +278,7 @@ export default function Settings() {
     const tabs = ['Profile', 'Account', 'Privacy', 'CLI integration']
 
     return (
-        <div className="flex flex-col ml-24 max-md:ml-2 h-[1200px] max-w-[1000px] mr-2">
+        <div className="flex flex-col ml-24 max-md:ml-2 h-[1200px] max-w-[1000px] mr-2 relative z-50">
             {toast && (
                 <div className="toast">
                     <div className={`alert ${toast.type === "success" ? "alert-success" : "alert-error"}`}>
