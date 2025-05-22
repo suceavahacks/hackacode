@@ -28,6 +28,7 @@ export const onSubmit = async (
       refresh_token: signInData.session.refresh_token,
     });
       setLoading(false);
+    window.location.href = "/app";
     return;
   }
 };

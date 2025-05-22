@@ -76,3 +76,8 @@ input {
     background-color: var(--bg-secondary) !important;
     color: white !important;
 }
+
+textarea {
+    background-color: var(--bg-secondary) !important;
+    color: white !important;
+}

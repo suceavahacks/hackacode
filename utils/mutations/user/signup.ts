@@ -18,16 +18,29 @@ export const onSubmit = async (data: {
         }
     });
 
+    const { data: existingUser, error: existingUserError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", data.email)
+        .single();
+
+    if(existingUser) {
+        setError("User already exists. Please sign in.");
+        setLoading(false);
+        return ;
+    }
+
     const { error: insertError } = await supabase
         .from("users")
         .insert({
             id: signUpData.user?.id,
             username: data.email.split("@")[0],
             profile_picture: 'null',
-            bio: 'hackacoder'
+            bio: 'hackacoder',
+            email: data.email,
         })
         .select("*")
-        .single();
+        .single()
     
     if (insertError) {
         setError(insertError.message);
