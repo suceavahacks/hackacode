@@ -16,7 +16,6 @@ export const problemSchema = z.object({
   notes: z.string().optional(),
   solution_code: z.string().min(3, "Solution code is required"),
   solution_explanation: z.string().optional(),
-  is_published: z.boolean(),
   success_rate: z.number().optional(),
   submission_count: z.number().optional(),
   accepted_count: z.number().optional(),
