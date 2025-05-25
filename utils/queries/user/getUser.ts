@@ -25,23 +25,13 @@ const fetchUser = async (): Promise<any> => {
 };
 
 export const useUser = () => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const { data: user, isLoading, isError, error } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
     retry: false,
     refetchOnWindowFocus: false,
-    enabled: isMounted,
   });
-
-  if (!isMounted) {
-    return { user: null, loading: true, error: null };
-  }
 
   return { user, loading: isLoading, error: isError ? error : null };
 };

@@ -10,8 +10,7 @@ export const publishProblem = async (problem: Problem) => {
         .single()
     
     if (existingProblem) {
-        console.log('Problem already exists:', existingProblem);
-        throw new Error('Problem already exists');
+        return null;
     }
 
     const { data, error } = await supabase
@@ -21,10 +20,8 @@ export const publishProblem = async (problem: Problem) => {
         .single();
     
     if (error) {
-        console.error('Error publishing problem:', error);
-        throw new Error('Error publishing problem');
+        return null;
     }
-    console.log('Problem published successfully:', data);
     return data;
 
 }

@@ -291,7 +291,7 @@ export default function Settings() {
                                                 "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
                                                 currentSection === idx
                                                     ? "bg-accent/20 border border-accent/30"
-                                                    : "hover:bg-gray-800 border border-transparent"
+                                                    : "hover:bg-accent hover:text-black border border-transparent"
                                             )}
                                         >
                                             <div className={clsx(
