@@ -81,3 +81,30 @@ textarea {
     background-color: var(--bg-secondary) !important;
     color: white !important;
 }
+
+.monocode {
+    font-family: monospace !important;
+}
+
+.cm-editor {
+    font-family: monospace !important;
+}
+
+.cm-content>div,
+.cm-content span {
+  font-family: monospace !important;
+  font-size: 16px;
+}
+
+.cm-lineNumbers>div {
+  font-family: monospace;
+  font-size: large;
+}
+
+.cm-gutterElement {
+  font-size: 0px;
+}
+
+.cm-theme {
+  font-family: monospace;
+}

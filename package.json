@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",

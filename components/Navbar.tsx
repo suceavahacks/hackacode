@@ -140,7 +140,7 @@ const Navbar: React.FC = () => {
                     <Link 
                         href="/" 
                         className="text-3xl flex-1 font-bold transition-transform duration-75 color ml-12 max-md:ml-2 flex items-center">
-                        <img src={randomLink} alt="Hack Club Sticker" className="max-h-10 mr-2" />
+                        <img src={randomLink || "https://hackclub.com/stickers/ship.png"} alt="Hack Club Sticker" className="max-h-10 mr-2" />
                         Hackacode
                     </Link>
                     <div className="flex max-md:hidden">

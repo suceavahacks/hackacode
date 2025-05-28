@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useUser } from "@/utils/queries/user/getUser.ts";
 import { useRouter } from "next/navigation";
 import { Loading } from "@/components/Loading";
@@ -41,6 +41,14 @@ const SignIn = () => {
             router.push("/app");
         }
     }, [user, router]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setError(null);
+            setLoading(false);
+        }, 5000);
+    }
+    , [error]);
 
     if (userLoading) {
         return <Loading />;
