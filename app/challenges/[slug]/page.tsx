@@ -17,6 +17,9 @@ export default function Challenge() {
     const params = useParams()
     const { challenge, loading } = useChallenge(params.slug as string)
     const supabase = createClient()
+    const [modalOpen, setModalOpen] = useState<boolean>(false)
+    const [results, setResults] = useState<any>(null)
+    const [loadingSubmit, setLoading] = useState<boolean>(false)
 
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
@@ -38,6 +41,7 @@ export default function Challenge() {
     const handleSubmit = async () => {
         const { data, error } = await supabase.auth.getSession()
         const accessToken = data.session?.access_token
+        setLoading(true)
 
         const response = await fetch("http://157.180.71.65:1072/api/v1", {
             method: "POST",
@@ -59,6 +63,9 @@ export default function Challenge() {
         }
 
         const result = await response.json()
+        setResults(result)
+        setModalOpen(true)
+        setLoading(false)
     }
 
 
@@ -101,9 +108,12 @@ export default function Challenge() {
             <div className="fixed bottom-0 right-0 p-4 z-[100]">
                 <button
                     className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                    onClick={handleSubmit}
+                    onClick={() => {
+                        handleSubmit()
+                    }}
+                    disabled={loading}
                 >
-                    Submit 👾
+                    {loadingSubmit ? <Loading /> : "Submit 👾"}
                 </button>
             </div>
             <div className="absolute top-0 right-0 p-4 z-[100]">
@@ -121,6 +131,62 @@ export default function Challenge() {
                     ))}
                 </select>
             </div>
+            {modalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transform transition-all duration-300 ease-in-out">
+                    <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full">
+                        {!results ? (
+                            <Loading />
+                        ) : (
+                            <div className="text-center">
+                                <h2 className="text-2xl font-bold mb-4">
+                                    Results for <span className="text-accent">{challenge.title}</span>
+                                </h2>
+
+                                <div className="bg-secondary p-3 rounded mb-4 text-left">
+                                    <h3 className="font-semibold mb-2">Status:
+                                        <span className={`ml-2 badge ${results.status === 'success' ? 'badge-success' : 'badge-error'}`}>
+                                            {results.status}
+                                        </span>
+                                    </h3>
+                                    <div className="overflow-x-auto">
+                                        <table className="table w-full">
+                                            <thead>
+                                                <tr>
+                                                    <th>Test Case</th>
+                                                    <th>Status</th>
+                                                    <th>Time</th>
+                                                    <th>Memory</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {results.results.map((testCase : any, index: number) => (
+                                                    <tr key={index} className="hover">
+                                                        <td>#{index + 1}</td>
+                                                        <td>
+                                                            <span className={`badge ${testCase.Passed ? "badge-success" : "badge-error"}`}>
+                                                                {testCase.Passed ? "Passed" : "Failed"}
+                                                            </span>
+                                                        </td>
+                                                        <td>{testCase.Time}s</td>
+                                                        <td>{testCase.Memory}KB</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="btn"
+                                    onClick={() => setModalOpen(false)}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

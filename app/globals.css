@@ -141,15 +141,15 @@ ul {
 }
 
 .cm-editor {
-    background-color: var(--bg-secondary) !important;
+    background-color: var(--bg--primary) !important;
     border-left: var(--bg-button-hover) 1px solid !important;
 }
 
 .cm-gutters {
-    background-color: var(--bg-secondary) !important;
+    background-color: var(--bg-primary) !important;
     color: white !important;
 }
 
-.cm-activeLine {
-    background-color: var(--bg-primary) !important;
+.font-mono * {
+    font-family: monospace !important;
 }
