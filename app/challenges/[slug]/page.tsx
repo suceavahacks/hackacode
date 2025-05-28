@@ -27,25 +27,27 @@ export default function Challenge() {
 
     return (
         <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
-            <div className="w-[40%] bg-secondary h-screen">
-                <div className="ml-20 p-4">
+            <div className="w-[40%] max-md:w-[60%] bg-secondary h-screen">
+                <div className="ml-20 max-md:ml-2 p-4">
                     <a href={`/challenges/${challenge.slug}`} className="text-4xl font-bold mb-4">
                         # {challenge.title}
                     </a>
-                    <section className="mb-4" dangerouslySetInnerHTML={{ __html: challenge.description }} />
+                    <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
                 </div>
             </div>
-            <div className="w-[60%] h-screen">
-                <CodeMirror   
+            <div className="w-[60%] max-md:w-[40%] h-screen">
+                <CodeMirror
                     value={code}
                     theme="dark"
                     onChange={onChange}
                     extensions={[javascript()]}
                     height="100vh"
                     className="monocode"
-                />  
-                <button className="absolute bottom-4 right-4 bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-                    Submit
+                />
+            </div>
+            <div className="fixed bottom-0 right-0 p-4 z-[100]">
+                <button className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                    Submit 👾
                 </button>
             </div>
         </div>

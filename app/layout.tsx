@@ -3,7 +3,6 @@
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
 import { usePathname, useRouter } from "next/navigation";
@@ -304,7 +303,6 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AppContent>{children}</AppContent>
-            <Footer />
           </ThemeProvider>
         </QueryClientProvider>
       </body>
