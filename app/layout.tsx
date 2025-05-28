@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, useMemo} from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Loading } from "@/components/Loading";
 import { useUser } from "@/utils/queries/user/getUser";
 import { loadSlim } from "@tsparticles/slim"
@@ -95,7 +95,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
             default: OutMode.out,
           },
           random: false,
-          speed: 2,
+          speed: 1,
           straight: false,
         },
         number: {
@@ -115,6 +115,9 @@ function AppContent({ children }: { children: React.ReactNode }) {
         },
       },
       detectRetina: true,
+      style: {
+        filter: "blur(2px)",
+      }
     }),
     [],
   );
@@ -126,12 +129,14 @@ function AppContent({ children }: { children: React.ReactNode }) {
   return (
     <main className={`min-h-screen`}>
       {init && (
-        <Particles
-          id="tsparticles"
-          options={options}
-          particlesLoaded={particlesLoaded}
-          className="z-10 relative"
-        />
+        <div>
+          <Particles
+            id="tsparticles"
+            options={options}
+            particlesLoaded={particlesLoaded}
+            className="z-10 relative"
+          />
+        </div>
       )}
       <Navbar />
       {isHomePage && !user && (

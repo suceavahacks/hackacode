@@ -1,7 +1,7 @@
 "use client"
 import NotFound from "@/app/not-found"
 import { Loading } from "@/components/Loading"
-import { useChallenge } from "@/utils/queries/user/getChallenge"
+import { useChallenge } from "@/utils/queries/challenges/getChallenge"
 import { useParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
@@ -93,7 +93,6 @@ export default function Challenge() {
                             extensions={[cpp()]}
                             height="100vh"
                             className="monocode"
-
                         />
                     </div>
                 </Panel>

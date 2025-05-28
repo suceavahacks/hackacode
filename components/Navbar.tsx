@@ -73,7 +73,6 @@ const Navbar: React.FC = () => {
         https://hackclub.com/stickers/logo.png
         https://hackclub.com/stickers/m_a_s_h.png
         https://hackclub.com/stickers/macintosh.svg
-        https://hackclub.com/stickers/minecraft.svg
         https://hackclub.com/stickers/mo’ parts mo’ problems.png
         https://hackclub.com/stickers/nasa.svg
         https://hackclub.com/stickers/nest_hat_orpheus.png
@@ -132,7 +131,7 @@ const Navbar: React.FC = () => {
 
     return (
         <motion.div
-            className="drawer drawer-end bg-primary relative z-50"
+            className="drawer drawer-end bg-primary relative z-[100]"
         >
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">

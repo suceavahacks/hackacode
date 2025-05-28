@@ -6,7 +6,7 @@ export default function NotFound() {
     const router = useRouter()
 
     return (
-        <div className="inset-0 fixed w-screen h-screen flex flex-col justify-center items-center relative z-50">
+        <div className="inset-0 fixed w-screen h-screen flex flex-col justify-center items-center relative z-10">
             <p className="text-3xl text-center mt-20">
                 Ooops, it seems like you are lost!
                 <br />
