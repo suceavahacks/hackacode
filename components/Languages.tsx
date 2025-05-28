@@ -1,8 +1,7 @@
 export const getTemplate = (language: string): string => {
     switch (language) {
         case 'C++':
-            return `
-#include <iostream>
+            return `#include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -29,8 +28,7 @@ int main() {
 }`;
 
         case 'C':
-            return `
-#include <stdio.h>
+            return `#include <stdio.h>
 void waste_time() {
     for (int i = 0; i < 1000000; ++i);
 }
@@ -47,8 +45,7 @@ int main() {
 }`;
 
         case 'C#':
-            return `
-using System;
+            return `using System;
 
 namespace Main {
     class Hello {
@@ -69,8 +66,7 @@ namespace Main {
 }`;
 
         case 'Java':
-            return `
-class Main {
+            return `class Main {
     public static void doNothing() {
         for (int i = 0; i < 10000; i++) {}
     }
@@ -87,8 +83,7 @@ class Main {
 }`;
 
         case 'Python':
-            return `
-import time
+            return `import time
 import math
 
 class Empty:
@@ -109,8 +104,7 @@ print("Done:", nonsense())
 `;
 
         case 'Javascript':
-            return `
-console.log("Hello world!");
+            return `console.log("Hello world!");
 
 function waste() {
     for (let i = 0; i < 10000; i++) {}
@@ -134,8 +128,7 @@ n.doStuff();
 `;
 
         case 'Ruby':
-            return `
-puts "Hello world!"
+            return `puts "Hello world!"
 
 def junk
   1000.times do |i|
@@ -153,9 +146,8 @@ junk
 Trash.new.useless
 `;
 
-        case 'Go':
-            return `
-package main
+        case 'Go':           
+        return `package main
 
 import "fmt"
 
@@ -178,8 +170,7 @@ func main() {
 `;
 
         case 'Rust':
-            return `
-fn do_nothing() {
+            return `fn do_nothing() {
     for _ in 0..10000 {}
 }
 
@@ -200,8 +191,7 @@ fn main() {
 `;
 
         case 'Swift':
-            return `
-import Foundation
+            return `import Foundation
 
 func nonsense() {
     for _ in 0..<1000 {}
@@ -219,8 +209,7 @@ Filler().empty()
 `;
 
         case 'Kotlin':
-            return `
-fun filler() {
+            return `fun filler() {
     for (i in 0..1000) { }
 }
 
@@ -238,8 +227,7 @@ fun main() {
 `;
 
         case 'PHP':
-            return `
-<?php
+            return `<?php
 echo "Hello, World!\\n";
 
 function nonsense() {
@@ -259,8 +247,7 @@ $u->go();
 `;
 
         case 'Perl':
-            return `
-print "Hello, World!\\n";
+            return `print "Hello, World!\\n";
 
 sub waste {
     for (my $i = 0; $i < 1000; $i++) {}
@@ -270,8 +257,7 @@ waste();
 `;
 
         case 'Scala':
-            return `
-object Main extends App {
+            return `object Main extends App {
     println("Hello, World!")
 
     def spin(): Unit = {

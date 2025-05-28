@@ -110,11 +110,11 @@ textarea {
 }
 
 .highlight {
-    background-color: var(--bg-button-hover) !important;
-    color: #18181b !important;
+    background-color: var(--bg-secondary) !important;
+    color: var(--bg-button-hover) !important;
     border-radius: 0.5rem;
     padding: 0.2em 0.5em;
-    font-weight: 600;
+    font-weight: 300;
     font-family: inherit;
     display: inline;
     border-radius: 0.375rem;
@@ -142,7 +142,7 @@ ul {
 
 .cm-editor {
     background-color: var(--bg-secondary) !important;
-    border-left: white 1px solid !important;
+    border-left: var(--bg-button-hover) 1px solid !important;
 }
 
 .cm-gutters {

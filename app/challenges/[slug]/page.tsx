@@ -9,6 +9,7 @@ import { javascript } from "@codemirror/lang-javascript"
 import { cpp } from "@codemirror/lang-cpp"
 import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 
 export default function Challenge() {
@@ -71,24 +72,33 @@ export default function Challenge() {
 
     return (
         <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
-            <div className="w-[40%] max-md:w-[60%] bg-secondary h-screen">
-                <div className="ml-20 max-md:ml-2 p-4">
-                    <a href={`/challenges/${challenge.slug}`} className="text-4xl font-bold mb-4">
-                        # {challenge.title}
-                    </a>
-                    <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
-                </div>
-            </div>
-            <div className="w-[60%] max-md:w-[40%] h-screen">
-                <CodeMirror
-                    value={code}
-                    theme="dark"
-                    onChange={onChange}
-                    extensions={[cpp()]}
-                    height="100vh"
-                    className="monocode"
-                />
-            </div>
+            <PanelGroup direction="horizontal">
+                <Panel className="flex-1">
+                    <div className="overflow-y-auto">
+                        <div className="ml-20 max-md:ml-2 p-4">
+                            <a href={`/challenges/${challenge.slug}`} className="text-4xl font-bold mb-4">
+                                # {challenge.title}
+                            </a>
+                            <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
+                        </div>
+                    </div>
+                </Panel>
+                <PanelResizeHandle className="bg-secondary w-1 cursor-col-resize" />
+                <Panel>
+                    <div>
+                        <CodeMirror
+                            value={code}
+                            theme="dark"
+                            onChange={onChange}
+                            extensions={[cpp()]}
+                            height="100vh"
+                            className="monocode"
+
+                        />
+                    </div>
+                </Panel>
+            </PanelGroup>
+
             <div className="fixed bottom-0 right-0 p-4 z-[100]">
                 <button
                     className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
@@ -98,7 +108,7 @@ export default function Challenge() {
                 </button>
             </div>
             <div className="absolute top-0 right-0 p-4 z-[100]">
-                <select 
+                <select
                     defaultValue="Language" className="select bg-secondary text-white"
                     onChange={(e) => {
                         setLanguage(e.target.value);
