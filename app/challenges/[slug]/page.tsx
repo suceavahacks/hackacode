@@ -6,15 +6,47 @@ import { useParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { javascript } from "@codemirror/lang-javascript"
+import { cpp } from "@codemirror/lang-cpp"
+import { createClient } from "@/utils/supabase/client"
+
 
 export default function Challenge() {
     const params = useParams()
     const { challenge, loading } = useChallenge(params.slug as string)
+    const supabase = createClient()
 
     const [code, setCode] = useState<string>("console.log('lmao')")
     const onChange = useCallback((value: string) => {
         setCode(value)
     }, [])
+
+
+    const handleSubmit = async () => {
+        const { data, error } = await supabase.auth.getSession()
+        const accessToken = data.session?.access_token
+
+        const response = await fetch("http://157.180.71.65:1072/api/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                code: code,
+                slug: challenge.slug,
+                language: 'C++',
+                challenge: challenge.slug
+            }),
+        })
+
+        if (!response.ok) {
+            console.error("things are not ok", response.statusText)
+            return
+        }
+
+        const result = await response.json()
+        console.log("Submission result:", result)
+    }
 
 
     if (loading) {
@@ -40,13 +72,16 @@ export default function Challenge() {
                     value={code}
                     theme="dark"
                     onChange={onChange}
-                    extensions={[javascript()]}
+                    extensions={[cpp()]}
                     height="100vh"
                     className="monocode"
                 />
             </div>
             <div className="fixed bottom-0 right-0 p-4 z-[100]">
-                <button className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                <button 
+                    className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                    onClick={handleSubmit}
+                >
                     Submit 👾
                 </button>
             </div>

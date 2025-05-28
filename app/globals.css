@@ -139,3 +139,13 @@ ul {
 .mockup-code * {
     font-size: 1 rem !important;
 }
+
+.cm-editor {
+    background-color: var(--bg-secondary) !important;
+    border-left: white 1px solid !important;
+}
+
+.cm-gutters {
+    background-color: var(--bg-secondary) !important;
+    color: white !important;
+}
