@@ -149,3 +149,7 @@ ul {
     background-color: var(--bg-secondary) !important;
     color: white !important;
 }
+
+.cm-activeLine {
+    background-color: var(--bg-primary) !important;
+}

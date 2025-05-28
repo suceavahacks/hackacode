@@ -8,17 +8,30 @@ import CodeMirror from "@uiw/react-codemirror"
 import { javascript } from "@codemirror/lang-javascript"
 import { cpp } from "@codemirror/lang-cpp"
 import { createClient } from "@/utils/supabase/client"
+import { getTemplate } from "@/components/Languages"
 
 
 export default function Challenge() {
+    const [language, setLanguage] = useState<string>("C++")
     const params = useParams()
     const { challenge, loading } = useChallenge(params.slug as string)
     const supabase = createClient()
 
-    const [code, setCode] = useState<string>("console.log('lmao')")
+    const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
         setCode(value)
     }, [])
+
+    const languages = [
+        { name: "C++", value: cpp() },
+        { name: "Javascript", value: javascript() },
+    ]
+
+    useEffect(() => {
+        if (challenge) {
+            setCode(getTemplate(language))
+        }
+    }, [challenge, language])
 
 
     const handleSubmit = async () => {
@@ -45,7 +58,6 @@ export default function Challenge() {
         }
 
         const result = await response.json()
-        console.log("Submission result:", result)
     }
 
 
@@ -78,12 +90,27 @@ export default function Challenge() {
                 />
             </div>
             <div className="fixed bottom-0 right-0 p-4 z-[100]">
-                <button 
+                <button
                     className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                     onClick={handleSubmit}
                 >
                     Submit 👾
                 </button>
+            </div>
+            <div className="absolute top-0 right-0 p-4 z-[100]">
+                <select 
+                    defaultValue="Language" className="select bg-secondary text-white"
+                    onChange={(e) => {
+                        setLanguage(e.target.value);
+                    }}
+                >
+                    <option disabled={true}>Language</option>
+                    {languages.map((lang) => (
+                        <option key={lang.name} value={lang.name}>
+                            {lang.name}
+                        </option>
+                    ))}
+                </select>
             </div>
         </div>
     )
