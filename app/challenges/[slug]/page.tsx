@@ -3,13 +3,14 @@ import NotFound from "@/app/not-found"
 import { Loading } from "@/components/Loading"
 import { useChallenge } from "@/utils/queries/challenges/getChallenge"
 import { useParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { use, useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { javascript } from "@codemirror/lang-javascript"
 import { cpp } from "@codemirror/lang-cpp"
 import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { useUser } from "@/utils/queries/user/getUser"
 
 
 export default function Challenge() {
@@ -20,6 +21,7 @@ export default function Challenge() {
     const [modalOpen, setModalOpen] = useState<boolean>(false)
     const [results, setResults] = useState<any>(null)
     const [loadingSubmit, setLoading] = useState<boolean>(false)
+    const { user } = useUser()
 
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
@@ -36,7 +38,6 @@ export default function Challenge() {
             setCode(getTemplate(language))
         }
     }, [challenge, language])
-
 
     const handleSubmit = async () => {
         const { data, error } = await supabase.auth.getSession()
@@ -63,6 +64,30 @@ export default function Challenge() {
         }
 
         const result = await response.json()
+
+        const { data: userData } = await supabase
+            .from("users")
+            .select("submissions")
+            .eq('id', user.id)
+            .single();
+
+        const submissions = userData?.submissions || [];
+
+        submissions.push({
+            challenge: challenge.slug,
+            code: code,
+            result: result,
+            language: language,
+            timestamp: new Date()
+        });
+
+        const { data: submissionInsert, error: submissionError } = await supabase
+            .from("users")
+            .update({
+                submissions: submissions
+            })
+            .eq('id', user.id);
+
         setResults(result)
         setModalOpen(true)
         setLoading(false)
@@ -134,7 +159,7 @@ export default function Challenge() {
             {modalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transform transition-all duration-300 ease-in-out">
                     <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full">
-                        {!results ? (
+                        {!results?.results ? (
                             <Loading />
                         ) : (
                             <div className="text-center">
