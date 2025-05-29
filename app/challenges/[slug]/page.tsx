@@ -11,7 +11,27 @@ import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
+interface SubmissionResult {
+    status: string;
+    results?: {
+        Passed: boolean;
+        Time: number;
+        Memory: number;
+    }[];
+}
 
+interface Submission {
+    challenge: string;
+    code: string;
+    result: SubmissionResult;
+    language: string;
+    timestamp: string | number | Date;
+}
+
+interface UserWithSubmissions {
+    submissions: Submission[];
+    [key: string]: any;
+}
 
 export default function Challenge() {
     const [language, setLanguage] = useState<string>("C++")
@@ -81,7 +101,7 @@ export default function Challenge() {
             timestamp: new Date()
         });
 
-        const { data: submissionInsert, error: submissionError } = await supabase
+        await supabase
             .from("users")
             .update({
                 submissions: submissions
@@ -105,13 +125,69 @@ export default function Challenge() {
     return (
         <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
             <PanelGroup direction="horizontal">
-                <Panel className="flex-1">
-                    <div className="overflow-y-auto">
-                        <div className="ml-20 max-md:ml-2 p-4">
-                            <a href={`/challenges/${challenge.slug}`} className="text-4xl font-bold mb-4">
-                                # {challenge.title}
-                            </a>
-                            <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
+                <Panel className="flex-1 ml-20">
+                    <div role="tablist" className="tabs tabs-lifted">
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Description" defaultChecked />
+                        <div role="tabpanel" className="tab-content overflow-y-auto">
+                            <div className="p-2 mt-10">
+                                <h1 className="text-4xl font-bold mb-4">
+                                    {challenge.title}
+                                </h1>
+                                <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
+                            </div>
+                        </div>
+
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Submissions" />
+                        <div role="tabpanel" className="tab-content overflow-y-auto">
+                            <h2 className="text-2xl font-bold mb-4">Your precious submissions</h2>
+                            {user?.submissions?.filter((sub : Submission) => sub.challenge === challenge.slug).length > 0 ? (
+                                <div className="overflow-x-auto">
+                                    <table className="table w-full">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Language</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {(user as UserWithSubmissions).submissions
+                                                .filter((sub: Submission) => sub.challenge === challenge.slug)
+                                                .map((submission: Submission, idx: number) => (
+                                                    <tr key={idx} className="hover">
+                                                        <td>{new Date(submission.timestamp).toLocaleString()}</td>
+                                                        <td>{submission.language}</td>
+                                                        <td>
+                                                            <span className={`badge ${submission.result.status === 'success' ? 'badge-success' : 'badge-error'}`}>
+                                                                {submission.result.status}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                className="btn btn-xs btn-outline"
+                                                                onClick={() => {
+                                                                    setCode(submission.code);
+                                                                    setLanguage(submission.language);
+                                                                }}
+                                                            >
+                                                                Load code
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <p>No submissions yet for this challenge.</p>
+                            )}
+                        </div>
+
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Discussion" />
+                        <div role="tabpanel" className="tab-content overflow-y-auto">
                         </div>
                     </div>
                 </Panel>
@@ -157,7 +233,7 @@ export default function Challenge() {
                 </select>
             </div>
             {modalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transform transition-all duration-300 ease-in-out">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transfort ease-in-out">
                     <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full">
                         {!results?.results ? (
                             <Loading />
@@ -184,7 +260,7 @@ export default function Challenge() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {results.results.map((testCase : any, index: number) => (
+                                                {results.results.map((testCase: any, index: number) => (
                                                     <tr key={index} className="hover">
                                                         <td>#{index + 1}</td>
                                                         <td>

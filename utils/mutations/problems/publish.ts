@@ -10,6 +10,7 @@ export const publishProblem = async (problem: Problem) => {
         .single()
     
     if (existingProblem) {
+        throw new Error('Problem with this title already exists');
         return null;
     }
 

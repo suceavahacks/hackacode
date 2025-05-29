@@ -83,7 +83,6 @@ const Publish = () => {
   }
 
   const onSubmit = async (data: any) => {
-    alert("Publishing problem...")
     if (testCases.length === 0) {
       setTestCaseError("Please upload at least one test case.")
       return
@@ -92,7 +91,6 @@ const Publish = () => {
     try {
       await publishProblem(data)
       setSubmitting(false)
-      alert("Problem published successfully!")
     } catch (e) {
       setSubmitting(false)
       setSubmitError("Failed to publish problem.")
