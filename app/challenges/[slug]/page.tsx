@@ -11,13 +11,25 @@ import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
+interface JudgeResult {
+    ExitCode: string;
+    Status: string;
+    Killed: string;
+    Time: string;
+    TimeWall: string;
+    Memory: string;
+    CswVoluntary: string;
+    CswForced: string;
+    Message: string;
+    Stdout: string;
+    Stderr: string;
+    Passed: boolean;
+    CompilationError: string;
+}
+
 interface SubmissionResult {
     status: string;
-    results?: {
-        Passed: boolean;
-        Time: number;
-        Memory: number;
-    }[];
+    results?: JudgeResult[];
 }
 
 interface Submission {
@@ -26,6 +38,7 @@ interface Submission {
     result: SubmissionResult;
     language: string;
     timestamp: string | number | Date;
+    status: string; 
 }
 
 interface UserWithSubmissions {
@@ -50,7 +63,6 @@ export default function Challenge() {
 
     const languages = [
         { name: "C++", value: cpp() },
-        { name: "Javascript", value: javascript() },
     ]
 
     useEffect(() => {
@@ -74,7 +86,9 @@ export default function Challenge() {
                 code: code,
                 slug: challenge.slug,
                 language: 'C++',
-                challenge: challenge.slug
+                challenge: challenge.slug,
+                time: challenge.time_limit,
+                memory: challenge.memory_limit,
             }),
         })
 
@@ -98,7 +112,8 @@ export default function Challenge() {
             code: code,
             result: result,
             language: language,
-            timestamp: new Date()
+            timestamp: new Date(),
+            status: result.status
         });
 
         await supabase
@@ -113,7 +128,6 @@ export default function Challenge() {
         setLoading(false)
     }
 
-
     if (loading) {
         return <Loading />
     }
@@ -125,21 +139,21 @@ export default function Challenge() {
     return (
         <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
             <PanelGroup direction="horizontal">
-                <Panel className="flex-1 ml-20">
-                    <div role="tablist" className="tabs tabs-lifted">
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Description" defaultChecked />
-                        <div role="tabpanel" className="tab-content overflow-y-auto">
-                            <div className="p-2 mt-10">
+                <Panel className="flex-1 ml-[64px]">
+                    <div role="tablist" className="tabs tabs-lifted w-[100%]">
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Description" defaultChecked />
+                        <div role="tabpanel" className="tab-content overflow-y-auto m-2 mr-0">
+                            <div className="p-2 mt-5">
                                 <h1 className="text-4xl font-bold mb-4">
-                                    {challenge.title}
+                                    # {challenge.title}
                                 </h1>
                                 <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
                             </div>
                         </div>
 
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Submissions" />
-                        <div role="tabpanel" className="tab-content overflow-y-auto">
-                            <h2 className="text-2xl font-bold mb-4">Your precious submissions</h2>
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Submissions" />
+                        <div role="tabpanel" className="tab-content overflow-y-auto m-4">
+                            <h2 className="text-2xl font-bold">Your precious submissions</h2>
                             {user?.submissions?.filter((sub : Submission) => sub.challenge === challenge.slug).length > 0 ? (
                                 <div className="overflow-x-auto">
                                     <table className="table w-full">
@@ -152,7 +166,6 @@ export default function Challenge() {
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             {(user as UserWithSubmissions).submissions
                                                 .filter((sub: Submission) => sub.challenge === challenge.slug)
                                                 .map((submission: Submission, idx: number) => (
@@ -160,8 +173,8 @@ export default function Challenge() {
                                                         <td>{new Date(submission.timestamp).toLocaleString()}</td>
                                                         <td>{submission.language}</td>
                                                         <td>
-                                                            <span className={`badge ${submission.result.status === 'success' ? 'badge-success' : 'badge-error'}`}>
-                                                                {submission.result.status}
+                                                            <span className={`badge ${submission.status == 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
+                                                                {submission.status}
                                                             </span>
                                                         </td>
                                                         <td>
@@ -186,12 +199,12 @@ export default function Challenge() {
                             )}
                         </div>
 
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%]" aria-label="Discussion" />
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Discussion" />
                         <div role="tabpanel" className="tab-content overflow-y-auto">
                         </div>
                     </div>
                 </Panel>
-                <PanelResizeHandle className="bg-secondary w-1 cursor-col-resize" />
+                <PanelResizeHandle className="bg-secondary w-2 p-0 m-0 cursor-col-resize bg-accent" />
                 <Panel>
                     <div>
                         <CodeMirror
@@ -245,12 +258,12 @@ export default function Challenge() {
 
                                 <div className="bg-secondary p-3 rounded mb-4 text-left">
                                     <h3 className="font-semibold mb-2">Status:
-                                        <span className={`ml-2 badge ${results.status === 'success' ? 'badge-success' : 'badge-error'}`}>
+                                        <span className={`ml-2 badge ${results.status === 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
                                             {results.status}
                                         </span>
                                     </h3>
                                     <div className="overflow-x-auto">
-                                        <table className="table w-full">
+                                        <table className="table w-full overflow-y-auto">
                                             <thead>
                                                 <tr>
                                                     <th>Test Case</th>

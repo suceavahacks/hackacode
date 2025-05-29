@@ -2,23 +2,39 @@ import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const origin = process.env.NEXT_PUBLIC_URL
   const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
 
   if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const email = user.email || "no_email";
+      const username =
+        user.user_metadata?.user_name ||
+        (email ? email.split("@")[0] : user.id);
+
+      const { data: existingUser } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!existingUser) {
+        await supabase.from("users").insert({
+          id: user.id,
+          username,
+          profile_picture: user.user_metadata?.avatar_url || null,
+          bio: "hackacoder",
+          email,
+        });
+      }
+    }
   }
 
-  if (redirectTo) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/app`);
-  }
-
-  // URL to redirect to after sign up process completes
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/app`);
 }
