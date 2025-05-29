@@ -274,7 +274,7 @@ const Publish = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2">
-                          Time Limit (ms) *
+                          Time Limit (s) *
                         </label>
                         <input
                           type="number"
@@ -286,7 +286,7 @@ const Publish = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium mb-2">
-                          Memory Limit (MB) *
+                          Memory Limit (KB) *
                         </label>
                         <input
                           type="number"
