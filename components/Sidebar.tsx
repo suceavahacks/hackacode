@@ -1,8 +1,7 @@
-import { Home, User, Settings, LogOut, MessageCircleQuestion } from "lucide-react";
+import { Home, User, Settings, LogOut, MessageCircleQuestion, FlagIcon } from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
-import { createClient } from "@/utils/supabase/client";
 import Avatar from "@/components/Avatar";
 
 const Sidebar = () => {
@@ -16,6 +15,7 @@ const Sidebar = () => {
         { icon: <Home size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Application", href: "/app" },
         { icon: <User size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Profile", href: "/profile" },
         { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
+        { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
     ];
 
     const bottomItems = [

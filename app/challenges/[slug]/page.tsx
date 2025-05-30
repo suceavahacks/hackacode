@@ -5,7 +5,6 @@ import { useChallenge } from "@/utils/queries/challenges/getChallenge"
 import { useParams } from "next/navigation"
 import { use, useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
-import { javascript } from "@codemirror/lang-javascript"
 import { cpp } from "@codemirror/lang-cpp"
 import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
@@ -55,6 +54,7 @@ export default function Challenge() {
     const [results, setResults] = useState<any>(null)
     const [loadingSubmit, setLoading] = useState<boolean>(false)
     const { user } = useUser()
+    const [activeTab, setActiveTab] = useState<"description" | "submissions" | "discussion">("description")
 
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
@@ -140,69 +140,102 @@ export default function Challenge() {
         <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
             <PanelGroup direction="horizontal">
                 <Panel className="flex-1 ml-[64px]">
-                    <div role="tablist" className="tabs tabs-lifted w-[100%]">
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Description" defaultChecked />
-                        <div role="tabpanel" className="tab-content overflow-y-auto m-2 mr-0">
-                            <div className="p-2 mt-5">
-                                <h1 className="text-4xl font-bold mb-4">
-                                    # {challenge.title}
-                                </h1>
-                                <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
+                    <div className="flex flex-col h-full">
+                        <div className="flex">
+                          <button 
+                            onClick={() => setActiveTab("description")}
+                            className={`px-6 py-3 font-medium text-lg transition-all ${activeTab === "description" ? 
+                              "text-accent border-b-2 border-accent" : 
+                              "text-white/70 hover:text-white"}`}
+                          >
+                            Description
+                          </button>
+                          <button 
+                            onClick={() => setActiveTab("submissions")}
+                            className={`px-6 py-3 font-medium text-lg transition-all ${activeTab === "submissions" ? 
+                              "text-accent border-b-2 border-accent" : 
+                              "text-white/70 hover:text-white"}`}
+                          >
+                            Submissions
+                          </button>
+                          <button 
+                            onClick={() => setActiveTab("discussion")}
+                            className={`px-6 py-3 font-medium text-lg transition-all ${activeTab === "discussion" ? 
+                              "text-accent border-b-2 border-accent" : 
+                              "text-white/70 hover:text-white"}`}
+                          >
+                            Discussion
+                          </button>
+                        </div>
+                        
+                        <div className="overflow-y-auto p-4 h-full">
+                          {activeTab === "description" && (
+                            <div>
+                              <h1 className="text-4xl font-bold mb-4">
+                                # {challenge.title}
+                              </h1>
+                              <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
                             </div>
-                        </div>
-
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Submissions" />
-                        <div role="tabpanel" className="tab-content overflow-y-auto m-4">
-                            <h2 className="text-2xl font-bold">Your precious submissions</h2>
-                            {user?.submissions?.filter((sub : Submission) => sub.challenge === challenge.slug).length > 0 ? (
-                                <div className="overflow-x-auto overflow-y-auto max-h-screen">
-                                    <table className="table w-full">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Language</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(user as UserWithSubmissions).submissions
-                                                .filter((sub: Submission) => sub.challenge === challenge.slug)
-                                                .map((submission: Submission, idx: number) => (
-                                                    <tr key={idx} className="hover">
-                                                        <td>{new Date(submission.timestamp).toLocaleString()}</td>
-                                                        <td>{submission.language}</td>
-                                                        <td>
-                                                            <span className={`badge ${submission.status == 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
-                                                                {submission.status}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <button
-                                                                className="btn btn-xs btn-outline"
-                                                                onClick={() => {
-                                                                    setCode(submission.code);
-                                                                    setLanguage(submission.language);
-                                                                }}
-                                                            >
-                                                                Load code
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>
+                          )}
+                          
+                          {activeTab === "submissions" && (
+                            <div>
+                              <h2 className="text-2xl font-bold mb-4">Your previous submissions</h2>
+                              {user?.submissions?.filter((sub: Submission) => sub.challenge === challenge.slug).length > 0 ? (
+                                <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-200px)]">
+                                  <table className="table w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Language</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(user as UserWithSubmissions).submissions
+                                            .filter((sub: Submission) => sub.challenge === challenge.slug)
+                                            .map((submission: Submission, idx: number) => (
+                                                <tr key={idx} className="hover">
+                                                    <td>{new Date(submission.timestamp).toLocaleString()}</td>
+                                                    <td>{submission.language}</td>
+                                                    <td>
+                                                        <span className={`badge ${submission.status == 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
+                                                            {submission.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-xs btn-outline"
+                                                            onClick={() => {
+                                                                setCode(submission.code);
+                                                                setLanguage(submission.language);
+                                                            }}
+                                                        >
+                                                            Load code
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                  </table>
                                 </div>
-                            ) : (
-                                <p>No submissions yet for this challenge.</p>
-                            )}
+                              ) : (
+                                <div className="bg-secondary/20 rounded-lg p-6 text-center">
+                                  <p className="text-white/80">No submissions yet for this challenge.</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          {activeTab === "discussion" && (
+                            <div>
+                              <h2 className="text-2xl font-bold mb-4">Discussion</h2>
+                            </div>
+                          )}
                         </div>
-
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab w-[33%] hover:underline hover:decoration-wavy text-2xl" aria-label="Discussion" />
-                        <div role="tabpanel" className="tab-content overflow-y-auto">
-                        </div>
-                    </div>
+                      </div>
                 </Panel>
                 <PanelResizeHandle className="bg-secondary w-2 p-0 m-0 cursor-col-resize bg-accent" />
                 <Panel>
