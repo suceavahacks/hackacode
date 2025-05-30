@@ -9,14 +9,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { Loading } from "@/components/Loading";
 import { useUser } from "@/utils/queries/user/getUser";
-import { loadSlim } from "@tsparticles/slim"
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import {
-  type Container,
-  type ISourceOptions,
-  MoveDirection,
-  OutMode,
-} from "@tsparticles/engine";
 
 
 function AppContent({ children }: { children: React.ReactNode }) {
@@ -36,108 +28,12 @@ function AppContent({ children }: { children: React.ReactNode }) {
     }
   }, [user, isHomePage, router, mounted]);
 
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    })
-  }, [])
-
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
-
-  const options: ISourceOptions = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "transparent",
-        },
-      },
-      fpsLimit: 120,
-      interactivity: {
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "repulse",
-          },
-        },
-        modes: {
-          push: {
-            quantity: 4,
-          },
-          repulse: {
-            distance: 200,
-            duration: 0.4,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "#016339",
-        },
-        links: {
-          color: "#016339",
-          distance: 150,
-          enable: true,
-          opacity: 0.5,
-          width: 1,
-        },
-        move: {
-          direction: MoveDirection.none,
-          enable: true,
-          outModes: {
-            default: OutMode.out,
-          },
-          random: false,
-          speed: 1,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 150,
-        },
-        opacity: {
-          value: 0.5,
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 1, max: 5 },
-        },
-      },
-      detectRetina: true,
-      style: {
-        filter: "blur(2px)",
-      }
-    }),
-    [],
-  );
-
   if (loading || !mounted) {
     return <Loading />;
   }
 
   return (
     <main className={`min-h-screen`}>
-      {init && (
-        <div>
-          <Particles
-            id="tsparticles"
-            options={options}
-            particlesLoaded={particlesLoaded}
-            className="z-10 relative"
-          />
-        </div>
-      )}
       <Navbar />
       {isHomePage && !user && (
         <div className="text-center mt-20 p-3 z-20 relative">

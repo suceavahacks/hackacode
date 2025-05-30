@@ -54,8 +54,8 @@ export default function Challenges() {
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-8">
                         {challenges.map((challenge: Challenge) => (
                             <Link href={`/challenges/${challenge.slug}`} key={challenge.id}>
-                                <div className="group relative rounded-2xl p-6 border border-gray-700 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl bg-primary">
-                                    <div className="relative z-10">
+                                <div className="group h-full relative rounded-2xl p-6 border border-gray-700 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl bg-primary flex flex-col">
+                                    <div className="relative z-10 flex flex-col h-full">
                                         <div className="flex justify-between items-start mb-4">
                                             <h2 className="text-xl font-bold text-white group-hover:transition-colors group-hover:duration-300 leading-tight">
                                                 {challenge.title}
@@ -79,7 +79,8 @@ export default function Challenges() {
                                                 <p className="text-gray-500 italic text-sm">No description available</p>
                                             )}
                                         </div>
-                                        <div className="flex justify-between items-center">
+
+                                        <div className="flex justify-between items-center mt-auto">
                                             <div className="flex items-center gap-2 text-sm font-medium">
                                                 <ZapIcon className="h-4 w-4" />
                                                 <span>Start challenge</span>

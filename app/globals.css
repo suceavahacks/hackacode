@@ -153,3 +153,11 @@ ul {
 .font-mono * {
     font-family: monospace !important;
 }
+
+body {
+    background: linear-gradient(135deg, 
+                var(--bg-primary) 0%,
+                var(--bg-secondary) 65%,
+                rgba(63, 207, 143, 0.6) 100%
+            ) !important;
+}
