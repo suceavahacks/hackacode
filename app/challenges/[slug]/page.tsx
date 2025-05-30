@@ -155,7 +155,7 @@ export default function Challenge() {
                         <div role="tabpanel" className="tab-content overflow-y-auto m-4">
                             <h2 className="text-2xl font-bold">Your precious submissions</h2>
                             {user?.submissions?.filter((sub : Submission) => sub.challenge === challenge.slug).length > 0 ? (
-                                <div className="overflow-x-auto">
+                                <div className="overflow-x-auto overflow-y-auto max-h-screen">
                                     <table className="table w-full">
                                         <thead>
                                             <tr>
@@ -248,7 +248,7 @@ export default function Challenge() {
             {modalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transfort ease-in-out">
                     <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full">
-                        {!results?.results ? (
+                        {!results ? (
                             <Loading />
                         ) : (
                             <div className="text-center">
@@ -262,32 +262,39 @@ export default function Challenge() {
                                             {results.status}
                                         </span>
                                     </h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="table w-full overflow-y-auto">
-                                            <thead>
-                                                <tr>
-                                                    <th>Test Case</th>
-                                                    <th>Status</th>
-                                                    <th>Time</th>
-                                                    <th>Memory</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {results.results.map((testCase: any, index: number) => (
-                                                    <tr key={index} className="hover">
-                                                        <td>#{index + 1}</td>
-                                                        <td>
-                                                            <span className={`badge ${testCase.Passed ? "badge-success" : "badge-error"}`}>
-                                                                {testCase.Passed ? "Passed" : "Failed"}
-                                                            </span>
-                                                        </td>
-                                                        <td>{testCase.Time}s</td>
-                                                        <td>{testCase.Memory}KB</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
+
+                                    {results.status == "comp-failed" ? (
+                                      <div className="alert monocode alert-error my-4 whitespace-pre-wrap">
+                                        {results.message}
+                                      </div>
+                                    ) : (
+                                      <div className="overflow-x-auto">
+                                        <table className="table w-max min-w-[700px]">
+                                          <thead>
+                                            <tr>
+                                              <th>Test Case</th>
+                                              <th>Status</th>
+                                              <th>Time</th>
+                                              <th>Memory</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {results.results.map((testCase: any, index: number) => (
+                                              <tr key={index} className="hover">
+                                                <td>#{index + 1}</td>
+                                                <td>
+                                                  <span className={`badge ${testCase.Passed ? "badge-success" : "badge-error"}`}>
+                                                    {testCase.Passed ? "Passed" : "Failed"}
+                                                  </span>
+                                                </td>
+                                                <td>{testCase.Time}s</td>
+                                                <td>{testCase.Memory}KB</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
                                         </table>
-                                    </div>
+                                      </div>
+                                    )}
                                 </div>
 
                                 <button
