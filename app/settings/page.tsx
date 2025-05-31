@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 import clsx from "clsx"
-import { User, Lock, Eye, Github, Hash, Shield, ChevronRight, ChevronLeft, Code2, Settings as SettingsIcon, UserCog, Terminal } from "lucide-react"
+import { User, Lock, Shield, Code2, Settings as SettingsIcon, Terminal } from "lucide-react"
 
 export default function Settings() {
     const { user, loading, error } = useUser()

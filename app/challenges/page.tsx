@@ -1,7 +1,7 @@
 "use client";
 import { Loading } from "@/components/Loading";
 import { useChallenges } from "@/utils/queries/challenges/getChallenges";
-import { FlagIcon, ClockIcon, MemoryStickIcon, TrophyIcon, ZapIcon, ArrowRightIcon } from "lucide-react";
+import { FlagIcon, MemoryStickIcon, ZapIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
 
 type Challenge = {

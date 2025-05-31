@@ -4,7 +4,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/utils/queries/user/getUser";
 import { Loading } from "./Loading";
-import Avatar from "./Avatar";
 
 const Navbar: React.FC = () => {
 

@@ -3,7 +3,7 @@ import { Loading } from "@/components/Loading";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, Code, CheckCircle, Code2Icon, Award, Clock, Zap, CheckCheckIcon } from "lucide-react";
+import { ArrowRight, CheckCircle, Code2Icon, Zap, CheckCheckIcon } from "lucide-react";
 
 interface Submission {
     id?: string;

@@ -17,7 +17,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, loading } = useUser();
   const [mounted, setMounted] = useState(false);
-  const [init, setInit] = useState(false);
 
   useEffect(() => {
     setMounted(true);

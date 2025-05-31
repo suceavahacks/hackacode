@@ -1,4 +1,4 @@
-import { Home, User, Settings, LogOut, MessageCircleQuestion, FlagIcon } from "lucide-react";
+import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon } from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";

@@ -4,7 +4,6 @@ import { Loading } from "@/components/Loading";
 import { useDuel } from "@/utils/queries/duels/getDuel";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 const Duel = () => {
     const params = useParams();
