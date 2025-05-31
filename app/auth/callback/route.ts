@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
 
-/*   if (code) {
+  if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
 
@@ -32,8 +32,8 @@ export async function GET(request: Request) {
           email,
         });
       }
-    } */
-  //}
+    }
+  }
 
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/app`);
 }

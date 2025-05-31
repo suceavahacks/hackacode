@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
+import { Orpheus } from "@/components/Luigi"
 interface JudgeResult {
     ExitCode: string;
     Status: string;
@@ -341,6 +342,7 @@ export default function Challenge() {
                     </div>
                 </div>
             )}
+            <Orpheus code={code} setCode={setCode} description={challenge.description} />
         </div>
     )
 }
