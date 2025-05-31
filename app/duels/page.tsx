@@ -28,18 +28,52 @@ const Duels = () => {
     }, [error]);
 
     const timeLimitOptions = [
-        { value: 300, label: "5 minutes" },
-        { value: 600, label: "10 minutes" },
         { value: 900, label: "15 minutes" },
         { value: 1800, label: "30 minutes" },
+        { value: 3600, label: "1 hour" },
+        { value: 7200, label: "2 hours" },
+        { value: 14400, label: "4 hours" },
     ];
 
     if(!user) {
         return <NotFound />;
     }
 
-    useDuelRealtime(duelId, (payload) => {
+    const getRandomChallenges = async () => {
+        try {
+            const { data: allChallenges, error } = await supabase
+                .from('problems')
+                .select('slug');
+            
+            if (error || !allChallenges || allChallenges.length === 0) {
+                setError('Error fetching challenges');
+                return [];
+            }
+            
+            const shuffled = [...allChallenges].sort(() => 0.5 - Math.random());
+            const selectedChallenges = shuffled.slice(0, 3);
+
+            return selectedChallenges
+            
+        } catch (error) {
+            setError('Error selecting challenges');
+            return [];
+        }
+    }
+
+    useDuelRealtime(duelId, async(payload) => {
         if (payload.status === 'active') {
+            const challenges = await getRandomChallenges();
+
+            const { error } = await supabase
+                .from('duels')
+                .update({ challenges_slug : challenges })
+                .eq('id', payload.id);
+
+            if (error) {
+                setError('Error updating duel with challenges');
+                return;
+            }
             router.push(`/duels/${payload.id}`);
         }
     })

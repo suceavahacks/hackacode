@@ -1,4 +1,4 @@
-import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon } from "lucide-react";
+import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon} from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
@@ -14,6 +14,7 @@ const Sidebar = () => {
     const menuItems = [
         { icon: <Home size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Application", href: "/app" },
         { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
+        { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Duels", href: "/duels" },
         { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
     ];
 

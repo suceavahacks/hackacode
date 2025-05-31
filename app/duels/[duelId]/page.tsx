@@ -7,11 +7,13 @@ import { useParams } from "next/navigation";
 
 const Duel = () => {
     const params = useParams();
-    const duelId = params.slug;
+    const duelId = params.duelId;
     const { duel, loading } = useDuel(duelId?.toString() || "");
     const { user, loading: userLoading } = useUser();
 
     
+    console.log(duel)
+
     if (loading || userLoading) {
         return <Loading />;
     }
@@ -25,12 +27,8 @@ const Duel = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-4xl font-bold mb-4">Duel Page</h1>
-            <p className="text-lg">This is duel with ID: {duel.id}</p>
-            <p className="text-lg">User 1: {duel.user1_id}</p>
-            <p className="text-lg">User 2: {duel.user2_id}</p>
-            <p className="text-lg">Status: {duel.status}</p>
+        <div className="h-[calc(100vh-64px)] w-full flex flex-col items-center justify-center bg-primary text-white">
+            
         </div>
     );
 }
