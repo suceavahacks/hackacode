@@ -6,11 +6,13 @@ import { useParams } from "next/navigation"
 import { use, useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
+import { python } from "@codemirror/lang-python"
 import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
 import { Luigi } from "@/components/Luigi"
+
 interface JudgeResult {
     ExitCode: string;
     Status: string;
@@ -64,6 +66,7 @@ export default function Challenge() {
 
     const languages = [
         { name: "C++", value: cpp() },
+        { name: "Python", value: python() },
     ]
 
     useEffect(() => {
@@ -86,7 +89,7 @@ export default function Challenge() {
             body: JSON.stringify({
                 code: code,
                 slug: challenge.slug,
-                language: 'C++',
+                language: language,
                 challenge: challenge.slug,
                 time: challenge.time_limit,
                 memory: challenge.memory_limit,
