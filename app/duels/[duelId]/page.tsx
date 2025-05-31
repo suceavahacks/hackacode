@@ -57,34 +57,23 @@ const Duel = () => {
             slug: string;
             difficulty: string;
         }
+        
+        const slugs = duel.challenges_slug
 
-        let parsedSlugs;
-        try {
-            parsedSlugs = typeof duel.challenges_slug === 'string'
-                ? JSON.parse(duel.challenges_slug)
-                : duel.challenges_slug;
-        } catch (error) {
-            console.error("Failed to parse challenges_slug:", duel.challenges_slug);
-            return [];
-        }
-
-        const slugs = Array.isArray(parsedSlugs)
-            ? parsedSlugs.map(item => typeof item === 'object' && item !== null ? item.slug : item)
-            : [];
-
-        const challengePromises: Promise<ChallengeData | null>[] = slugs.map(async (slug: string): Promise<ChallengeData | null> => {
+            
+        const challengePromises: Promise<ChallengeData | null>[] = slugs.map(async (slug: { slug: string }): Promise<ChallengeData | null> => {
             if (!slug) return null;
-
-            const { data, error }: { data: ChallengeData | null; error: any } = await supabase
+            
+            const { data, error } = await supabase
                 .from("problems")
                 .select("id, title, description, slug, difficulty")
-                .eq("slug", slug)
+                .eq("slug", slug.slug)
                 .single();
-
+            
             if (error || !data) return null;
-            return data;
+            return data as ChallengeData;
         });
-
+        
         const results = await Promise.all(challengePromises);
         return results.filter(Boolean) as Challenge[];
     };

@@ -58,7 +58,7 @@ export default function Challenge() {
     const [loadingSubmit, setLoading] = useState<boolean>(false)
     const { user } = useUser()
     const [activeTab, setActiveTab] = useState<"description" | "submissions" | "discussion">("description")
-
+    const duelId = params.duelId as string
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
         setCode(value)
@@ -103,6 +103,7 @@ export default function Challenge() {
 
         const result = await response.json()
 
+
         const { data: userData } = await supabase
             .from("users")
             .select("submissions")
@@ -117,7 +118,8 @@ export default function Challenge() {
             result: result,
             language: language,
             timestamp: new Date(),
-            status: result.status
+            status: result.status,
+            duel: duelId ? duelId : null,
         });
 
         await supabase
@@ -170,6 +172,7 @@ export default function Challenge() {
                           >
                             Discussion
                           </button>
+                          
                         </div>
                         
                         <div className="overflow-y-auto p-4 h-full">
