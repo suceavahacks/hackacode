@@ -6,7 +6,7 @@ interface LuigiProps {
     description: string;
 }
 
-export const Orpheus = ({ code, setCode, description }: LuigiProps) => {
+export const Luigi = ({ code, setCode, description }: LuigiProps) => {
     const [showInput, setShowInput] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -78,17 +78,12 @@ export const Orpheus = ({ code, setCode, description }: LuigiProps) => {
 
     return (
         <div
-            className="fixed bottom-0 left-[72px] flex flex-row items-center z-50"
+            className="flex flex-row items-center z-50"
             onMouseEnter={() => setShowInput(true)}
             onMouseLeave={() => setShowInput(false)}
         >
-            <img
-                className={`h-24 transition-all duration-300 ${showInput ? "h-28" : "hover:h-28"}`}
-                src="https://hackclub.com/stickers/single%20neuron%20activated.png"
-                alt="rATTOn"
-            />
             {showInput && (
-                <div className="relative w-full max-w-xs ml-4 mb-2">
+                <div className="relative w-full max-w-xs mr-4 mb-2">
                     <input
                         type="text"
                         autoFocus
@@ -115,6 +110,11 @@ export const Orpheus = ({ code, setCode, description }: LuigiProps) => {
                     )}
                 </div>
             )}
+            <img
+                className={`h-24 transition-all duration-300 ${showInput ? "h-28" : "hover:h-28"}`}
+                src="https://hackclub.com/stickers/single%20neuron%20activated.png"
+                alt="rATTOn"
+            />
         </div>
     );
 };

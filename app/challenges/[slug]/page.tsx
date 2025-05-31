@@ -10,7 +10,7 @@ import { createClient } from "@/utils/supabase/client"
 import { getTemplate } from "@/components/Languages"
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
-import { Orpheus } from "@/components/Luigi"
+import { Luigi } from "@/components/Luigi"
 interface JudgeResult {
     ExitCode: string;
     Status: string;
@@ -138,7 +138,7 @@ export default function Challenge() {
     }
 
     return (
-        <div className="bg-primary h-screen rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col">
+        <div className="bg-primary rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col h-[calc(100vh-64px)]">
             <PanelGroup direction="horizontal">
                 <Panel className="flex-1 ml-[64px]">
                     <div className="flex flex-col h-full">
@@ -240,20 +240,29 @@ export default function Challenge() {
                 </Panel>
                 <PanelResizeHandle className="bg-secondary w-2 p-0 m-0 cursor-col-resize bg-accent" />
                 <Panel>
-                    <div>
-                        <CodeMirror
-                            value={code}
-                            theme="dark"
-                            onChange={onChange}
-                            extensions={[cpp()]}
-                            height="100vh"
-                            className="monocode"
-                        />
+                    <div className="relative h-full">
+                        <div className="absolute top-4 right-4 z-50">
+                          <Luigi code={code} setCode={setCode} description={challenge.description} />
+                        </div>
+                        <div className="h-full">
+                            <CodeMirror
+                                value={code}
+                                theme="dark"
+                                onChange={onChange}
+                                extensions={[cpp()]}
+                                className="monocode h-full"
+                                basicSetup={{
+                                    lineNumbers: true,
+                                    highlightActiveLine: true,
+                                }}
+                                style={{ height: "100%", overflowY: "auto" }}
+                            />
+                        </div>
                     </div>
                 </Panel>
             </PanelGroup>
 
-            <div className="fixed bottom-0 right-0 p-4 z-[100]">
+            <div className="fixed bottom-0 right-0 p-4 z-[100] flex items-end gap-4">
                 <button
                     className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                     onClick={() => {
@@ -264,8 +273,9 @@ export default function Challenge() {
                     {loadingSubmit ? <Loading /> : "Submit 👾"}
                 </button>
             </div>
-            <div className="absolute top-0 right-0 p-4 z-[100]">
-                <select
+            <div className="absolute bottom-12 right-0 p-4 z-[100]">
+                {!loadingSubmit && (
+                  <select
                     defaultValue="Language" className="select bg-secondary text-white"
                     onChange={(e) => {
                         setLanguage(e.target.value);
@@ -278,6 +288,7 @@ export default function Challenge() {
                         </option>
                     ))}
                 </select>
+                )}
             </div>
             {modalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] transfort ease-in-out">
@@ -342,7 +353,6 @@ export default function Challenge() {
                     </div>
                 </div>
             )}
-            <Orpheus code={code} setCode={setCode} description={challenge.description} />
         </div>
     )
 }

@@ -46,11 +46,17 @@ export default function App() {
         (sub) => sub.result?.status === "ACCEPTED" && (sub.result?.results?.length ?? 0) > 0
     ) || [];
 
+    const uniqueSolvedChallenges = Array.from(
+        new Set(solvedChallenges.map(sub => sub.challenge))
+    ).map(challenge =>
+        solvedChallenges.find(sub => sub.challenge === challenge)
+    );
+
     const recentSubmissions = typedUser.submissions?.slice(0, 3) || [];
 
     const submissionCount = typedUser.submissions?.length || 0;
     const acceptanceRate = submissionCount > 0
-        ? Math.round((solvedChallenges.length / submissionCount) * 100)
+        ? Math.round((uniqueSolvedChallenges.length / submissionCount) * 100)
         : 0;
 
     return (
@@ -70,14 +76,14 @@ export default function App() {
                         <div className="flex justify-between items-start mb-4">
                             <div>
                                 <div className="text-gray-400 text-sm">Solved challenges</div>
-                                <div className="text-3xl font-bold">{solvedChallenges.length}</div>
+                                <div className="text-3xl font-bold">{uniqueSolvedChallenges.length}</div>
                             </div>
                             <div className="bg-accent/20 p-3 rounded-lg text-accent">
                                 <CheckCircle size={24} />
                             </div>
                         </div>
                         <div className="text-gray-400 text-sm mt-auto">
-                            {solvedChallenges.length > 0
+                            {uniqueSolvedChallenges.length > 0
                                 ? "Great job! Keep it up!"
                                 : "Start solving your first challenge!"}
                         </div>
