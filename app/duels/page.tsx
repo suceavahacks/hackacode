@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 const Duels = () => {
     const supabase = createClient();
     const [duelId, setDuelId] = useState<string | null>(null);
-    const [duelStatus, setDuelStatus] = useState<string | null>(null);
     const [createLoading, setCreateLoading] = useState(false);
     const [joinLoading, setJoinLoading] = useState(false);
     const [joinCode, setJoinCode] = useState("");
@@ -23,7 +22,7 @@ const Duels = () => {
     useEffect(() => {
         setTimeout(() => {
             setError(null);
-            setCreateLoading(false);
+            setCreateLoading(false);    
             setJoinLoading(false);
         }, 5000);
     }, [error]);
@@ -40,8 +39,6 @@ const Duels = () => {
     }
 
     useDuelRealtime(duelId, (payload) => {
-        setDuelStatus(payload.status);
-
         if (payload.status === 'active') {
             router.push(`/duels/${payload.id}`);
         }
@@ -111,7 +108,7 @@ const Duels = () => {
                 return;
             }
 
-            setDuelId(joinCode);
+            router.push(`/duels/${joinCode}`);
             
         } catch (error) {
             setError('Error joining duel');
