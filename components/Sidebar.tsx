@@ -13,9 +13,8 @@ const Sidebar = () => {
 
     const menuItems = [
         { icon: <Home size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Application", href: "/app" },
-        { icon: <User size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Profile", href: "/profile" },
-        { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
         { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
+        { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
     ];
 
     const bottomItems = [
