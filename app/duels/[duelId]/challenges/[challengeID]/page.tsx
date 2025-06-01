@@ -3,7 +3,7 @@ import NotFound from "@/app/not-found"
 import { Loading } from "@/components/Loading"
 import { useChallenge } from "@/utils/queries/challenges/getChallenge"
 import { useParams } from "next/navigation"
-import { use, useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
@@ -54,9 +54,9 @@ interface UserWithSubmissions {
 export default function Challenge() {
   const [language, setLanguage] = useState<string>("C++")
   const params = useParams()
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
   const { challenge, loading } = useChallenge(params.challengeID as string)
   const supabase = createClient()
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [results, setResults] = useState<any>(null)
   const [loadingSubmit, setLoading] = useState<boolean>(false)
   const { user } = useUser()
@@ -123,7 +123,7 @@ export default function Challenge() {
       timestamp: new Date(),
       status: result.status,
       duel: duelId,
-      score: result.score || 0
+      score: result.score
     });
 
     await supabase
@@ -222,7 +222,7 @@ export default function Challenge() {
                                     {submission.status}
                                   </span>
                                 </td>
-                                <td>{submission.score || 0}</td>
+                                <td>{submission.score}</td>
                                 <td>
                                   <button
                                     className="btn btn-xs btn-outline"
@@ -325,7 +325,7 @@ export default function Challenge() {
                       {results.status}
                     </span>
                     <span className="ml-2 text-accent font-bold">
-                      Score: {results.score || 0}
+                      Score: {results.score}
                     </span>
                   </h3>
 
