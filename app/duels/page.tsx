@@ -16,6 +16,7 @@ const Duels = () => {
     const [selectedTimeLimit, setSelectedTimeLimit] = useState(600);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [error, setError] = useState<string | null>(null); 
+    const [activeDuels, setActiveDuels] = useState<number>(0);
     const { user } = useUser();
     const router = useRouter();
      
@@ -151,6 +152,32 @@ const Duels = () => {
         }
     };
 
+    const getDuels = async () => {
+        try {
+            const { data: duels, error } = await supabase
+                .from('duels')
+                .select('*')
+                .eq('status', 'active');
+            if (error) {
+                setError('Error fetching active duels');
+                return [];
+            }
+            return duels || [];
+        } catch (error) {
+            setError('Error fetching active duels');
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        const fetchDuels = async () => {
+            const activeDuels = await getDuels();
+            setActiveDuels(activeDuels.length);
+        };
+        fetchDuels();
+    }, []);
+
+
     return (
         <div className="w-screen mx-auto py-16 px-6 relative bg-secondary border-b border-gray-800 h-[calc(100vh-64px)]">
             {error && (
@@ -175,7 +202,9 @@ const Duels = () => {
 
                 <div className="flex justify-center gap-8 mt-8">
                     <div className="text-center">
-                        <div className="text-2xl font-bold btn">{0}</div>
+                        <div className="text-2xl font-bold btn">
+                            {activeDuels}
+                        </div>
                         <div className="text-sm text-gray-400">
                             Active duels!
                         </div>

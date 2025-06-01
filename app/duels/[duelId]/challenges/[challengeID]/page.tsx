@@ -121,6 +121,7 @@ export default function Challenge() {
       timestamp: new Date(),
       status: result.status,
       duel: duelId ? duelId : null,
+      score: result.score
     });
 
     await supabase
@@ -143,7 +144,9 @@ export default function Challenge() {
     return <NotFound />
   }
 
-  if (user.id !== duel?.user1_id && user.id !== duel?.user2_id) {
+  console.log(duel)
+  
+  if (!user || (user.id !== duel?.user1_id && user.id !== duel?.user2_id)) {
     return <NotFound />
   }
 
