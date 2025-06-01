@@ -259,7 +259,7 @@ const Duel = () => {
                     Welcome to the duel between <span className="text-accent">{usernames.user1Name || "Player 1"}</span> and <span className="text-accent">{usernames.user2Name || "Player 2"}</span>!
                     May the best coder win!
                 </p>
-                <div className="flex items-center justify-center gap-16 mt-12">
+                <div className="flex items-center justify-center gap-16 mt-12 max-md:flex-col">
                     <div className="text-center p-4 bg-secondary rounded-xl border border-gray-800 shadow-lg min-w-[150px]">
                         <div className="text-2xl font-bold text-accent mb-1">{usernames.user1Name || "Player 1"}</div>
                         <div className="text-sm text-gray-400">Creator</div>
@@ -403,47 +403,47 @@ const Duel = () => {
                         <p className="text-gray-400">No challenges available for this duel.</p>
                     </div>
                 )}
-                <div className="mt-12 text-4xl">
-                    <p className="text-gray-500">
+                <div className="mt-12">
+                    <p className="text-gray-500 text-4xl mb-4">
                         Submissions 
                     </p>
-                    <table className="min-w-full mt-4">
-                        <thead>
-                            <tr className="border-b border-gray-700">
-                                <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">User</th>
-                                <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Challenge</th>
-                                <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Language</th>
-                                <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Score</th>
-                                <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {submissions.userSubmissions.map((submission: any, index: number) => (
-                                <tr key={`user-${index}`} className="border-b border-gray-700">
-                                    <td className="px-6 py-4 text-sm text-gray-300">{usernames.user1Name}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">{submission.challenge}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">{submission.language}</td>
-                                    <td className={`px-6 py-4 text-sm text-gray-300`}>{submission.score}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">
-                                        {new Date(submission.timestamp).toLocaleString()}
-                                    </td>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full mt-4">
+                            <thead>
+                                <tr className="border-b border-gray-700">
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">User</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Challenge</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Language</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Score</th>
+                                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Timestamp</th>
                                 </tr>
-                            ))}
-                            {submissions.opponentSubmissions.map((submission: any, index: number) => (
-                                <tr key={`opponent-${index}`} className="border-b border-gray-700">
-                                    <td className="px-6 py-4 text-sm text-gray-300">{usernames.user2Name}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">{submission.challenge}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">{submission.language}</td>
-                                    <td className={`px-6 py-4 text-sm ${submission.result?.status === "ACCEPTED" ? "text-green-400" : "text-red-400"}`}>
-                                        {submission.result?.status}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-300">
-                                        {new Date(submission.timestamp).toLocaleString()}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {submissions.userSubmissions.map((submission: any, index: number) => (
+                                    <tr key={`user-${index}`} className="border-b border-gray-700">
+                                        <td className="px-6 py-4 text-sm text-gray-300">{usernames.user1Name}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.challenge}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.language}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.score || 0}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">
+                                            {new Date(submission.timestamp).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                                {submissions.opponentSubmissions.map((submission: any, index: number) => (
+                                    <tr key={`opponent-${index}`} className="border-b border-gray-700">
+                                        <td className="px-6 py-4 text-sm text-gray-300">{usernames.user2Name}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.challenge}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.language}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">{submission.score || 0}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-300">
+                                            {new Date(submission.timestamp).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

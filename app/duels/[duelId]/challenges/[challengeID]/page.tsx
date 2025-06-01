@@ -42,6 +42,8 @@ interface Submission {
   language: string;
   timestamp: string | number | Date;
   status: string;
+  score?: number; 
+  duel?: string | null;
 }
 
 interface UserWithSubmissions {
@@ -120,8 +122,8 @@ export default function Challenge() {
       language: language,
       timestamp: new Date(),
       status: result.status,
-      duel: duelId ? duelId : null,
-      score: result.score
+      duel: duelId,
+      score: result.score || 0
     });
 
     await supabase
@@ -204,6 +206,7 @@ export default function Challenge() {
                             <th>Date</th>
                             <th>Language</th>
                             <th>Status</th>
+                            <th>Score</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -219,6 +222,7 @@ export default function Challenge() {
                                     {submission.status}
                                   </span>
                                 </td>
+                                <td>{submission.score || 0}</td>
                                 <td>
                                   <button
                                     className="btn btn-xs btn-outline"
@@ -319,6 +323,9 @@ export default function Challenge() {
                   <h3 className="font-semibold mb-2">Status:
                     <span className={`ml-2 badge ${results.status === 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
                       {results.status}
+                    </span>
+                    <span className="ml-2 text-accent font-bold">
+                      Score: {results.score || 0}
                     </span>
                   </h3>
 

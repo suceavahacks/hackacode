@@ -179,7 +179,7 @@ const Duels = () => {
 
 
     return (
-        <div className="w-screen mx-auto py-16 px-6 relative bg-secondary border-b border-gray-800 h-[calc(100vh-64px)]">
+        <div className="w-screen mx-auto py-16 px-6 relative bg-secondary border-b border-gray-800 h-[100%] min-h-screen">
             {error && (
                 <div className="toast toast-bottom toast-right">
                     <div className="alert alert-error">
@@ -211,8 +211,8 @@ const Duels = () => {
                     </div>
                 </div>
                 
-                <div className="mt-12 flex gap-8 justify-center">
-                    <div className="bg-secondary p-6 rounded-xl shadow-lg w-96 border border-gray-800">
+                <div className="mt-12 flex gap-8 justify-center max-md:flex-col max-md:items-center">
+                    <div className="bg-secondary p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800">
                         <div className="flex justify-center mb-4">
                             <div className="p-3 bg-primary rounded-full">
                                 <Swords size={32} className="color" />
@@ -284,7 +284,7 @@ const Duels = () => {
                         )}
                     </div>
 
-                    <div className="bg-secondary p-6 rounded-xl shadow-lg w-96 border border-gray-800">
+                    <div className="bg-secondary p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800">
                         <div className="flex justify-center mb-4">
                             <div className="p-3 bg-primary rounded-full">
                                 <UserPlus size={32} className="color" />

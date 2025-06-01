@@ -41,6 +41,7 @@ interface Submission {
     language: string;
     timestamp: string | number | Date;
     status: string; 
+    score: number;
 }
 
 interface UserWithSubmissions {
@@ -117,7 +118,8 @@ export default function Challenge() {
             result: result,
             language: language,
             timestamp: new Date(),
-            status: result.status
+            status: result.status,
+            score: result.score
         });
 
         await supabase
@@ -189,39 +191,41 @@ export default function Challenge() {
                                 <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-200px)]">
                                   <table className="table w-full">
                                     <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Language</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
+                                      <tr>
+                                        <th>Date</th>
+                                        <th>Language</th>
+                                        <th>Status</th>
+                                        <th>Score</th>
+                                        <th>Action</th>
+                                      </tr>
                                     </thead>
                                     <tbody>
-                                        {(user as UserWithSubmissions).submissions
-                                            .filter((sub: Submission) => sub.challenge === challenge.slug)
-                                            .map((submission: Submission, idx: number) => (
-                                                <tr key={idx} className="hover">
-                                                    <td>{new Date(submission.timestamp).toLocaleString()}</td>
-                                                    <td>{submission.language}</td>
-                                                    <td>
-                                                        <span className={`badge ${submission.status == 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
-                                                            {submission.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <button
-                                                            className="btn btn-xs btn-outline"
-                                                            onClick={() => {
-                                                                setCode(submission.code);
-                                                                setLanguage(submission.language);
-                                                            }}
-                                                        >
-                                                            Load code
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
+                                      {(user as UserWithSubmissions).submissions
+                                        .filter((sub: Submission) => sub.challenge === challenge.slug)
+                                        .map((submission: Submission, idx: number) => (
+                                          <tr key={idx} className="hover">
+                                            <td>{new Date(submission.timestamp).toLocaleString()}</td>
+                                            <td>{submission.language}</td>
+                                            <td>
+                                              <span className={`badge ${submission.status == 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
+                                                {submission.status}
+                                              </span>
+                                            </td>
+                                            <td>{submission.score}</td>
+                                            <td>
+                                              <button
+                                                className="btn btn-xs btn-outline"
+                                                onClick={() => {
+                                                  setCode(submission.code);
+                                                  setLanguage(submission.language);
+                                                }}
+                                              >
+                                                Load code
+                                              </button>
+                                            </td>
+                                          </tr>
+                                        ))
+                                      }
                                     </tbody>
                                   </table>
                                 </div>
@@ -308,6 +312,9 @@ export default function Challenge() {
                                     <h3 className="font-semibold mb-2">Status:
                                         <span className={`ml-2 badge ${results.status === 'ACCEPTED' ? 'badge-success' : 'badge-error'}`}>
                                             {results.status}
+                                        </span>
+                                        <span className="ml-2 text-accent font-bold">
+                                          Score: {results.score}
                                         </span>
                                     </h3>
 

@@ -45,7 +45,6 @@ const Navbar: React.FC = () => {
         https://hackclub.com/stickers/epoch_bubbly.png
         https://hackclub.com/stickers/epoch_h.png
         https://hackclub.com/stickers/find out.png
-        https://hackclub.com/stickers/friends.svg
         https://hackclub.com/stickers/game_lab.png
         https://hackclub.com/stickers/game_lab_flask.png
         https://hackclub.com/stickers/grab.png
@@ -116,7 +115,7 @@ const Navbar: React.FC = () => {
     const links = [
         { link: "/challenges", placeholder: "Challenges" },
         { link: "/learn", placeholder: "Learn" },
-        { link: "/1v1", placeholder: "1 vs 1" },
+        { link: "/duels", placeholder: "Duel" },
     ];
 
     const { user, loading: userLoading, error } = useUser();

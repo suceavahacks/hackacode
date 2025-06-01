@@ -60,7 +60,7 @@ export default function App() {
         : 0;
 
     return (
-        <div className="ml-[64px] min-h-screen bg-primary text-white">
+        <div className="ml-[64px] max-md:ml-0 min-h-screen bg-primary text-white">
             <div className="max-w-7xl mx-auto p-6">
                 <div className="border-b border-gray-700 pb-6 mb-8">
                     <h1 className="text-4xl font-bold">
