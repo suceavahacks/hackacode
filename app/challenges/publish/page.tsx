@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { problemSchema } from "@/schemas/problemSchema"
 import { ChangeEvent, useEffect } from "react"
-import { publishProblem } from '@/utils/mutations/problems/publish'
+import { publishProblem } from '@/utils/mutations/challenges/publish'
 
 const sectionConfig = [
   { icon: Info, label: "General Info", description: "Basic problem details" },
