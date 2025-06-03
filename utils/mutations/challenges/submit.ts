@@ -4,17 +4,18 @@ import { LucideBookDashed } from "lucide-react";
 
 interface HandleSubmitProps {
     code: string;
-    challenge: { slug: string; time_limit: number; memory_limit: number };
+    challenge: { slug: string; time_limit: number; memory_limit: number  };
     language: string;
     user: { id: string };
     setResults: (results: any) => void;
     setModalOpen: (open: boolean) => void;
     setLoading: (loading: boolean) => void;
+    duelId?: string;
 }
 
 export const useSubmitChallenge = () => {
     return useMutation({
-        mutationFn: async ({ code, challenge, language, user, setResults, setModalOpen, setLoading }: HandleSubmitProps) => {
+        mutationFn: async ({ code, challenge, language, user, setResults, setModalOpen, setLoading, duelId }: HandleSubmitProps) => {
             const supabase = createClient();
             const { data } = await supabase.auth.getSession()
             const accessToken = data.session?.access_token
@@ -58,7 +59,8 @@ export const useSubmitChallenge = () => {
                 language: language,
                 timestamp: new Date(),
                 status: result.status,
-                score: result.score
+                score: result.score,
+                duelId: duelId || null,
             });
 
             await supabase

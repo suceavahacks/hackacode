@@ -13,6 +13,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useUser } from "@/utils/queries/user/getUser"
 import { Luigi } from "@/components/Luigi"
 import { useDuel } from "@/utils/queries/duels/getDuel"
+import { useSubmitChallenge } from "@/utils/mutations/challenges/submit"
 
 interface JudgeResult {
   ExitCode: string;
@@ -42,13 +43,12 @@ interface Submission {
   language: string;
   timestamp: string | number | Date;
   status: string;
-  score?: number; 
+  score?: number;
   duel?: string | null;
 }
 
 interface UserWithSubmissions {
   submissions: Submission[];
-  [key: string]: any;
 }
 
 export default function Challenge() {
@@ -64,6 +64,7 @@ export default function Challenge() {
   const duelId = params.duelId as string
   const { duel } = useDuel(duelId)
   const [code, setCode] = useState<string>(getTemplate(language))
+  const handleSubmit = useSubmitChallenge()
   const onChange = useCallback((value: string) => {
     setCode(value)
   }, [])
@@ -79,65 +80,6 @@ export default function Challenge() {
     }
   }, [challenge, language])
 
-  const handleSubmit = async () => {
-    const { data, error } = await supabase.auth.getSession()
-    const accessToken = data.session?.access_token
-    setLoading(true)
-
-    const response = await fetch("https://judger.hackacode.xyz/api/v1", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        code: code,
-        slug: challenge.slug,
-        language: language,
-        challenge: challenge.slug,
-        time: challenge.time_limit,
-        memory: challenge.memory_limit,
-      }),
-    })
-
-    if (!response.ok) {
-      console.error("things are not ok", response.statusText)
-      return
-    }
-
-    const result = await response.json()
-
-    const { data: userData } = await supabase
-      .from("users")
-      .select("submissions")
-      .eq('id', user.id)
-      .single();
-
-    const submissions = userData?.submissions || [];
-
-    submissions.push({
-      challenge: challenge.slug,
-      code: code,
-      result: result,
-      language: language,
-      timestamp: new Date(),
-      status: result.status,
-      duel: duelId,
-      score: result.score
-    });
-
-    await supabase
-      .from("users")
-      .update({
-        submissions: submissions
-      })
-      .eq('id', user.id);
-
-    setResults(result)
-    setModalOpen(true)
-    setLoading(false)
-  }
-
   if (loading) {
     return <Loading />
   }
@@ -147,7 +89,7 @@ export default function Challenge() {
   }
 
   console.log(duel)
-  
+
   if (!user || (user.id !== duel?.user1_id && user.id !== duel?.user2_id)) {
     return <NotFound />
   }
@@ -284,7 +226,20 @@ export default function Challenge() {
         <button
           className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           onClick={() => {
-            handleSubmit()
+            handleSubmit.mutate({
+              code,
+              language,
+              challenge: {
+                slug: challenge.id,
+                time_limit: challenge.time_limit,
+                memory_limit: challenge.memory_limit,
+              },
+              user,
+              duelId,
+              setResults,
+              setModalOpen,
+              setLoading
+            });
           }}
           disabled={loading}
         >
