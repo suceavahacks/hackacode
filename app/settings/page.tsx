@@ -6,9 +6,10 @@ import { useUser } from "@/utils/queries/user/getUser"
 import { Loading } from "@/components/Loading"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/utils/supabase/client"
-import clsx from "clsx"
-import { User, Lock, Shield, Code2, Settings as SettingsIcon, Terminal } from "lucide-react"
+import { User, Lock, Shield, Settings as SettingsIcon, Terminal } from "lucide-react"
+import { useUpdateProfile } from "@/utils/mutations/user/settings/updateProfile"
+import { useUpdateAccount } from "@/utils/mutations/user/settings/updateAccount";
+import { useUpdatePrivacy } from "@/utils/mutations/user/settings/updatePrivacy";
 
 export default function Settings() {
     const { user, loading, error } = useUser()
@@ -16,9 +17,11 @@ export default function Settings() {
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
     const router = useRouter()
-    const supabase = createClient()
     const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
     const toastTimeout = useRef<NodeJS.Timeout | null>(null)
+    const updateProfile = useUpdateProfile();
+    const updateAccount = useUpdateAccount();
+    const updatePrivacy = useUpdatePrivacy();
 
     const showToast = (type: "success" | "error", message: string) => {
         setToast({ type, message })
@@ -176,83 +179,57 @@ export default function Settings() {
     }
 
     const onSubmit = async (data: any) => {
-        if (!user) return
-        try {
-            const { error } = await supabase
-                .from("users")
-                .update({
-                    username: data.username,
-                    full_name: data.full_name,
-                    bio: data.bio,
-                    profile_picture: data.pfp,
-                    slug: data.slug,
-                    prg_languages: selectedLanguages,
-                })
-                .eq("id", user.id)
-
-            if (error) {
-                showToast("error", error.message || "Something went wrong!")
-                return
+        if (!user) return;
+        updateProfile.mutate(
+            {
+                id: user.id,
+                username: data.username,
+                full_name: data.full_name,
+                bio: data.bio,
+                profile_picture: data.pfp,
+                slug: data.slug,
+                prg_languages: selectedLanguages,
+            },
+            {
+                onSuccess: () => showToast("success", "Profile updated successfully!"),
+                onError: (err: any) => showToast("error", err.message || "Something went wrong!"),
             }
-            showToast("success", "Profile updated successfully!")
-        } catch (err: any) {
-            showToast("error", err.message || "Something went wrong!")
-        }
-    }
+        );
+    };
 
     const onAccountSubmit = async (data: any) => {
-        if (!user) return
-
-        const updateData: Record<string, any> = {
-            githubAccount: data.githubAccount,
-            discordAccount: data.discordAccount,
-        }
-
-        if (data.oldPassword && data.newPassword) {
-            try {
-                const { error } = await supabase.auth.updateUser({
-                    password: data.newPassword
-                })
-
-                if (error) {
-                    showToast("error", error.message || "Password update failed!")
-                    return
-                }
-            } catch (error: any) {
-                showToast("error", error.message || "Password update failed!")
-                return
+        if (!user) return;
+        updateAccount.mutate(
+            {
+                id: user.id,
+                githubAccount: data.githubAccount,
+                discordAccount: data.discordAccount,
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+            },
+            {
+                onSuccess: () => showToast("success", "Account updated successfully!"),
+                onError: (err: any) => showToast("error", err.message || "Account update failed!"),
             }
-        }
-
-        const { error } = await supabase
-            .from("users")
-            .update(updateData)
-            .eq("id", user.id)
-
-        if (error) {
-            showToast("error", error.message || "Account update failed!")
-            return
-        }
-        showToast("success", "Account updated successfully!")
-    }
+        );
+    };
 
     const onPrivacySubmit = async (data: any) => {
-        if (!user) return
-        const { error } = await supabase
-            .from("users")
-            .update({
+        if (!user) return;
+        updatePrivacy.mutate(
+            {
+                id: user.id,
                 show_linked_github: data.show_linked_github,
                 show_linked_discord: data.show_linked_discord,
                 show_linked_email: data.show_linked_email,
                 show_profile: data.show_profile,
-            })
-            .eq("id", user.id)
-        if (error) {
-            showToast("error", error.message || "Privacy update failed!")
-            return
-        }
-        showToast("success", "Privacy updated successfully!")
-    }
+            },
+            {
+                onSuccess: () => showToast("success", "Privacy updated successfully!"),
+                onError: (err: any) => showToast("error", err.message || "Privacy update failed!"),
+            }
+        );
+    };
 
     return (
         <div className="min-h-screen text-white relative z-50">
@@ -287,17 +264,21 @@ export default function Settings() {
                                         <button
                                             key={section.label}
                                             onClick={() => setCurrentSection(idx)}
-                                            className={clsx(
-                                                "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
-                                                currentSection === idx
+                                            className={
+                                                `w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ` +
+                                                (currentSection === idx
                                                     ? "bg-accent/20 border border-accent/30"
-                                                    : "hover:bg-accent hover:text-black border border-transparent"
-                                            )}
+                                                    : "hover:bg-accent hover:text-black border border-transparent")
+                                            }
                                         >
-                                            <div className={clsx(
-                                                "p-2 rounded-lg",
-                                                currentSection === idx ? "bg-accent/20 text-accent" : "bg-gray-800 text-gray-400"
-                                            )}>
+                                            <div
+                                                className={
+                                                    `p-2 rounded-lg ` +
+                                                    (currentSection === idx
+                                                        ? "bg-accent/20 text-accent"
+                                                        : "bg-gray-800 text-gray-400")
+                                                }
+                                            >
                                                 <section.icon className="h-4 w-4" />
                                             </div>
                                             <div className="flex-1 text-left">
@@ -388,12 +369,12 @@ export default function Settings() {
                                                             key={language}
                                                             type="button"
                                                             onClick={() => toggleLanguage(language)}
-                                                            className={clsx(
-                                                                "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200",
-                                                                selectedLanguages.includes(language)
+                                                            className={
+                                                                "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 " +
+                                                                (selectedLanguages.includes(language)
                                                                     ? "btn text-white"
-                                                                    : "bg-[#1E1E1F] hover:bg-[#2A2A2B]"
-                                                            )}
+                                                                    : "bg-[#1E1E1F] hover:bg-[#2A2A2B]")
+                                                            }
                                                         >
                                                             {language}
                                                         </button>
@@ -466,7 +447,9 @@ export default function Settings() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                                                    className={clsx("btn", twoFactorEnabled ? "btn-active" : "")}
+                                                    className={
+                                                        "btn " + (twoFactorEnabled ? "btn-active" : "")
+                                                    }
                                                 >
                                                     {twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA'}
                                                 </button>
