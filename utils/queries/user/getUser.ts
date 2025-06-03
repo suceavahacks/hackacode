@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 const fetchUser = async (): Promise<any> => {
