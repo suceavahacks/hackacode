@@ -12,16 +12,16 @@ import {
   Target,
   Zap,
   BookOpen,
-  Settings,
   Rocket,
   ChevronLeft
 } from "lucide-react"
-import clsx from "clsx"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { problemSchema } from "@/schemas/problemSchema"
 import { ChangeEvent, useEffect } from "react"
-import { publishProblem } from '@/utils/mutations/challenges/publish'
+import { usePublishProblem } from "@/utils/mutations/challenges/publish"
+import { useRouter } from 'next/navigation'
 
 const sectionConfig = [
   { icon: Info, label: "General Info", description: "Basic problem details" },
@@ -38,6 +38,8 @@ const Publish = () => {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [currentSection, setCurrentSection] = useState(0)
+  const publishProblemMutation = usePublishProblem()
+  const router = useRouter()
 
   const {
     register,
@@ -89,7 +91,23 @@ const Publish = () => {
     }
     setSubmitting(true)
     try {
-      await publishProblem(data)
+      await publishProblemMutation.mutateAsync(
+        data,
+        {
+          onSuccess: () => {
+            setSubmitting(false)
+            setSubmitError(null)
+            localStorage.removeItem("challengeData")
+          },
+          onError: (error: any) => {
+            setSubmitting(false)
+            setSubmitError(error.message || "Failed to publish problem.")
+          },
+          onSettled: () => {
+            router.push(`/challenges/${data.slug}`)
+          }
+        }
+      )
       setSubmitting(false)
     } catch (e) {
       setSubmitting(false)
@@ -121,6 +139,35 @@ const Publish = () => {
   })()
 
   const progressPercentage = (completedSections.filter(Boolean).length / completedSections.length) * 100
+
+  useEffect(() => {
+    const saved = localStorage.getItem("challengeData")
+    if (saved) {
+      const parsedData = JSON.parse(saved)
+      Object.entries(parsedData).forEach(([key, value]) => {
+        setValue(key as any, value)
+      })
+    }
+  }, [setValue, watch])
+
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem("challengeData", JSON.stringify(value))
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const data = watch()
+      localStorage.setItem("challengeData", JSON.stringify(data))
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+    }
+  }, [watch])
 
   return (
     <div className="min-h-screen text-white relative z-50">
@@ -161,17 +208,19 @@ const Publish = () => {
                     <button
                       key={section.label}
                       onClick={() => setCurrentSection(idx)}
-                      className={clsx(
-                        "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
-                        currentSection === idx 
-                          ? "bg-accent/20 border border-accent/30" 
-                          : "hover:bg-accent hover:text-black border border-transparent"
-                      )}
+                      className={
+                        currentSection === idx
+                          ? "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 bg-accent/20 border border-accent/30"
+                          : "w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 hover:bg-accent hover:text-black border border-transparent"
+                      }
                     >
-                      <div className={clsx(
-                        "p-2 rounded-lg",
-                        currentSection === idx ? "bg-accent/20 text-accent" : "bg-gray-800 text-gray-400"
-                      )}>
+                      <div
+                        className={
+                          currentSection === idx
+                            ? "p-2 rounded-lg bg-accent/20 text-accent"
+                            : "p-2 rounded-lg bg-gray-800 text-gray-400"
+                        }
+                      >
                         <section.icon className="h-4 w-4" />
                       </div>
                       <div className="flex-1 text-left">
@@ -505,12 +554,11 @@ const Publish = () => {
                     type="button"
                     onClick={() => setCurrentSection(Math.max(0, currentSection - 1))}
                     disabled={currentSection === 0}
-                    className={clsx(
-                      "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
+                    className={
                       currentSection === 0
-                        ? "bg-gray-800 text-gray-500 cursor-not-allowed"
-                        : "bg-gray-700 text-white hover:bg-gray-600"
-                    )}
+                        ? "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all bg-gray-800 text-gray-500 cursor-not-allowed"
+                        : "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all bg-gray-700 text-white hover:bg-gray-600"
+                    }
                   >
                     <ChevronLeft className="h-4 w-4" />
                     Previous
@@ -529,12 +577,11 @@ const Publish = () => {
                       <button
                         type="submit"
                         disabled={submitting}
-                        className={clsx(
-                          "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all",
+                        className={
                           submitting
-                            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                            : "btn hover:scale-105"
-                        )}
+                            ? "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-gray-600 text-gray-400 cursor-not-allowed"
+                            : "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all btn hover:scale-105"
+                        }
                       >
                         {submitting ? (
                           <>
