@@ -1,11 +1,11 @@
 "use client"
 import { Loading } from "@/components/Loading";
 import { useUser } from "@/utils/queries/user/getUser";
+import { useActiveDuels } from "@/utils/queries/duels/activeDuels";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle, Code2Icon, Zap, CheckCheckIcon } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
 
 interface Submission {
     id?: string;
@@ -30,14 +30,11 @@ interface UserWithSubmissions {
 }
 
 export default function App() {
-    const { user, loading, error } = useUser();
-    const supabase = createClient();
+    const { user, loading } = useUser();
+    const { data: activeDuels = [], isLoading: duelsLoading } = useActiveDuels(user?.id);
     const router = useRouter();
-    const [activeDuels, setActiveDuels] = useState<any[]>([]);
 
-    if (loading) {
-        return <Loading />;
-    }
+    if (loading || duelsLoading) return <Loading />;
 
     if (!user) {
         router.push("/");
@@ -62,40 +59,6 @@ export default function App() {
     const acceptanceRate = submissionCount > 0
         ? Math.round((uniqueSolvedChallenges.length / submissionCount) * 100)
         : 0;
-
-    const getActiveDuels = async () => {
-        const { data, error } = await supabase
-            .from("duels")
-            .select("*")
-            .eq("status", "active")
-            .eq("user1_id", user.id)
-
-        if (error) {
-            return [];
-        }
-
-        if (!data) {
-            const { data: data2, error: error2 } = await supabase
-                .from("duels")
-                .select("*")
-                .eq("status", "active")
-                .eq("user2_id", user.id);
-            if (error2) {
-                return [];
-            }
-            return data2 || [];
-        }
-        return data || [];
-    };
-    
-    const fetchActiveDuels = async () => {
-        const duels = await getActiveDuels();
-        setActiveDuels(duels);
-    };
-
-    useEffect(() => {
-        fetchActiveDuels();
-    }, [user]);
 
     return (
         <div className="ml-[64px] max-md:ml-0 min-h-screen bg-primary text-white">
@@ -161,7 +124,6 @@ export default function App() {
                         </div>
                     </div>
                 </div>
-
 
                 <div className="bg-secondary rounded-lg p-6 mb-8">
                     <div className="flex items-center justify-between mb-6">
