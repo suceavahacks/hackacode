@@ -1,94 +1,15 @@
-"use client"
+"use client";
 import { Loading } from "@/components/Loading";
-import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
 import { Trophy, Medal, User as UserIcon } from "lucide-react";
-
-interface User {
-  username: string;
-  profile_picture?: string;
-  submissions: any[];
-}
-
-interface LeaderboardUser {
-  username: string;
-  solvedProblems: number;
-  totalSubmissions: number;
-  acceptanceRate: number;
-  score: number;
-  avatar_url?: string;
-}
+import { useLeaderboard, LeaderboardUser } from "@/utils/queries/leaderboard/leaderboard";
+import { useState } from "react";
 
 const LeaderboardPage = () => {
-  const [users, setUsers] = useState<LeaderboardUser[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [sortBy, setSortBy] = useState<string>("score");
+  const [sortBy, setSortBy] = useState<keyof LeaderboardUser>("score");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const supabase = createClient();
+  const { data: users = [], isLoading } = useLeaderboard(sortBy, sortOrder);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("users")
-        .select("username, profile_picture, submissions");
-
-      if (error) {
-        setLoading(false);
-        return;
-      }
-
-      const leaderboardData = data.map((user: User) => {
-        const submissions = user.submissions || [];
-        const uniqueAcceptedChallenges = new Map();
-
-        submissions.forEach(sub => {
-          const isAccepted = sub.status === "ACCEPTED"
-          const challenge = sub.challenge;
-          const score = sub.score || sub.result?.score || 0;
-
-          if (isAccepted && challenge) {
-            if (!uniqueAcceptedChallenges.has(challenge) || score > uniqueAcceptedChallenges.get(challenge)) {
-              uniqueAcceptedChallenges.set(challenge, score);
-            }
-          }
-        });
-
-        let totalScore = 0;
-        uniqueAcceptedChallenges.forEach((score) => {
-          totalScore += score;
-        });
-
-        const acceptanceRate = submissions.length > 0
-          ? Math.round((uniqueAcceptedChallenges.size / submissions.length) * 100)
-          : 0;
-
-        return {
-          username: user.username,
-          solvedProblems: uniqueAcceptedChallenges.size,
-          totalSubmissions: submissions.length,
-          acceptanceRate,
-          score: totalScore,
-          avatar_url: user.profile_picture
-        };
-      });
-
-      leaderboardData.sort((a, b) => {
-        if (sortOrder === "desc") {
-          return Number(b[sortBy as keyof LeaderboardUser]) - Number(a[sortBy as keyof LeaderboardUser]);
-        } else {
-          return Number(a[sortBy as keyof LeaderboardUser]) - Number(b[sortBy as keyof LeaderboardUser]);
-        }
-      });
-
-      setUsers(leaderboardData);
-      setLoading(false);
-    };
-
-    fetchUsers();
-  }, [sortBy, sortOrder]);
-
-  const handleSort = (column: string) => {
+  const handleSort = (column: keyof LeaderboardUser) => {
     if (sortBy === column) {
       setSortOrder(sortOrder === "desc" ? "asc" : "desc");
     } else {
@@ -104,7 +25,7 @@ const LeaderboardPage = () => {
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-12 text-center">Leaderboard</h1>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center mt-16">
           <Loading />
         </div>
@@ -121,7 +42,6 @@ const LeaderboardPage = () => {
                     <div className="mb-4">
                       {getTrophyIcon(index)}
                     </div>
-
                     <div className="h-20 w-20 rounded-full overflow-hidden bg-primary mb-4 flex items-center justify-center">
                       {user.avatar_url ? (
                         <img src={user.avatar_url} alt={user.username} className="h-full w-full object-cover" />
@@ -129,14 +49,11 @@ const LeaderboardPage = () => {
                         <UserIcon size={40} className="text-gray-400" />
                       )}
                     </div>
-
                     <h3 className="text-xl font-bold mb-2">{user.username}</h3>
-
                     <div className="text-4xl font-bold text-accent mb-2">
                       {user.score}
                       <span className="text-sm text-gray-400 ml-1">pts</span>
                     </div>
-
                     <div className="flex gap-4 mt-2 text-sm">
                       <div>
                         <div className="text-gray-400">Solved</div>
