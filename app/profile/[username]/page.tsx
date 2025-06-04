@@ -10,24 +10,10 @@ interface Submission {
     id: string;
     title?: string;
     challenge?: string;
-    problem_title?: string;
-    timestamp: string;
+    timestamp?: string;
     created_at: string;
     status: 'ACCEPTED' | 'FAILED';
     score: number;
-}
-
-interface ProfileUser {
-    username: string;
-    full_name?: string;
-    email?: string;
-    bio?: string;
-    profile_picture?: string;
-    role?: string;
-    slug: string;
-    show_linked_email?: boolean;
-    prg_languages?: string[];
-    submissions?: Submission[];
 }
 
 export const Profile = () => {
@@ -60,6 +46,7 @@ export const Profile = () => {
             setCurrentPage(currentPage + 1);
         }
     };
+    
 
     return (
         <div className="min-h-screen w-full p-6 md:p-10">
@@ -75,16 +62,18 @@ export const Profile = () => {
                     </div>
                     
                     <div className="flex-grow text-center md:text-left">
-                        <h2 className="text-3xl font-extrabold mb-1 text-[#3fcf8f] drop-shadow">{profile.full_name || profile.username}</h2>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <h2 className="text-3xl font-extrabold text-[#3fcf8f] drop-shadow">{profile.full_name || profile.username}</h2>
+                            {profile.role && (
+                                <span className="text-xs bg-[#161617] text-[#3fcf8f] px-2 py-0.5 rounded-full border border-[#3fcf8f]/30 uppercase">
+                                    {profile.role === 'admin' ? 'Admin' : 'User'}
+                                </span>
+                            )}
+                        </div>
                         <div className="text-[#3fcf8f] text-base mb-2 font-mono">@{profile.username}</div>
                         <div className="text-white opacity-80 mb-3 italic max-w-sm">{profile.bio || "No bio yet."}</div>
                         
                         <div className="flex flex-wrap gap-2 mb-2">
-                            {profile.role && (
-                                <span className="text-sm bg-[#161617] text-white px-3 py-1 rounded-full">
-                                    {profile.role}
-                                </span>
-                            )}
                             {profile.prg_languages?.map((lang: string, idx: number) => (
                                 <span key={idx} className="text-sm bg-[#161617] text-[#3fcf8f] px-3 py-1 rounded-full">
                                     {lang}
@@ -94,7 +83,7 @@ export const Profile = () => {
                     </div>
                     
                     <div className="md:text-right space-y-1">
-                        {profile.show_linked_email && profile.email && (
+                        {profile.email && (
                             <div className="text-sm text-white opacity-70">{profile.email}</div>
                         )}
                         <div className="text-sm text-white opacity-70">Slug: {profile.slug}</div>
@@ -108,7 +97,7 @@ export const Profile = () => {
                 
                 <div className="w-full bg-[#1e1e1f] rounded-xl shadow-lg p-6 mb-8">
                     <h3 className="text-2xl font-bold text-[#3fcf8f] mb-5 border-b border-[#3fcf8f] pb-2">
-                        Recent Submissions
+                        Recent submissions
                     </h3>
                     
                     {profile.submissions && profile.submissions.length > 0 ? (
@@ -134,7 +123,7 @@ export const Profile = () => {
                                                             "bg-yellow-500"
                                                         }`}></div>
                                                         <Link href={`/challenges/${submission.challenge}`} className='font-medium text-white hover:text-[#3fcf8f]'>
-                                                            {submission.challenge || submission.title || submission.problem_title}
+                                                            {submission.challenge}
                                                         </Link>
                                                     </div>
                                                 </td>
