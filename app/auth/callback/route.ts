@@ -32,6 +32,25 @@ export async function GET(request: Request) {
           email,
         });
       }
+
+      const response = await fetch("https://judger.hackacode.xyz/get-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          api_key: existingUser?.api_key || user.id,
+        }),
+      });
+
+      const tokenData = await response.json();
+
+      await supabase
+        .from("users")
+        .update({
+          jwt: tokenData.token,
+        })
+        .eq("id", user.id);
     }
   }
 
