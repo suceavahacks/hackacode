@@ -1,4 +1,4 @@
-import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar} from "lucide-react";
+import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar, Calendar} from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
@@ -17,6 +17,8 @@ const Sidebar = () => {
         { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Duels", href: "/duels" },
         { icon: <ChartBar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Leaderboard", href: "/leaderboard" },
         { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
+        { icon: <Calendar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Daily", href: "/daily" },
+        
     ];
 
     const bottomItems = [
