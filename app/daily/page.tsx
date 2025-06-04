@@ -3,6 +3,7 @@ import { useDaily } from "@/utils/queries/daily/getDaily";
 import { useUser } from "@/utils/queries/user/getUser";
 import Link from "next/link";
 import NotFound from "../not-found";
+import { useState } from "react";
 
 interface Month {
     days: number;
@@ -32,12 +33,12 @@ const calendar: Month[] = [
 
 const Daily = () => {
     const currentDate = new Date();
-    const monthIndex = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const [monthIndex, setMonthIndex] = useState(currentDate.getMonth());
+
     const monthName = calendar[monthIndex].name;
     const daysInMonth = calendar[monthIndex].days;
-    const currentYear = currentDate.getFullYear();
     const currentMonthStr = `${currentYear}-${String(monthIndex + 1).padStart(2, '0')}`;
-    const todayStr = `${currentYear}-${String(monthIndex + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
 
     const { daily, loading, error } = useDaily();
     const { user } = useUser();
@@ -69,6 +70,14 @@ const Daily = () => {
         return checkDate < today;
     };
 
+    const handleNextMonth = () => {
+        setMonthIndex((prev) => (prev + 1) % 12);
+    };
+
+    const handlePreviousMonth = () => {
+        setMonthIndex((prev) => (prev - 1 + 12) % 12);
+    };
+
     return (
         <div className="min-h-screen w-full bg-primary p-6 md:p-10">
             <div className="max-w-7xl mx-auto">
@@ -76,9 +85,23 @@ const Daily = () => {
                     Daily challenges
                 </h1>
                 <div className="bg-secondary rounded-xl shadow-lg p-6">
-                    <h2 className="text-xl text-white mb-4">
-                        {monthName} {currentDate.getFullYear()}
-                    </h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <button 
+                            onClick={handlePreviousMonth} 
+                            className="text-white color px-4 py-2 rounded hover:opacity-80 bg-primary"
+                        >
+                            Previous
+                        </button>
+                        <h2 className="text-xl text-white">
+                            {monthName} {currentYear}
+                        </h2>
+                        <button 
+                            onClick={handleNextMonth} 
+                            className="text-white color px-4 py-2 rounded hover:opacity-80 bg-primary"
+                        >
+                            Next
+                        </button>
+                    </div>
                     <div className="mb-4">
                         <span className="text-white">Today is: </span>
                         <span className="text-yellow-400 font-bold">
@@ -115,12 +138,11 @@ const Daily = () => {
                             {Array.from({ length: daysInMonth }, (_, day) => {
                                 const dayNumber = day + 1;
                                 const challenge = challengeByDay.get(dayNumber) || null;
-                                const isCurrentDay = dayNumber === currentDate.getDate();
+                                const isCurrentDay = dayNumber === currentDate.getDate() && monthIndex === currentDate.getMonth();
                                 const dateString = `${currentYear}-${String(monthIndex + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
                                 const isCompleted = isDailyCompleted(currentYear, monthIndex, dayNumber);
                                 const isPast = isDateInPast(dayNumber);
-                                const isMissed = Boolean(isPast && !isCompleted && !isCurrentDay)
-                                
+                                const isMissed = Boolean(isPast && !isCompleted && !isCurrentDay);
 
                                 const cellContent = (
                                     <div className="flex flex-col items-center justify-center h-full w-full">
