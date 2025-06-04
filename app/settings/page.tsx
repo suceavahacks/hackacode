@@ -16,6 +16,8 @@ export default function Settings() {
     const [currentSection, setCurrentSection] = useState(0)
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+    const [copiedLinux, setCopiedLinux] = useState(false);
+    const [copiedWindows, setCopiedWindows] = useState(false);
     const router = useRouter()
     const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null)
     const toastTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -532,33 +534,41 @@ export default function Settings() {
                                             <p className="text-gray-400 text-sm">Configure CLI access</p>
                                         </div>
                                     </div>
-                                    <div className="mockup-code w-full bg-secondary mb-4">
+                                    <div className="mockup-code w-full bg-primary mb-4 relative">
                                         <pre data-prefix="">
                                             <code># Linux/macOS</code>
                                         </pre>
                                         <pre data-prefix="">
-                                            <code>echo "[settings]" &gt; ~/.hackacode.cfg</code>
+                                            <code>export HACKACODE_API_KEY="{user?.jwt}"</code>
                                         </pre>
-                                        <pre data-prefix="">
-                                            <code>echo 'api_url = "https://api.hackacode.xyz/cli"' &gt;&gt; ~/.hackacode.cfg</code>
-                                        </pre>
-                                        <pre data-prefix="">
-                                            <code>echo 'api_key = "api_key - soon"' &gt;&gt; ~/.hackacode.cfg</code>
-                                        </pre>
+                                        <button
+                                            className="absolute top-2 right-2 btn btn-sm"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(`export HACKACODE_API_KEY="${user?.jwt}"`);
+                                                setCopiedLinux(true);
+                                                setTimeout(() => setCopiedLinux(false), 3000);
+                                            }}
+                                        >
+                                            {copiedLinux ? "Copied!" : "Copy"}
+                                        </button>
                                     </div>
-                                    <div className="mockup-code w-full bg-secondary mb-4 mt-4">
+                                    <div className="mockup-code w-full bg-primary mb-4 mt-4 relative">
                                         <pre data-prefix="">
                                             <code># Windows PowerShell</code>
                                         </pre>
                                         <pre data-prefix="">
-                                            <code>echo [settings] &gt; $HOME\.hackacode.cfg</code>
+                                            <code>$env:HACKACODE_API_KEY="{user?.jwt}"</code>
                                         </pre>
-                                        <pre data-prefix="">
-                                            <code>echo api_url = "https://api.hackacode.xyz/cli" &gt;&gt; $HOME\.hackacode.cfg</code>
-                                        </pre>
-                                        <pre data-prefix="">
-                                            <code>echo api_key = "api_key - soon" &gt;&gt; $HOME\.hackacode.cfg</code>
-                                        </pre>
+                                        <button
+                                            className="absolute top-2 right-2 btn btn-sm"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(`$env:HACKACODE_API_KEY="${user?.jwt}"`);
+                                                setCopiedWindows(true);
+                                                setTimeout(() => setCopiedWindows(false), 3000);
+                                            }}
+                                        >
+                                            {copiedWindows ? "Copied!" : "Copy"}
+                                        </button>
                                     </div>
                                 </div>
                             )}
