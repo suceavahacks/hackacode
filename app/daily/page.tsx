@@ -51,11 +51,11 @@ const Daily = () => {
                         {Array.from({ length: daysInMonth }, (_, day) => (
                             <div
                                 key={day}
-                                className={`flex items-center justify-center h-[150px] hover:opacity-50 Transition duration-300 ease-in-out rounded-lg cursor-pointer text-2xl font-bold ${
-                                    day === currentDate.getDate() - 1
+                                className={`flex items-center justify-center h-[150px] hover:opacity-50 transition duration-300 ease-in-out rounded-lg cursor-pointer text-2xl font-bold ${day === currentDate.getDate() - 1
+
                                         ? "bg-yellow-400 text-black"
                                         : "bg-primary text-white"
-                                }`}
+                                    }`}
                             >
                                 {day + 1}
                             </div>
