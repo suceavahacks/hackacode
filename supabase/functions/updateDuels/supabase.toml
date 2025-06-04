@@ -1,5 +1,0 @@
-[function]
-runtime = "edge"
-
-[schedule]
-cron = "*/15 * * * *"
