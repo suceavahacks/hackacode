@@ -1,6 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
 import { useMutation } from '@tanstack/react-query';
-import { LucideBookDashed } from "lucide-react";
 
 interface HandleSubmitProps {
     code: string;
@@ -11,11 +10,12 @@ interface HandleSubmitProps {
     setModalOpen: (open: boolean) => void;
     setLoading: (loading: boolean) => void;
     duelId?: string;
+    daily?: string
 }
 
 export const useSubmitChallenge = () => {
     return useMutation({
-        mutationFn: async ({ code, challenge, language, user, setResults, setModalOpen, setLoading, duelId }: HandleSubmitProps) => {
+        mutationFn: async ({ code, challenge, language, user, setResults, setModalOpen, setLoading, duelId, daily }: HandleSubmitProps) => {
             const supabase = createClient();
             const { data } = await supabase.auth.getSession()
             const accessToken = data.session?.access_token
@@ -46,7 +46,7 @@ export const useSubmitChallenge = () => {
 
             const { data: userData } = await supabase
                 .from("users")
-                .select("submissions")
+                .select("submissions, completed_dailies")
                 .eq('id', user.id)
                 .single();
 
@@ -69,6 +69,22 @@ export const useSubmitChallenge = () => {
                     submissions: submissions
                 })
                 .eq('id', user.id);
+
+
+            if (daily) {
+                if(result.status === "ACCEPTED") {
+                    const completedDailies = userData?.completed_dailies || [];
+                    if(!completedDailies.includes(daily)) {
+                        completedDailies.push(daily);
+                        await supabase
+                            .from("users")
+                            .update({
+                                completed_dailies: completedDailies
+                            })
+                            .eq('id', user.id);
+                    }
+                }
+            }
 
             setResults(result);
             setModalOpen(true);

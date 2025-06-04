@@ -2,7 +2,7 @@
 import NotFound from "@/app/not-found"
 import { Loading } from "@/components/Loading"
 import { useChallenge } from "@/utils/queries/challenges/getChallenge"
-import { useParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
@@ -58,6 +58,8 @@ export default function Challenge() {
     const { user } = useUser()
     const [activeTab, setActiveTab] = useState<"description" | "submissions" | "discussion">("description")
     const handleSubmit = useSubmitChallenge()
+    const searchParams = useSearchParams()
+    const dailyParam = searchParams.get("daily")
 
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
@@ -83,6 +85,20 @@ export default function Challenge() {
         return <NotFound />
     }
 
+    const getValidDailyParam = () => {
+        if (!dailyParam) return undefined;
+
+        const dailyDate = new Date(dailyParam);
+        const today = new Date();
+
+        if (dailyDate.getDate() === today.getDate() &&
+            dailyDate.getMonth() === today.getMonth() &&
+            dailyDate.getFullYear() === today.getFullYear()) {
+            return dailyParam;
+        }
+        return undefined;
+    }
+    
     return (
         <div className="bg-primary rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col h-[calc(100vh-64px)]">
             <PanelGroup direction="horizontal">
@@ -221,7 +237,8 @@ export default function Challenge() {
                           user: user,
                           setResults: setResults,
                           setModalOpen: setModalOpen,
-                          setLoading: setLoading
+                          setLoading: setLoading,
+                          daily: getValidDailyParam(),
                       })
                     }}
                     disabled={loading}
