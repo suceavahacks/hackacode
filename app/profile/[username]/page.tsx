@@ -15,8 +15,7 @@ interface Submission {
     status: 'ACCEPTED' | 'FAILED';
     score: number;
 }
-
-export const Profile = () => {
+const Profile = () => {
     const params = useParams();
     const username = params.username as string;
     const { data: profile, isLoading, error } = useProfile(username);
