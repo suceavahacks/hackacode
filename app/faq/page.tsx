@@ -1,87 +1,137 @@
+"use client";
+
 import { MessageCircleQuestionIcon } from "lucide-react"
-
 import { ReactNode } from "react";
-
-
-//if you read this, i love you
+import { useState } from "react";
 
 interface CollapseProps {
     title: string;
     content: ReactNode;
 }
 
+
+const Collapse = ({ title, content }: CollapseProps) => (
+    <div tabIndex={0} className="collapse collapse-arrow bg-primary rounded-none">
+        <div className="collapse-title font-semibold text-xl">{title}</div>
+        <div className="collapse-content text-lg">
+            <span dangerouslySetInnerHTML={{ __html: content as string }} />
+        </div>
+    </div>
+);
+
+const categories = [
+    {
+        title: "General",
+        questions: [
+            {
+                title: "What is Hackacode?",
+                content: "Hackacode is a platform that allows you to solve coding challenges, compete with friends, and improve your coding skills through interactive learning."
+            },
+            {
+                title: "How do I get started?",
+                content: "You can get started by signing up for an account on our website. Once registered, you can start solving challenges and participating in duels."
+            },
+            {
+                title: "Is Hackacode free to use?",
+                content: "Yes, Hackacode is free to use. It's also open-source, so you can contribute to the project if you'd like."
+            },
+            {
+                title: "Where can I find the source code?",
+                content: "The source code for Hackacode is available on GitHub at <a class='color underline decoration-wavy' href='https://github.com/suceavahacks/hackacode'>https://github.com/suceavahacks/hackacode</a>. You can clone the repository and run it locally. :)"
+            },
+            {
+                title: "How can I contact support?",
+                content: "If you have any questions or need assistance, you can reach out to our support team via the contact form on our website."
+            },
+        ]
+    },
+    {
+        title: "Features",
+        questions: [
+            {
+                title: "Can I contribute challenges?",
+                content: "Absolutely! We welcome contributions from the community. You can submit your own challenges for others to solve. You can do that by forking the repository on GitHub and creating a pull request with your challenge on the /requests/challenges/&lt;your-challenge&gt; directory."
+            },
+            {
+                title: "What programming languages are supported?",
+                content: "Hackacode supports multiple programming languages including Python, JavaScript, Java, C++, and more. You can choose your preferred language when solving challenges."
+            },
+            {
+                title: "What is the leaderboard?",
+                content: "The leaderboard displays the top users based on their performance in challenges and duels. You can check your ranking and see how you compare with others in the community."
+            },
+            {
+                title: "What are daily challenges?",
+                content: "Each day, we provide a new coding challenge that you can solve. These challenges are designed to help you practice and improve your coding skills. You can find the daily challenge in the 'Daily' section of the platform. Red cards indicate that you missed the challenge, and green cards indicate that you completed it. Yellow cards indicate that you are currently working on the challenge."
+            },
+        ]
+    },
+    {
+        title: "Duels & Community",
+        questions: [
+            {
+                title: "How do I participate in duels?",
+                content: "To participate in duels, you can challenge your friends or accept challenges from others. You can join a duel by clicking on the 'Duels' section in the sidebar and typing the code of the duel you want to join."
+            },
+            {
+                title: "Can I use Hackacode for educational purposes?",
+                content: "Yes, Hackacode is a great tool for learning and teaching coding. You can use it in classrooms or for self-study to improve your programming skills."
+            },
+        ]
+    },
+    {
+        title: "Help & Support",
+        questions: [
+            {
+                title: "How can I report a bug?",
+                content: "If you encounter any bugs or issues, please report them on our GitHub repository under the 'Issues' section. We appreciate your help in making Hackacode better!"
+            },
+            {
+                title: "How can I improve my coding skills?",
+                content: "You can improve your coding skills by regularly solving challenges, participating in duels, and reviewing your code with our AI-powered code review feature. Additionally, you can read articles and tutorials available on our platform. (soon)."
+            },
+        ]
+    },
+    {
+        title: "Luigi",
+        questions: [
+            {
+                title: "What powers Luigi?",
+                content: "Luigi is powered by <a class='color underline decoration-wavy' href='https://ai.hackclub.com/'>https://ai.hackclub.com/</a>. Last time I checked, the latest model was: meta-llama/llama-4-maverick-17b-128e-instruct. You can use it to generate code, review your code, or just have a chat with it. It's like having a coding buddy that never sleeps!"
+            }
+        ]
+    },
+    {
+        title: "Code Judger",
+        questions: [
+            {
+                title: "How does the code judging work?",
+                content: "The code judging system runs your code in a secure environment and checks it against predefined test cases. If your code passes all tests, you get a score based on its performance and correctness."
+            },
+            {
+                title: "What happens if my code fails?",
+                content: "If your code fails any test case, you'll receive feedback on what went wrong. You can then modify your code and resubmit it for judging."
+            },
+            {
+                title: "In what programming language is the code judging system written?",
+                content: "The code judging system is written in Golang. It uses a sandboxed environment to run your code securely and efficiently (which is also used in the International Olympiad of Informatics). The code judging system is open-source, so you can check it out on <a class='color underline decoration-wavy' href='https://github.com/suceavahacks/codejudger'>GitHub</a>."
+            }
+        ]
+    },
+    {
+        title: "CLI integration",
+        questions: [
+            {
+                title: "How do I use the CLI?",
+                content: "You can use the CLI to actually submit your code, check your score, and even run challenges directly from your terminal. To get started, you can install the CLI by following the instructions in your settings page & landing page. (you need to be authenticated to access the CLI). Once installed, run <code class='color'>hackacode --help</code> to see the available commands and options."
+            }
+        ]
+    }
+];
+
 const FAQ = () => {
 
-    const Collapse = ({ title, content }: CollapseProps) => {
-
-        return (
-            <div tabIndex={0} className="collapse collapse-arrow bg-primary rounded-none">
-                <div className="collapse-title font-semibold text-xl">{title}</div>
-                <div className="collapse-content text-lg">
-                    {content}
-                </div>
-            </div>
-        )
-    }
-
-    const questions = [
-        {
-            title: "What is Hackacode?",
-            content: "Hackacode is a platform that allows you to solve coding challenges, compete with friends, and improve your coding skills through interactive learning."
-        },
-        {
-            title: "How do I get started?",
-            content: "You can get started by signing up for an account on our website. Once registered, you can start solving challenges and participating in duels."
-        },
-        {
-            title: "Is Hackacode free to use?",
-            content: "Yes, Hackacode is free to use. It's also open-source, so you can contribute to the project if you'd like."
-        },
-        {
-            title: "Can I contribute challenges?",
-            content: "Absolutely! We welcome contributions from the community. You can submit your own challenges for others to solve. You can do that by forking the repository on GitHub and creating a pull request with your challenge on the /requests/challenges/<your-challenge> directory."
-        },
-        {
-            title: "How can I contact support?",
-            content: "If you have any questions or need assistance, you can reach out to our support team via the contact form on our website."
-        },
-        {
-            title: "Where can I find the source code?",
-            content: "The source code for Hackacode is available on GitHub at <a class='color underline decoration-wavy' href='https://github.com/suceavahacks/hackacode'>https://github.com/suceavahacks/hackacode</a>. You can clone the repository and run it locally. :)"
-        },
-        {
-            title: "How can I report a bug?",
-            content: "If you encounter any bugs or issues, please report them on our GitHub repository under the 'Issues' section. We appreciate your help in making Hackacode better!"
-        },
-        {
-            title: "Can I use Hackacode for educational purposes?",
-            content: "Yes, Hackacode is a great tool for learning and teaching coding. You can use it in classrooms or for self-study to improve your programming skills."
-        },
-        {
-            title: "What programming languages are supported?",
-            content: "Hackacode supports multiple programming languages including Python, JavaScript, Java, C++, and more. You can choose your preferred language when solving challenges."
-        },
-        {
-            title: "How do I participate in duels?",
-            content: "To participate in duels, you can challenge your friends or accept challenges from others. You can join a duel by clicking on the 'Duels' section in the sidebar and typing the code of the duel you want to join."
-        },
-        {
-            title: "What is the leaderboard?",
-            content: "The leaderboard displays the top users based on their performance in challenges and duels. You can check your ranking and see how you compare with others in the community."
-        },
-        {
-            title: "How can I improve my coding skills?",
-            content: "You can improve your coding skills by regularly solving challenges, participating in duels, and reviewing your code with our AI-powered code review feature. Additionally, you can read articles and tutorials available on our platform. (soon)."
-        },
-        {
-            title: "What powers Luigi?",
-            content: "Luigi is powered by <a class='color underline decoration-wavy' href='https://ai.hackclub.com/'>https://ai.hackclub.com/</a>. Last time I checked, the latest model was: meta-llama/llama-4-maverick-17b-128e-instruct. You can use it to generate code, review your code, or just have a chat with it. It's like having a coding buddy that never sleeps!"
-        },
-        {
-            title: "What are daily challenges?",
-            content: "Each day, we provide a new coding challenge that you can solve. These challenges are designed to help you practice and improve your coding skills. You can find the daily challenge in the 'Daily' section of the platform. Red cards indicate that you missed the challenge, and green cards indicate that you completed it. Yellow cards indicate that you are currently working on the challenge."
-        }
-    ];
+    const [input, setInput] = useState("");
 
     return (
         <div className="relative z-50 min-h-screen bg-secondary">
@@ -90,7 +140,6 @@ const FAQ = () => {
                     <div className="absolute top-10 left-10 w-32 h-32 rounded-full blur-3xl"></div>
                     <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full blur-2xl"></div>
                 </div>
-
                 <div className="max-w-6xl mx-auto py-16 px-6 relative">
                     <div className="text-center">
                         <div className="flex items-center justify-center gap-4 mb-6">
@@ -104,20 +153,60 @@ const FAQ = () => {
                         <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
                             Here are some common questions and answers about Hackacode. If you have any other questions, feel free to reach out to us!
                         </p>
+                        <input
+                            type="text"
+                            className="max-w-96 w-full mt-8 mx-auto block bg-primary border rounded-lg px-4 py-2 text-white"
+                            placeholder="Search questions..."
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        />
                     </div>
                 </div>
+
             </div>
-            <div className="max-w-3xl mx-auto px-4 py-8">
-                {questions.map((q, index) => (
-                    <Collapse
-                        key={index}
-                        title={q.title}
-                        content={
-                            <span dangerouslySetInnerHTML={{ __html: q.content }} />
-                        }
-                    />
-                ))}
-            </div>
+            {!input ? (
+                <div className="max-w-3xl mx-auto px-4 py-8">
+                    {categories.map((cat, idx) => (
+                        <div key={idx} className="mb-8">
+                            <h2 className="text-2xl font-bold mb-4 color">{cat.title}</h2>
+                            <div className="space-y-2">
+                                {cat.questions.map((q, qidx) => (
+                                    <Collapse
+                                        key={`${cat.title}-${q.title}`}
+                                        title={q.title}
+                                        content={q.content}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="max-w-3xl mx-auto px-4 py-8">
+                    <h2 className="text-2xl font-bold mb-4 color">Search results for "{input}"</h2>
+                    <div className="space-y-2">
+                        {(() => {
+                            const results = categories.flatMap((cat) =>
+                                cat.questions
+                                    .filter(q =>
+                                        q.title.toLowerCase().includes(input.toLowerCase()) ||
+                                        q.content.toLowerCase().includes(input.toLowerCase())
+                                    )
+                                    .map((q) => (
+                                        <Collapse
+                                            key={`${cat.title}-${q.title}`}
+                                            title={q.title}
+                                            content={q.content}
+                                        />
+                                    ))
+                            );
+                            return results.length > 0 ? results : (
+                                <p className="text-gray-400 text-center py-8">No results found.</p>
+                            );
+                        })()}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
