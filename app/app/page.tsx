@@ -125,6 +125,19 @@ export default function App() {
                     </div>
                 </div>
 
+                <div className="bg-secondary rounded-lg p-6 mt-8 mb-8">
+                    <h2 className="text-xl font-bold mb-2">CLI Integration</h2>
+                    <p className="mb-4 text-gray-400">
+                        Use our CLI to submit code straight from your terminal!
+                    </p>
+                    <pre className="bg-black/80 text-green-300 rounded-md p-4 text-sm overflow-x-auto select-all">
+                        curl https://hackacode.xyz/download &#124; bash
+                    </pre>
+                    <p className="text-xs text-gray-500 mt-2">
+                        <span className="font-bold">Tip:</span> Make sure you export your JWT token from settings <span className="font-mono">export HACKACODE_API_KEY="..."</span>
+                    </p>
+                </div>
+
                 <div className="bg-secondary rounded-lg p-6 mb-8">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold">Recent submissions</h2>
@@ -141,7 +154,7 @@ export default function App() {
                                         <div className="flex justify-between items-center">
                                             <h3 className="font-medium">{sub.challenge}</h3>
                                             <span className={`px-2 py-1 rounded text-xs ${sub.result?.status === "ACCEPTED" ? "bg-green-900 text-green-300" :
-                                                    "bg-red-900 text-red-300"
+                                                "bg-red-900 text-red-300"
                                                 }`}>
                                                 {sub.result?.status}
                                             </span>
