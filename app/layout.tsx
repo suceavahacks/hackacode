@@ -32,23 +32,23 @@ function AppContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className={`min-h-screen`}>
+    <main className="min-h-screen">
       <Navbar />
       {isHomePage && !user && (
         <div className="text-center mt-20 p-3 z-20 relative">
           <span className="text-[48px] font-extrabold">
             Code smarter. Solve harder.
-            <span className="color" style={{ display: 'inline-block', textAlign: 'center' }}>
+            <span className="color inline-block text-center">
               Hackacode
               <img
                 src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/715d41dacbd45c35484059b4e69dc02d5f71df28_line3.png"
-                style={{ display: 'block', margin: '0 auto', width: '250px' }}
+                className="block mx-auto w-[250px]"
                 alt="Line"
               />
             </span>
           </span>
           <img
-            src={"https://hc-cdn.hel1.your-objectstorage.com/s/v3/877c50b3b3034492ed81b482ca015d55eb716a2b_terminal.png"}
+            src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/877c50b3b3034492ed81b482ca015d55eb716a2b_terminal.png"
             className="mx-auto mt-14 px-5"
             alt="Terminal"
           />
@@ -57,13 +57,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
               <p className="text-3xl text-left">
                 What is{" "}
                 <span
-                  style={{
-                    textDecoration: "underline",
-                    textDecorationColor: "#FF865B",
-                    textDecorationStyle: "wavy",
-                    textUnderlineOffset: "4px",
-                  }}
-                  className="color"
+                  className="color underline decoration-[#FF865B] underline-offset-4 decoration-wavy"
                 >
                   Hackacode
                 </span>{" "}
@@ -72,13 +66,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
               <p className="text-left mt-5 text-lg">
                 Hackacode is a platform meant to help you learn and practice coding in a
                 <span
-                  style={{
-                    textDecoration: "underline",
-                    textDecorationColor: "#FF865B",
-                    textDecorationStyle: "wavy",
-                    textUnderlineOffset: "4px",
-                  }}
-                  className="color"
+                  className="color underline decoration-[#FF865B] underline-offset-4 decoration-wavy"
                 >
                   {" "}
                   fun and interactive way
@@ -128,9 +116,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
             </div>
             <div className="w-full md:w-[50%] px-5 mt-10 md:mt-0 flex justify-center">
               <img
-                src={
-                  "https://hc-cdn.hel1.your-objectstorage.com/s/v3/bba1dfde0cb6b3fe66319c947773ebd0ccca7af9_terminal.png"
-                }
+                src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/bba1dfde0cb6b3fe66319c947773ebd0ccca7af9_terminal.png"
                 className="w-full max-w-md md:max-w-full"
                 alt="Picture of the web app"
               />
@@ -157,7 +143,6 @@ function AppContent({ children }: { children: React.ReactNode }) {
                 🤠 So, what are you waiting for? <br /> Join us and start coding today!
               </p>
             </div>
-
             <div className="w-full md:w-[50%] px-5 mt-10 md:mt-0 text-center md:text-left">
               <p className="text-lg md:text-2xl">
                 <span className="text-2xl md:text-3xl font-bold">Sign up <br /></span>
