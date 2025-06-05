@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSearchQuery } from "@/utils/queries/search/search";
+import Link from "next/link";
 
 function useDebouncedValue<T>(value: T, delay: number) {
     const [debounced, setDebounced] = useState(value);
@@ -43,7 +44,15 @@ const SearchPage = () => {
                             {results.map((item) => (
                                 <li key={item.type + item.id} className="text-white py-2 border-b border-white/10 flex items-center gap-2">
                                     <span className="px-2 py-0.5 rounded text-xs font-semibold bg-white/10">{item.type}</span>
-                                    <span>{item.label}</span>
+                                    {item.type === "User" ? (
+                                        <Link href={`/profile/${item.label}`} className="text-white hover:underline hover:decoration-wavy">
+                                            {item.label}
+                                        </Link>
+                                    ) : (
+                                        <Link href={`/challenges/${item.label}`} className="text-white hover:underline hover:decoration-wavy">
+                                            {item.label}
+                                        </Link>
+                                    )}
                                 </li>
                             ))}
                         </ul>
