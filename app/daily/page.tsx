@@ -3,7 +3,8 @@ import { useDaily } from "@/utils/queries/daily/getDaily";
 import { useUser } from "@/utils/queries/user/getUser";
 import Link from "next/link";
 import NotFound from "../not-found";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { Flame } from "lucide-react";
 
 interface Month {
     days: number;
@@ -76,14 +77,57 @@ const Daily = () => {
 
     const handlePreviousMonth = () => {
         setMonthIndex((prev) => (prev - 1 + 12) % 12);
-    };
+    }
+    const userStreak = useMemo(() => {
+        if (!user || !user.completed_dailies || user.completed_dailies.length === 0) {
+            return 0;
+        }
+
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+        
+        const hasCompletedToday = user.completed_dailies.includes(todayStr);
+        const hasCompletedYesterday = user.completed_dailies.includes(yesterdayStr);
+        
+        if (!hasCompletedToday && !hasCompletedYesterday) {
+            return 0;
+        }
+        
+        let currentStreak = 1; 
+        let checkDate = hasCompletedToday ? today : yesterday;
+        
+        while (true) {
+            checkDate.setDate(checkDate.getDate() - 1);
+            const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+            
+            if (!user.completed_dailies.includes(dateStr)) {
+                break;
+            }
+            
+            currentStreak++;
+        }
+        
+        return currentStreak;
+    }, [user]);
 
     return (
         <div className="min-h-screen w-full bg-primary p-6 md:p-10">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold color mb-5">
-                    Daily challenges
-                </h1>
+                <div className="flex justify-between items-center mb-5">
+                    <h1 className="text-3xl font-bold color">
+                        Daily challenges
+                    </h1>
+
+                    <div className="bg-orange-600/20 text-orange-400 px-4 py-2 rounded-xl flex items-center gap-2 border border-orange-600/30">
+                        <Flame className="h-5 w-5 text-orange-400" />
+                        <div className="font-bold">{userStreak} day streak</div>
+                    </div>
+                </div>
+                
                 <div className="bg-secondary rounded-xl shadow-lg p-6">
                     <div className="flex justify-between items-center mb-4">
                         <button 
