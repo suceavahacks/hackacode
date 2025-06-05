@@ -22,7 +22,7 @@ const Sidebar = () => {
     ];
 
     const bottomItems = [
-        { icon: <MessageCircleQuestion size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Help", href: "/help" },
+        { icon: <MessageCircleQuestion size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Help", href: "/faq" },
         { icon: <LogOut size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Logout", href: "/logout" },
     ];
 

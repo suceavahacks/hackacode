@@ -5,7 +5,6 @@ import { useActiveDuels } from "@/utils/queries/duels/activeDuels";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle, Code2Icon, Zap, CheckCheckIcon } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 
 interface Submission {
     id?: string;
