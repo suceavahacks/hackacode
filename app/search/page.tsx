@@ -2,51 +2,24 @@
 
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { useSearchQuery } from "@/utils/queries/search/search";
 
-const supabase = createClient();
-
-const search = () => {
-    const [value, setValue] = useState("");
-    const [results, setResults] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
-
+function useDebouncedValue<T>(value: T, delay: number) {
+    const [debounced, setDebounced] = useState(value);
     useEffect(() => {
-        if (!value.trim()) {
-            setResults([]);
-            setLoading(false);
-            return;
-        }
+        const handler = setTimeout(() => setDebounced(value), delay);
+        return () => clearTimeout(handler);
+    }, [value, delay]);
+    return debounced;
+}
 
-        setLoading(true);
-        const timeout = setTimeout(async () => {
-            const { data: problems } = await supabase
-                .from("problems")
-                .select("slug")
-                .ilike("title", `%${value}%`);
+const SearchPage = () => {
+    const [value, setValue] = useState("");
+    const debouncedValue = useDebouncedValue(value, 700);
+    const { data: results = [], isLoading } = useSearchQuery(debouncedValue);
 
-            const { data: users } = await supabase
-                .from("users")
-                .select("id, username, slug")
-                .or(`username.ilike.%${value}%,slug.ilike.%${value}%`);
-
-            const formattedProblems = (problems || []).map((item: any) => ({
-                id: item.id,
-                label: item.slug,
-                type: "Challenge",
-            }));
-
-            const formattedUsers = (users || []).map((item: any) => ({
-                id: item.id,
-                label: item.slug,
-                type: "User",
-            }));
-
-            setResults([...formattedUsers, ...formattedProblems]);
-            setLoading(false);
-        }, );
-        return () => clearTimeout(timeout);
-    }, [value]);
+    const showResults = !isLoading && results.length > 0 && debouncedValue.trim();
+    const showNoResults = !isLoading && results.length === 0 && debouncedValue.trim();
 
     return (
         <div className="w-screen h-screen flex flex-col items-center justify-start backdrop-blur-6xl">
@@ -61,9 +34,11 @@ const search = () => {
                         autoComplete="off"
                     />
                 </div>
-                <div className="mt-8">
-                    {loading && <div className="text-white/80">Search...</div>}
-                    {!loading && results.length > 0 && (
+                <div className="mt-8 min-h-[40px]">
+                    {isLoading && debouncedValue.trim() && (
+                        <div className="text-white/80">Search...</div>
+                    )}
+                    {showResults && (
                         <ul>
                             {results.map((item) => (
                                 <li key={item.type + item.id} className="text-white py-2 border-b border-white/10 flex items-center gap-2">
@@ -73,13 +48,13 @@ const search = () => {
                             ))}
                         </ul>
                     )}
-                    {!loading && results.length === 0 && value && (
+                    {showNoResults && (
                         <div className="text-white/40">Niciun rezultat.</div>
                     )}
                 </div>
             </div>
         </div>
     );
-}
+};
 
-export default search;
+export default SearchPage;
