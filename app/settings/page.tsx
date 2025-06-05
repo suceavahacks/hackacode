@@ -26,6 +26,7 @@ export default function Settings() {
     const updatePrivacy = useUpdatePrivacy();
 
     const showToast = (type: "success" | "error", message: string) => {
+        console.log("Showing toast:", type, message)
         setToast({ type, message })
         if (toastTimeout.current) clearTimeout(toastTimeout.current)
         toastTimeout.current = setTimeout(() => setToast(null), 3500)
@@ -83,8 +84,8 @@ export default function Settings() {
     const accountForm = useForm({
         resolver: zodResolver(accountSchema),
         defaultValues: {
-            githubAccount: user?.github_account || "",
-            discordAccount: user?.discord_account || "",
+            githubAccount: user?.githubAccount || "",
+            discordAccount: user?.discordAccount || "",
             oldPassword: "",
             newPassword: "",
             confirmPassword: "",
@@ -144,8 +145,8 @@ export default function Settings() {
                 prg_languages: user.prg_languages || [],
             })
             accountForm.reset({
-                githubAccount: user.github_account || "",
-                discordAccount: user.discord_account || "",
+                githubAccount: user.githubAccount || "",
+                discordAccount: user.discordAccount || "",
                 oldPassword: "",
                 newPassword: "",
                 confirmPassword: "",
