@@ -1,4 +1,4 @@
-import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar, Calendar} from "lucide-react";
+import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar, Calendar, Search } from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
@@ -16,9 +16,9 @@ const Sidebar = () => {
         { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
         { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Duels", href: "/duels" },
         { icon: <ChartBar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Leaderboard", href: "/leaderboard" },
-        { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
         { icon: <Calendar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Daily", href: "/daily" },
-        
+        { icon: <Search size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Search", href: "/search" },
+        { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },
     ];
 
     const bottomItems = [
@@ -27,7 +27,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <div 
+        <div
             className="sidebar fixed top-0 left-0 h-full transition-all duration-300 ease-in-out shadow-lg bg-secondary z-50 max-md:hidden"
             style={{ width: isHovered ? '200px' : '64px', zIndex: 1000 }}
             onMouseEnter={() => setIsHovered(true)}
@@ -48,10 +48,9 @@ const Sidebar = () => {
                                 title={item.label}
                             >
                                 <div className="flex-shrink-0">{item.icon}</div>
-                                <span 
-                                    className={`ml-3 font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${
-                                        isHovered ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
-                                    }`}
+                                <span
+                                    className={`ml-3 font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${isHovered ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
+                                        }`}
                                 >
                                     {item.label}
                                 </span>
@@ -69,10 +68,9 @@ const Sidebar = () => {
                             title={item.label}
                         >
                             <div className="flex-shrink-0">{item.icon}</div>
-                            <span 
-                                className={`ml-3 font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${
-                                    isHovered ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
-                                }`}
+                            <span
+                                className={`ml-3 font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${isHovered ? "opacity-100 max-w-full" : "opacity-0 max-w-0"
+                                    }`}
                             >
                                 {item.label}
                             </span>

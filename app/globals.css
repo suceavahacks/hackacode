@@ -73,7 +73,7 @@
 }
 
 input {
-    background-color: var(--bg-secondary) !important;
+    background-color: var(--bg-secondary);
     color: white !important;
 }
 
