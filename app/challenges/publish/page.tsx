@@ -1,5 +1,6 @@
 "use client"
-import React, { useState } from 'react'
+
+import { useState } from 'react'
 import {
   FileText,
   Info,
@@ -169,6 +170,49 @@ const Publish = () => {
     }
   }, [watch])
 
+  const getAIgeneratedTestCases = async () => {
+    const prompt = 
+    `
+    Generate 5 test cases for the following problem:\n\nTitle: ${watch("title")}\nDescription: ${watch("description")}\nInput Format: ${watch("input_description")}\nOutput Format: ${watch("output_description")}\nConstraints: ${watch("constraints")}\n\nEach test case should include an input and expected output.
+    Please only provide the test cases in JSON format, like this:\n\n[
+      {"input": "example input",
+      "output": "expected output"},
+      {"input": "another input",
+      "output": "another expected output"}
+    ]\n\nDo not include any additional text or explanations.
+    The input and output should be strings, and the JSON should be valid.
+    The input will be in stdin format, and the output should be in stdout format.
+    Do not include any code or explanations, just the test cases in JSON format.
+    Do not provide any empty test cases or test cases with missing input or output.
+    `
+    try {
+      const response = await fetch("https://ai.hackclub.com/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "user",
+              content: prompt,
+            }
+          ]
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch AI-generated test cases")
+      }
+
+      const data = await response.json()
+      setTestCases(data.choices[0].message.content ? JSON.parse(data.choices[0].message.content) : [])
+    } catch (error) {
+      setTestCaseError("Failed to fetch AI-generated test cases. Please try again later.")
+    }
+  }
+
+
   return (
     <div className="min-h-screen text-white relative z-50">
       <div className="bg-secondary border-b border-gray-800">
@@ -187,7 +231,7 @@ const Publish = () => {
                 <span className="text-sm color">{Math.round(progressPercentage)}%</span>
               </div>
               <div className="w-full bg-gray-800 rounded-full h-2">
-                <div 
+                <div
                   className="bg-accent h-2 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
@@ -270,7 +314,7 @@ const Publish = () => {
           </div>
 
           <div className="lg:col-span-3">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-6">
                 {currentSection === 0 && (
                   <div className="bg-secondary rounded-xl p-8 border border-gray-800">
@@ -481,16 +525,26 @@ const Publish = () => {
                             <p className="text-gray-400 text-sm mb-4">
                               Upload a JSON file containing your test cases
                             </p>
-                            <label className="btn inline-flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer font-medium">
-                              <Upload className="h-4 w-4" />
-                              Choose JSON File
-                              <input 
-                                type="file" 
-                                accept=".json" 
-                                onChange={handleTestCaseUpload} 
-                                className="hidden" 
-                              />
-                            </label>
+                            <div className="flex gap-3 justify-center">
+                              <label className="btn inline-flex items-center gap-2 px-4 py-2 rounded-lg cursor-pointer font-medium">
+                                <Upload className="h-4 w-4" />
+                                Choose JSON File
+                                <input
+                                  type="file"
+                                  accept=".json"
+                                  onChange={handleTestCaseUpload}
+                                  className="hidden"
+                                />
+                              </label>
+                              <button 
+                                type="button"
+                                onClick={getAIgeneratedTestCases}
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 hover:bg-accent/30 transition-colors rounded-lg cursor-pointer font-medium text-accent border border-accent/30"
+                              >
+                                <Zap className="h-4 w-4" />
+                                Generate with AI
+                              </button>
+                            </div>
                           </div>
                         </div>
                         {testCaseError && (
@@ -574,27 +628,35 @@ const Publish = () => {
                         <ChevronRight className="h-4 w-4" />
                       </button>
                     ) : (
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className={
-                          submitting
-                            ? "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-gray-600 text-gray-400 cursor-not-allowed"
-                            : "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all btn hover:scale-105"
-                        }
-                      >
-                        {submitting ? (
-                          <>
-                            <div className="animate-spin h-4 w-4 border-2 border-gray-400 border-t-white rounded-full"></div>
-                            Publishing...
-                          </>
-                        ) : (
-                          <>
-                            <Rocket className="h-4 w-4" />
-                            Publish Problem
-                          </>
+                      <div className="flex flex-col">
+                        {submitError && (
+                          <div className="mb-3 bg-red-900/50 border border-red-700 rounded p-3 flex items-center gap-2 justify-center">
+                            <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0" />
+                            <span className="text-red-300 text-sm">{submitError}</span>
+                          </div>
                         )}
-                      </button>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className={
+                            submitting
+                              ? "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all bg-gray-600 text-gray-400 cursor-not-allowed"
+                              : "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all btn hover:scale-105"
+                          }
+                        >
+                          {submitting ? (
+                            <>
+                              <div className="animate-spin h-4 w-4 border-2 border-gray-400 border-t-white rounded-full"></div>
+                              Publishing...
+                            </>
+                          ) : (
+                            <>
+                              <Rocket className="h-4 w-4" />
+                              Publish Problem
+                            </>
+                          )}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
