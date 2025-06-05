@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
@@ -11,10 +11,15 @@ const search = () => {
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter" && value.trim()) {
-            setLoading(true);
+    useEffect(() => {
+        if (!value.trim()) {
+            setResults([]);
+            setLoading(false);
+            return;
+        }
 
+        setLoading(true);
+        const timeout = setTimeout(async () => {
             const { data: problems } = await supabase
                 .from("problems")
                 .select("slug")
@@ -39,8 +44,9 @@ const search = () => {
 
             setResults([...formattedUsers, ...formattedProblems]);
             setLoading(false);
-        }
-    };
+        }, );
+        return () => clearTimeout(timeout);
+    }, [value]);
 
     return (
         <div className="w-screen h-screen flex flex-col items-center justify-start backdrop-blur-6xl">
@@ -52,12 +58,11 @@ const search = () => {
                         className="w-full bg-transparent outline-none py-4 px-2 text-3xl text-white"
                         value={value}
                         onChange={e => setValue(e.target.value)}
-                        onKeyDown={handleKeyDown}
                         autoComplete="off"
                     />
                 </div>
                 <div className="mt-8">
-                    {loading && <div className="text-white/80">Caută...</div>}
+                    {loading && <div className="text-white/80">Search...</div>}
                     {!loading && results.length > 0 && (
                         <ul>
                             {results.map((item) => (
