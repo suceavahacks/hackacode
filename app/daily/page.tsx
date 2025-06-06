@@ -2,9 +2,9 @@
 import { useDaily } from "@/utils/queries/daily/getDaily";
 import { useUser } from "@/utils/queries/user/getUser";
 import Link from "next/link";
-import NotFound from "../not-found";
 import { useState, useMemo } from "react";
 import { Flame } from "lucide-react";
+import NeedAuth from "@/components/NeedAuth";
 
 interface Month {
     days: number;
@@ -54,7 +54,7 @@ const Daily = () => {
         });
     }
 
-    if (!user) return <NotFound />;
+    if (!user) return <NeedAuth />;
 
     const doneDailies = user.completed_dailies || [];
 

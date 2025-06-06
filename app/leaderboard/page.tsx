@@ -3,11 +3,14 @@ import { Loading } from "@/components/Loading";
 import { Trophy, Medal, User as UserIcon } from "lucide-react";
 import { useLeaderboard, LeaderboardUser } from "@/utils/queries/leaderboard/leaderboard";
 import { useState } from "react";
+import { useUser } from "@/utils/queries/user/getUser";
+import NeedAuth from "@/components/NeedAuth";
 
 const LeaderboardPage = () => {
   const [sortBy, setSortBy] = useState<keyof LeaderboardUser>("score");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const { data: users = [], isLoading } = useLeaderboard(sortBy, sortOrder);
+  const { user } = useUser();
 
   const handleSort = (column: keyof LeaderboardUser) => {
     if (sortBy === column) {
@@ -20,6 +23,10 @@ const LeaderboardPage = () => {
 
   const topThreeUsers = users.slice(0, 3);
   const remainingUsers = users.slice(3);
+
+  if(!user) {
+    return <NeedAuth />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">

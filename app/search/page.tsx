@@ -4,6 +4,8 @@ import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSearchQuery } from "@/utils/queries/search/search";
 import Link from "next/link";
+import NeedAuth from "@/components/NeedAuth";
+import { useUser } from "@/utils/queries/user/getUser";
 
 function useDebouncedValue<T>(value: T, delay: number) {
     const [debounced, setDebounced] = useState(value);
@@ -21,6 +23,11 @@ const SearchPage = () => {
 
     const showResults = !isLoading && results.length > 0 && debouncedValue.trim();
     const showNoResults = !isLoading && results.length === 0 && debouncedValue.trim();
+    const { user } = useUser();
+
+    if (!user) {
+        return <NeedAuth />;
+    }
 
     return (
         <div className="w-screen h-screen flex flex-col items-center justify-start backdrop-blur-6xl">

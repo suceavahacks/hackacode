@@ -5,6 +5,7 @@ import { useUser } from "@/utils/queries/user/getUser";
 import { Loading } from "@/components/Loading";
 import NotFound from "@/app/not-found";
 import { useEffect, useState } from "react";
+import NeedAuth from "@/components/NeedAuth";
 
 const Submission = () => {
     const { id } = useParams();
@@ -19,7 +20,8 @@ const Submission = () => {
     }, [user, id]);
 
     if (loading) return <Loading />;
-    if (!user || !submission) return <NotFound />;
+    if (!user) return <NeedAuth />;
+    if (!submission) return <NotFound />;
 
     const { code, language, challenge, timestamp, status, score, result } = submission;
 

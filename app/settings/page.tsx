@@ -10,6 +10,7 @@ import { User, Lock, Shield, Settings as SettingsIcon, Terminal } from "lucide-r
 import { useUpdateProfile } from "@/utils/mutations/user/settings/updateProfile"
 import { useUpdateAccount } from "@/utils/mutations/user/settings/updateAccount";
 import { useUpdatePrivacy } from "@/utils/mutations/user/settings/updatePrivacy";
+import NeedAuth from "@/components/NeedAuth"
 
 export default function Settings() {
     const { user, loading, error } = useUser()
@@ -162,7 +163,7 @@ export default function Settings() {
     }, [user])
 
     if (loading) return <Loading />
-    if (!user) return null
+    if (!user) return <NeedAuth />
 
     const programmingLanguages = [
         "JavaScript", "Python", "Java", "C++", "C#",

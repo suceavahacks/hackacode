@@ -2,8 +2,9 @@
 import { Loading } from "@/components/Loading";
 import { useChallenges } from "@/utils/queries/challenges/getChallenges";
 import { useUser } from "@/utils/queries/user/getUser";
-import { FlagIcon, MemoryStickIcon, ZapIcon, ArrowRightIcon } from "lucide-react";
+import { FlagIcon, ZapIcon, ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import NeedAuth from "@/components/NeedAuth";
 
 type Challenge = {
     id: number;
@@ -22,13 +23,7 @@ export default function Challenges() {
     if (loading) return <Loading />;
 
     if(!user) {
-        return <div className="max-w-6xl mx-auto p-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-200">Please log in to view challenges</h1>
-            <p className="text-gray-400 mt-2">You need to be logged in to access the challenges section.</p>
-            <Link href="/signin" className="mt-4 inline-block btn text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Log In
-            </Link>
-        </div>;
+        return <NeedAuth />;
     }
 
     return (

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import useAllUserSubmissionsRealtime from "@/utils/mutations/challenges/realTimeSubmissions/useRealTimeSubmissions";
 import { createClient } from "@/utils/supabase/client";
+import { useUser } from "@/utils/queries/user/getUser";
+import NotAuth from "@/components/NeedAuth";
 
 type Submission = {
     id: string;
@@ -51,6 +53,7 @@ const getMessage = (slug: string, submission: Submission) => {
 
 export default function RealtimeSubmissionsPage() {
     const [allSubs, setAllSubs] = useState<UserSubmissions[]>([]);
+    const { user } = useUser();
 
     useEffect(() => {
         const supabase = createClient();
@@ -88,6 +91,10 @@ export default function RealtimeSubmissionsPage() {
         )
         .filter((s) => now - new Date(s.timestamp).getTime() <= 24 * 60 * 60 * 1000)
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+    if (!user) {
+        return <NotAuth />;
+    }
 
     return (
         <div className="min-h-screen w-full bg-primary flex flex-col">

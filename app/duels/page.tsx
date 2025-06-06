@@ -6,6 +6,7 @@ import { useUser } from "@/utils/queries/user/getUser";
 import NotFound from "../not-found";
 import useDuelRealtime from "@/utils/duels/useDuelRealtime";
 import { useRouter } from "next/navigation";
+import NeedAuth from "@/components/NeedAuth";
 
 const Duels = () => {
     const supabase = createClient();
@@ -37,7 +38,7 @@ const Duels = () => {
     ];
 
     if(!user) {
-        return <NotFound />;
+        return <NeedAuth />;
     }
 
     const getRandomChallenges = async () => {
