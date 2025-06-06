@@ -42,6 +42,7 @@ interface Submission {
     timestamp: string | number | Date;
     status: string; 
     score: number;
+    id: string;
 }
 
 interface UserWithSubmissions {
@@ -145,7 +146,9 @@ export default function Challenge() {
                             <div>
                               <h2 className="text-2xl font-bold mb-4">Your previous submissions</h2>
                               {user?.submissions?.filter((sub: Submission) => sub.challenge === challenge.slug).length > 0 ? (
-                                <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-200px)]">
+                                <div 
+                                  className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-200px)]" 
+                                >
                                   <table className="table w-full">
                                     <thead>
                                       <tr>
@@ -160,7 +163,10 @@ export default function Challenge() {
                                       {(user as UserWithSubmissions).submissions
                                         .filter((sub: Submission) => sub.challenge === challenge.slug)
                                         .map((submission: Submission, idx: number) => (
-                                          <tr key={idx} className="hover">
+                                          <tr key={idx} 
+                                            className="cursor-pointer hover:bg-secondary/20"
+                                            onClick={() => window.location.href = `/submissions/${submission.id}`}
+                                          >
                                             <td>{new Date(submission.timestamp).toLocaleString()}</td>
                                             <td>{submission.language}</td>
                                             <td>
