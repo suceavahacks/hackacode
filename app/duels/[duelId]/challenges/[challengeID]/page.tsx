@@ -3,7 +3,7 @@ import NotFound from "@/app/not-found"
 import { Loading } from "@/components/Loading"
 import { useChallenge } from "@/utils/queries/challenges/getChallenge"
 import { useParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import CodeMirror from "@uiw/react-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
@@ -14,6 +14,8 @@ import { useUser } from "@/utils/queries/user/getUser"
 import { Luigi } from "@/components/Luigi"
 import { useDuel } from "@/utils/queries/duels/getDuel"
 import { useSubmitChallenge } from "@/utils/mutations/challenges/submit"
+import { useSubmitDiscussion } from "@/utils/mutations/challenges/discussion/discussion"
+import { useRealTimeDiscussion } from "@/utils/mutations/challenges/discussion/useRealTimeDiscussion"
 
 interface JudgeResult {
   ExitCode: string;
@@ -51,6 +53,11 @@ interface UserWithSubmissions {
   submissions: Submission[];
 }
 
+const languages = [
+  { name: "C++", extensions: [cpp()] },
+  { name: "Python", extensions: [python()] },
+];
+
 export default function Challenge() {
   const [language, setLanguage] = useState<string>("C++")
   const params = useParams()
@@ -69,16 +76,50 @@ export default function Challenge() {
     setCode(value)
   }, [])
 
-  const languages = [
-    { name: "C++", value: cpp() },
-    { name: "Python", value: python() },
-  ]
+  const [discussionInput, setDiscussionInput] = useState<string>("")
+  const [discussion, setDiscussion] = useState<any[]>([])
+  const discussionEndRef = useRef<HTMLDivElement>(null)
+  const submitDiscussion = useSubmitDiscussion()
 
   useEffect(() => {
     if (challenge) {
       setCode(getTemplate(language))
     }
   }, [challenge, language])
+
+  useEffect(() => {
+    const fetchDiscussion = async () => {
+      const { data, error } = await supabase
+        .from("problems")
+        .select("discussion")
+        .eq("slug", challenge.slug)
+        .single();
+      if (!error && data?.discussion) {
+        setDiscussion(data.discussion);
+      }
+    };
+    if (challenge?.slug) fetchDiscussion();
+  }, [challenge?.slug, supabase])
+
+  useRealTimeDiscussion(challenge?.slug, (newDiscussion) => {
+    setDiscussion(newDiscussion);
+  });
+
+  useEffect(() => {
+    discussionEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [discussion]);
+
+  const handleDiscussionSubmit = () => {
+    if (!discussionInput.trim()) return;
+    const timestamp = new Date().toISOString();
+    submitDiscussion.mutate({
+      username: user?.username || user?.slug,
+      message: discussionInput,
+      timestamp,
+      slug: challenge.slug,
+    });
+    setDiscussionInput("");
+  };
 
   if (loading) {
     return <Loading />
@@ -87,8 +128,6 @@ export default function Challenge() {
   if (!challenge) {
     return <NotFound />
   }
-
-  console.log(duel)
 
   if (!user || (user.id !== duel?.user1_id && user.id !== duel?.user2_id)) {
     return <NotFound />
@@ -124,7 +163,6 @@ export default function Challenge() {
               >
                 Discussion
               </button>
-
             </div>
 
             <div className="overflow-y-auto p-4 h-full">
@@ -191,8 +229,47 @@ export default function Challenge() {
               )}
 
               {activeTab === "discussion" && (
-                <div>
+                <div className="relative h-full flex flex-col">
                   <h2 className="text-2xl font-bold mb-4">Discussion</h2>
+                  <div
+                    className="flex-1 overflow-y-auto mb-4"
+                    style={{ maxHeight: "calc(100vh - 320px)" }}
+                  >
+                    {discussion.length === 0 && (
+                      <div className="text-white/60 text-center">No messages yet.</div>
+                    )}
+                    {discussion.map((msg, idx) => (
+                      <div key={idx} className="bg-secondary/40 rounded p-2 mb-1">
+                        <span className="font-bold color">{msg.username}</span>
+                        <span className="ml-2 text-white/80">{msg.message}</span>
+                        <span className="ml-2 text-xs text-white/40">
+                          {new Date(msg.timestamp).toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                    <div ref={discussionEndRef} />
+                  </div>
+                  <div className="absolute left-0 bottom-0 w-full bg-primary border-t-2 color p-4 flex gap-2">
+                    <textarea
+                      className="bg-secondary rounded p-2 text-white resize-none flex-1"
+                      rows={2}
+                      placeholder="Write your message..."
+                      value={discussionInput}
+                      onChange={(e) => setDiscussionInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleDiscussionSubmit();
+                        }
+                      }}
+                    />
+                    <button
+                      className="bg-accent px-6 py-2 rounded text-white font-semibold hover:opacity-80 transition"
+                      onClick={handleDiscussionSubmit}
+                    >
+                      Post
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
