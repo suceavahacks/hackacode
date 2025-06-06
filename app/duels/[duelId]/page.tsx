@@ -6,7 +6,7 @@ import { useUser } from "@/utils/queries/user/getUser";
 import { Code2Icon, ArrowRightIcon, ZapIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
 type Challenge = {
@@ -27,7 +27,7 @@ const Duel = () => {
     const [challenges, setChallenges] = useState<Challenge[]>([]);
     const [ended, setEnded] = useState<boolean>(false);
     const [timeRemaining, setTimeRemaining] = useState<number>(duel?.time_limit || 0);
-     const [submissions, setSubmissions] = useState<{
+    const [submissions, setSubmissions] = useState<{
         userSubmissions: any[],
         opponentSubmissions: any[]
     }>({
@@ -144,47 +144,47 @@ const Duel = () => {
                 opponentSubmissions: []
             };
         }
-        
+
         const { data: userData, error: userError } = await supabase
             .from("users")
             .select("submissions")
             .eq("id", user?.id)
             .single();
-        
+
         if (userError) {
             return {
                 userSubmissions: [],
                 opponentSubmissions: []
             };
         }
-        
+
         const userSubmissions = userData?.submissions || [];
-        
+
         const otherUserId = user?.id === duel.user1_id ? duel.user2_id : duel.user1_id;
-        
+
         const { data: opponentData, error: opponentError } = await supabase
             .from("users")
             .select("submissions")
             .eq("id", otherUserId)
             .single();
-        
+
         if (opponentError) {
             return {
                 userSubmissions: [],
                 opponentSubmissions: []
             };
         }
-        
+
         const opponentSubmissions = opponentData?.submissions || [];
-        
-        const userDuelSubmissions = userSubmissions.filter((submission: any) =>  
+
+        const userDuelSubmissions = userSubmissions.filter((submission: any) =>
             submission.duel == duelId
         );
-        
-        const opponentDuelSubmissions = opponentSubmissions.filter((submission: any) => 
+
+        const opponentDuelSubmissions = opponentSubmissions.filter((submission: any) =>
             submission.duel == duelId
         );
-        
+
         return {
             userSubmissions: userDuelSubmissions,
             opponentSubmissions: opponentDuelSubmissions
@@ -198,10 +198,10 @@ const Duel = () => {
                 setSubmissions(submissionsData);
             }
         };
-        
+
         loadSubmissions();
     }, [duel]);
-    
+
     const getUser1Score = () => {
         if (!duel || !submissions.userSubmissions) return 0;
 
@@ -231,6 +231,15 @@ const Duel = () => {
         const user2TotalScore: number = user2Scores.reduce((total: number, score: number) => total + score, 0);
         return user2TotalScore;
     }
+
+    const [chatOpen, setChatOpen] = useState(false);
+    const [discussionInput, setDiscussionInput] = useState("");
+    const [discussion, setDiscussion] = useState<any[]>([]);
+    const discussionEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        discussionEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [discussion]);
 
     if (loading || userLoading) {
         return <Loading />;
@@ -282,7 +291,7 @@ const Duel = () => {
                             <ZapIcon className="h-6 w-6 mx-auto text-accent mt-2" />
                         </div>
                         <div className="mt-2 text-lg font-semibold text-gray-300">
-                            Score: <span className="text-accent">{getUser2Score()}</span>  
+                            Score: <span className="text-accent">{getUser2Score()}</span>
                         </div>
                     </div>
                 </div>
@@ -297,10 +306,10 @@ const Duel = () => {
                             </p>
                             <p className="text-lg font-semibold mt-2">
                                 Winner: <span className="text-accent">
-                                    {getUser1Score() > getUser2Score() 
-                                        ? usernames.user1Name 
-                                        : getUser1Score() < getUser2Score() 
-                                            ? usernames.user2Name 
+                                    {getUser1Score() > getUser2Score()
+                                        ? usernames.user1Name
+                                        : getUser1Score() < getUser2Score()
+                                            ? usernames.user2Name
                                             : "Draw - Both players tied"}
                                 </span>
                             </p>
@@ -405,7 +414,7 @@ const Duel = () => {
                 )}
                 <div className="mt-12">
                     <p className="text-gray-500 text-4xl mb-4">
-                        Submissions 
+                        Submissions
                     </p>
                     <div className="overflow-x-auto">
                         <table className="min-w-full mt-4">
@@ -445,6 +454,60 @@ const Duel = () => {
                         </table>
                     </div>
                 </div>
+            </div>
+            <div className="fixed bottom-8 right-8 z-[200]">
+                <button
+                    className="bg-accent hover:bg-accent/90 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-md"
+                    onClick={() => setChatOpen((v) => !v)}
+                    aria-label="Open chat"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+
+                {chatOpen && (
+                    <div className="absolute bottom-16 right-0 w-80 bg-primary border border-gray-700 rounded-lg shadow-lg flex flex-col overflow-hidden">
+                        <div className="flex items-center justify-between px-4 py-2 border-b border-gray-700">
+                            <span className="color font-medium">Chat</span>
+                            <button className="text-white/60 hover:text-white" onClick={() => setChatOpen(false)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-3" style={{ maxHeight: 350 }}>
+                            {discussion.length === 0 && (
+                                <div className="text-white/60 text-center text-sm">No messages yet.</div>
+                            )}
+                            {discussion.map((msg, idx) => (
+                                <div key={idx} className="bg-secondary/40 rounded p-2 mb-1">
+                                    <span className="font-medium color">{msg.username}</span>
+                                    <span className="ml-2 text-white/80 text-sm">{msg.message}</span>
+                                    <span className="ml-1 text-xs text-white/40">{new Date(msg.timestamp).toLocaleString()}</span>
+                                </div>
+                            ))}
+                            <div ref={discussionEndRef} />
+                        </div>
+
+                        <div className="border-t border-gray-700 bg-primary p-2 flex gap-2">
+                            <textarea
+                                className="bg-secondary rounded p-1.5 text-white resize-none flex-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent"
+                                rows={1}
+                                placeholder="Type a message..."
+                                value={discussionInput}
+                                onChange={(e) => setDiscussionInput(e.target.value)}
+                            />
+                            <button
+                                className="bg-accent px-2 py-1 rounded text-white text-xs hover:bg-accent/90 transition-colors"
+                            >
+                                Send
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
