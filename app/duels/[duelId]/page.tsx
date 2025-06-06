@@ -6,8 +6,12 @@ import { useUser } from "@/utils/queries/user/getUser";
 import { Code2Icon, ArrowRightIcon, ZapIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import useDuelRealtime from "@/utils/duels/useDuelRealtime";
+
+
+//to do: remember to fix the button on mobile phones (?!?!?!?!?!?!?!?!!?)
 
 type Challenge = {
     id: string;
@@ -34,6 +38,10 @@ const Duel = () => {
         userSubmissions: [],
         opponentSubmissions: []
     });
+    const [discussionInput, setDiscussionInput] = useState("");
+    const [discussion, setDiscussion] = useState<any[]>([]);
+    const discussionEndRef = useRef<HTMLDivElement>(null);
+    const [chatOpen, setChatOpen] = useState(false);
 
     const getUsernames = async () => {
         if (!duel) return { user1Name: "", user2Name: "" };
@@ -232,10 +240,55 @@ const Duel = () => {
         return user2TotalScore;
     }
 
-    const [chatOpen, setChatOpen] = useState(false);
-    const [discussionInput, setDiscussionInput] = useState("");
-    const [discussion, setDiscussion] = useState<any[]>([]);
-    const discussionEndRef = useRef<HTMLDivElement>(null);
+    const fetchDuelChat = useCallback(async () => {
+        if (!duelId) return;
+
+        const { data, error } = await supabase
+            .from("duels")
+            .select("chat")
+            .eq("id", duelId)
+            .single();
+
+        if (!error && data?.chat) {
+            setDiscussion(data.chat);
+        }
+    }, [duelId, supabase]);
+
+    useEffect(() => {
+        fetchDuelChat();
+    }, [fetchDuelChat]);
+
+    const handleDuelChatSubmit = async () => {
+        if (!discussionInput.trim() || !duelId || !user) return;
+
+        const timestamp = new Date().toISOString();
+        const newMessage = {
+            username: user?.username || user?.slug,
+            message: discussionInput,
+            timestamp,
+            userId: user.id
+        };
+
+        const updatedChat = [...discussion, newMessage];
+        setDiscussion(updatedChat);
+        setDiscussionInput("");
+
+        const { error } = await supabase
+            .from("duels")
+            .update({ chat: updatedChat })
+            .eq("id", duelId);
+
+        if (error) {
+            console.error("Error sending chat:", error);
+            setDiscussion(discussion);
+        }
+    };
+
+    useDuelRealtime(duelId as string, (updatedDuel) => {
+        if (updatedDuel?.chat) {
+            setDiscussion(updatedDuel.chat);
+        }
+    });
 
     useEffect(() => {
         discussionEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -492,16 +545,24 @@ const Duel = () => {
                             <div ref={discussionEndRef} />
                         </div>
 
-                        <div className="border-t border-gray-700 bg-primary p-2 flex gap-2">
-                            <textarea
-                                className="bg-secondary rounded p-1.5 text-white resize-none flex-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent"
-                                rows={1}
+                        <div className="border-t border-gray-700 bg-primary p-2 flex gap-2 z-[1000]">
+                            <input
+                                type="text"
+                                className="bg-secondary rounded p-1.5 text-white flex-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent"
                                 placeholder="Type a message..."
                                 value={discussionInput}
                                 onChange={(e) => setDiscussionInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault()
+                                        handleDuelChatSubmit()
+                                    }
+                                }}
                             />
                             <button
-                                className="bg-accent px-2 py-1 rounded text-white text-xs hover:bg-accent/90 transition-colors"
+                                className="bg-accent hover:bg-accent/90 text-white rounded px-3 py-1 text-xs"
+                                onClick={handleDuelChatSubmit}
+                                disabled={!discussionInput.trim()}
                             >
                                 Send
                             </button>
