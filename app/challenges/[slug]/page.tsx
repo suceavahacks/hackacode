@@ -99,6 +99,10 @@ export default function Challenge() {
         }
         return undefined;
     }
+
+    if(!user) {
+      return <NotFound />
+    }
     
     return (
         <div className="bg-primary rounded-lg shadow-md text-white relative z-50 flex max-md:flex-col h-[calc(100vh-64px)]">
