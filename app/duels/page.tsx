@@ -179,51 +179,52 @@ const Duels = () => {
 
 
     return (
-        <div className="w-screen mx-auto py-16 px-6 relative bg-secondary border-b border-gray-800 h-[100%] min-h-screen">
-            {error && (
-                <div className="toast toast-bottom toast-right">
-                    <div className="alert alert-error">
-                        <span>{error}</span>
-                    </div>
-                </div>
-            )}
-            <div className="text-center">
-                <div className="flex items-center justify-center gap-4 mb-6">
-                    <div className="relative">
-                        <FlagIcon className="h-12 w-12 color relative z-10" />
-                    </div>
-                    <h1 className="text-5xl font-bold color">
-                        Duels!
-                    </h1>
-                </div>
-                <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
-                    Mhm. Duels?! Yep, we have them! Create or join a duel to compete with others in real-time coding challenges. Show off your skills and climb the leaderboard!
-                </p>
-
-                <div className="flex justify-center gap-8 mt-8">
-                    <div className="text-center">
-                        <div className="text-2xl font-bold btn">
-                            {activeDuels}
-                        </div>
-                        <div className="text-sm text-gray-400">
-                            Active duels!
+        <div className="relative min-h-screen w-screen">
+            <div className="bg-secondary pb-24 pt-16 px-6 border border-gray-800">
+                {error && (
+                    <div className="toast toast-bottom toast-right">
+                        <div className="alert alert-error">
+                            <span>{error}</span>
                         </div>
                     </div>
+                )}
+                <div className="text-center">
+                    <div className="flex items-center justify-center gap-4 mb-6">
+                        <div className="relative">
+                            <FlagIcon className="h-12 w-12 color relative z-10" />
+                        </div>
+                        <h1 className="text-5xl font-bold color">
+                            Duels!
+                        </h1>
+                    </div>
+                    <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
+                        Mhm. Duels?! Yep, we have them! Create or join a duel to compete with others in real-time coding challenges. Show off your skills and climb the leaderboard!
+                    </p>
+                    <div className="flex justify-center gap-8 mt-8">
+                        <div className="text-center">
+                            <div className="text-2xl font-bold btn">
+                                {activeDuels}
+                            </div>
+                            <div className="text-sm text-gray-400">
+                                Active duels!
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
+            </div>
+            <div className="bg-primary w-full min-h-[60vh] pb-16 px-6">
                 <div className="mt-12 flex gap-8 justify-center max-md:flex-col max-md:items-center">
-                    <div className="bg-secondary p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800">
+                    <div className="p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800 bg-secondary flex flex-col items-center">
                         <div className="flex justify-center mb-4">
                             <div className="p-3 bg-primary rounded-full">
                                 <Swords size={32} className="color" />
                             </div>
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Create a duel</h2>
-                        <p className="text-gray-400 mb-6">Challenge someone to a coding battle!</p>
-                        
+                        <h2 className="text-2xl font-bold mb-2 text-center">Create a duel</h2>
+                        <p className="text-gray-400 mb-6 text-center">Challenge someone to a coding battle!</p>
                         {!duelId ? (
-                            <div className="space-y-4">
-                                <div className="relative">
+                            <div className="space-y-4 w-full flex flex-col items-center">
+                                <div className="relative w-full">
                                     <button 
                                         className="w-full px-4 py-3 bg-primary rounded-lg flex items-center justify-between"
                                         onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -233,7 +234,6 @@ const Duels = () => {
                                         </span>
                                         <ChevronDown size={16} />
                                     </button>
-                                    
                                     {dropdownOpen && (
                                         <div className="absolute z-10 w-full mt-1 bg-primary rounded-lg shadow-lg">
                                             {timeLimitOptions.map(option => (
@@ -251,7 +251,6 @@ const Duels = () => {
                                         </div>
                                     )}
                                 </div>
-                                
                                 <button 
                                     className="w-full px-4 py-3 btn rounded-lg flex items-center justify-center gap-2 transition"
                                     onClick={() => { handleCreateDuel() }}
@@ -268,37 +267,35 @@ const Duels = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="space-y-4">
-                                <p className="color font-medium">Duel Created!</p>
-                                <p className="text-gray-400">
+                            <div className="space-y-4 w-full flex flex-col items-center">
+                                <p className="color font-medium text-center">Duel created!</p>
+                                <p className="text-gray-400 text-center">
                                     Your duel is ready. An ID has been generated.
                                 </p>
-                                <div className="bg-primary p-3 rounded-lg font-mono text-sm">
+                                <div className="bg-primary p-3 rounded-lg font-mono text-sm w-full text-center break-all">
                                     {duelId}
                                 </div>
-                                <p className="text-gray-400 text-sm">
+                                <p className="text-gray-400 text-sm text-center">
                                     Waiting for an opponent to join... <br/>
                                     BTW: do not leave this page, otherwise you will have to create a new duel.
                                 </p>
                             </div>
                         )}
                     </div>
-
-                    <div className="bg-secondary p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800">
+                    <div className="p-6 rounded-xl shadow-lg max-md:w-full w-96 border border-gray-800 bg-secondary flex flex-col items-center">
                         <div className="flex justify-center mb-4">
                             <div className="p-3 bg-primary rounded-full">
                                 <UserPlus size={32} className="color" />
                             </div>
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Join a duel</h2>
-                        <p className="text-gray-400 mb-6">Enter a duel code to join an existing battle!</p>
-                        
-                        <div className="space-y-4">
-                            <div>
+                        <h2 className="text-2xl font-bold mb-2 text-center">Join a duel</h2>
+                        <p className="text-gray-400 mb-6 text-center">Enter a duel code to join an existing battle!</p>
+                        <div className="space-y-4 w-full flex flex-col items-center">
+                            <div className="w-full">
                                 <input 
                                     type="text" 
                                     placeholder="Enter duel code"
-                                    className="w-full px-4 py-3 bg-primary rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent"
+                                    className="w-full px-4 py-3 bg-primary rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent text-center"
                                     value={joinCode}
                                     onChange={(e) => setJoinCode(e.target.value)}
                                 />
