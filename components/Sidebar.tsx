@@ -1,11 +1,11 @@
-import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar, Calendar, Search } from "lucide-react";
+import { Home, Settings, LogOut, MessageCircleQuestion, FlagIcon, Code2Icon, ChartBar, Calendar, Search, Zap } from "lucide-react";
 import { useUser } from "@/utils/queries/user/getUser";
 import { useState } from "react";
 import { Loading } from "./Loading";
 import Avatar from "@/components/Avatar";
 
 const Sidebar = () => {
-    const { user, loading, error } = useUser();
+    const { user, loading } = useUser();
     const [isHovered, setIsHovered] = useState(false);
 
     if (loading) return <Loading />;
@@ -16,6 +16,7 @@ const Sidebar = () => {
         { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
         { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Duels", href: "/duels" },
         { icon: <ChartBar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Leaderboard", href: "/leaderboard" },
+        { icon: <Zap size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Live feed", href: "/realtime" },
         { icon: <Calendar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Daily", href: "/daily" },
         { icon: <Search size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Search", href: "/search" },
         { icon: <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Settings", href: "/settings" },

@@ -130,8 +130,8 @@ const categories = [
 ];
 
 const FAQ = () => {
-
     const [input, setInput] = useState("");
+    const [showSupportModal, setShowSupportModal] = useState(false);
 
     return (
         <div className="relative z-50 min-h-screen bg-secondary">
@@ -153,13 +153,22 @@ const FAQ = () => {
                         <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
                             Here are some common questions and answers about Hackacode. If you have any other questions, feel free to reach out to us!
                         </p>
-                        <input
-                            type="text"
-                            className="max-w-96 w-full mt-8 mx-auto block bg-primary border rounded-lg px-4 py-2 text-white"
-                            placeholder="Search questions..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                        />
+                        <div className="flex items-center justify-center gap-4 mt-8">
+                            <input
+                                type="text"
+                                className="max-w-96 w-full bg-primary border rounded-lg px-4 py-2 text-white"
+                                placeholder="Search questions..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                            />
+                            <button 
+                                onClick={() => setShowSupportModal(true)}
+                                className="bg-accent hover:bg-accent/90 text-white px-6 py-2 rounded-lg transition-colors duration-300 flex items-center gap-2 whitespace-nowrap"
+                            >
+                                <MessageCircleQuestionIcon size={20} />
+                                Contact support
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -204,6 +213,57 @@ const FAQ = () => {
                                 <p className="text-gray-400 text-center py-8">No results found.</p>
                             );
                         })()}
+                    </div>
+                </div>
+            )}
+            {showSupportModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[1000]">
+                    <div className="bg-primary border border-gray-700 rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+                            <h3 className="text-xl font-semibold color">Contact support</h3>
+                            <button 
+                                onClick={() => setShowSupportModal(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div className="p-6">
+                            <form className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                                        Subject
+                                    </label>
+                                    <input 
+                                        type="text"
+                                        className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
+                                        placeholder="How can we help?"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                                        Message
+                                    </label>
+                                    <textarea 
+                                        className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
+                                        rows={4}
+                                        placeholder="Describe your issue..."
+                                    />
+                                </div>
+                                
+                                <button 
+                                    type="submit"
+                                    className="w-full bg-accent hover:bg-accent/90 text-white py-2 rounded transition-colors duration-300"
+                                >
+                                    Send message
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
