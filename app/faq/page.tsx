@@ -3,6 +3,8 @@
 import { MessageCircleQuestionIcon } from "lucide-react"
 import { ReactNode } from "react";
 import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { useUser } from "@/utils/queries/user/getUser";
 
 interface CollapseProps {
     title: string;
@@ -132,6 +134,49 @@ const categories = [
 const FAQ = () => {
     const [input, setInput] = useState("");
     const [showSupportModal, setShowSupportModal] = useState(false);
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
+    
+    const supabase = createClient();
+    const { user } = useUser();
+
+    const handleSupportSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!user || !subject.trim() || !message.trim()) return;
+        
+        setIsSubmitting(true);
+        setError(null);
+        
+        const { error } = await supabase
+            .from('support')
+            .insert([
+                {
+                    user_id: user.id,
+                    subject: subject.trim(),
+                    message: message.trim(),
+                }
+            ]);
+            
+        setIsSubmitting(false);
+        
+        if (error) {
+            setError('Something went wrong. Please try again.');
+            return;
+        }
+        
+        setSuccess(true);
+        setSubject("");
+        setMessage("");
+        
+        setTimeout(() => {
+            setShowSupportModal(false);
+            setSuccess(false);
+        }, 3000);
+    };
 
     return (
         <div className="relative z-50 min-h-screen bg-secondary">
@@ -233,36 +278,64 @@ const FAQ = () => {
                         </div>
                         
                         <div className="p-6">
-                            <form className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">
-                                        Subject
-                                    </label>
-                                    <input 
-                                        type="text"
-                                        className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
-                                        placeholder="How can we help?"
-                                    />
+                            {success ? (
+                                <div className="text-center py-8">
+                                    <div className="mx-auto w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                                        <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <h4 className="text-xl font-medium color mb-2">Thank you for reaching out!</h4>
+                                    <p className="text-gray-400">We'll get back to you as soon as possible.</p>
                                 </div>
-                                
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">
-                                        Message
-                                    </label>
-                                    <textarea 
-                                        className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
-                                        rows={4}
-                                        placeholder="Describe your issue..."
-                                    />
-                                </div>
-                                
-                                <button 
-                                    type="submit"
-                                    className="w-full bg-accent hover:bg-accent/90 text-white py-2 rounded transition-colors duration-300"
-                                >
-                                    Send message
-                                </button>
-                            </form>
+                            ) : (
+                                <form onSubmit={handleSupportSubmit} className="space-y-4">
+                                    {error && (
+                                        <div className="bg-red-500/20 border border-red-500 rounded p-3 text-sm text-red-400">
+                                            {error}
+                                        </div>
+                                    )}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                                            Subject
+                                        </label>
+                                        <input 
+                                            type="text"
+                                            value={subject}
+                                            onChange={(e) => setSubject(e.target.value)}
+                                            className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
+                                            placeholder="How can we help?"
+                                            required
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                                            Message
+                                        </label>
+                                        <textarea 
+                                            value={message}
+                                            onChange={(e) => setMessage(e.target.value)}
+                                            className="w-full bg-secondary border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-accent"
+                                            rows={4}
+                                            placeholder="Describe your issue..."
+                                            required
+                                        />
+                                    </div>
+                                    
+                                    <button 
+                                        type="submit"
+                                        disabled={isSubmitting || !subject.trim() || !message.trim()}
+                                        className="w-full bg-accent hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-2 rounded transition-colors duration-300 flex items-center justify-center"
+                                    >
+                                        {isSubmitting ? (
+                                            <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            'Send message'
+                                        )}
+                                    </button>
+                                </form>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -270,5 +343,4 @@ const FAQ = () => {
         </div>
     )
 }
-
 export default FAQ;
