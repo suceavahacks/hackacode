@@ -61,6 +61,7 @@ export const useSubmitChallenge = () => {
                 status: result.status,
                 score: result.score,
                 duelId: duelId || null,
+                id: result.id,
             });
 
             await supabase
