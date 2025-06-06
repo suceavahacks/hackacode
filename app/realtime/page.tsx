@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import useAllUserSubmissionsRealtime from "@/utils/realTimeSubmissions/useRealTimeSubmissions";
+import useAllUserSubmissionsRealtime from "@/utils/mutations/challenges/realTimeSubmissions/useRealTimeSubmissions";
 import { createClient } from "@/utils/supabase/client";
 
 type Submission = {
