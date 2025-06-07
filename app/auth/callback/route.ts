@@ -30,7 +30,7 @@ export async function GET(request: Request) {
           profile_picture: user.user_metadata?.avatar_url || null,
           bio: "hackacoder",
           email,
-          slug: username.toLowerCase().replace(/\s+/g, "-"),
+          slug: username.toLowerCase().replace(/\s+/g, "-") || "hackacoder" + user.id.slice(0, 6),
         });
       }
 

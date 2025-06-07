@@ -15,6 +15,7 @@ import { useSubmitChallenge } from "@/utils/mutations/challenges/submit"
 import { useSubmitDiscussion } from "@/utils/mutations/challenges/discussion/discussion";
 import { useRealTimeDiscussion } from "@/utils/mutations/challenges/discussion/useRealTimeDiscussion"
 import { createClient } from "@/utils/supabase/client";
+import { useRunCode } from "@/utils/mutations/challenges/run"
 
 interface JudgeResult {
     ExitCode: string;
@@ -68,6 +69,15 @@ export default function Challenge() {
     const [discussion, setDiscussion] = useState<any[]>([])
     const submitDiscussion = useSubmitDiscussion()
     const discussionEndRef = useRef<HTMLDivElement>(null)
+    const [runOpen, setRunOpen] = useState<boolean>(false)
+    const [runResults, setRunResults] = useState<any>(null)
+    const run = useRunCode({
+      onSuccess: (data : any) => {
+        console.log("Run results:", data);
+      }
+    })
+
+    const [runInput, setRunInput] = useState<string>("")
 
     const [code, setCode] = useState<string>(getTemplate(language))
     const onChange = useCallback((value: string) => {
@@ -341,6 +351,13 @@ export default function Challenge() {
                 >
                     {loadingSubmit ? <Loading /> : "Submit 👾"}
                 </button>
+                <button
+                  className="bg-accent hover:opacity-70 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                  onClick={() => setRunOpen(true)}
+                  disabled={loading}
+                >
+                  Run ▶️
+                </button>
             </div>
             <div className="absolute bottom-12 right-0 p-4 z-[100]">
                 {!loadingSubmit && (
@@ -424,6 +441,41 @@ export default function Challenge() {
                         )}
                     </div>
                 </div>
+            )}
+            {runOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
+                <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full flex flex-col gap-4">
+                  <h2 className="text-xl font-bold mb-2 text-center">Custom Input for Run</h2>
+                  <textarea
+                    className="bg-secondary rounded p-2 text-white resize-none min-h-[80px] max-h-[200px] w-full"
+                    rows={4}
+                    placeholder="Paste or type your custom input here..."
+                    value={runInput}
+                    onChange={e => setRunInput(e.target.value)}
+                    style={{fontSize:16}}
+                  />
+                  <div className="flex gap-4 justify-center mt-2">
+                    <button
+                      className="btn btn-accent"
+                      onClick={() => {
+                        run.mutate({
+                          code: code,
+                          language: language,
+                          input: runInput,
+                        });
+                      }}
+                    >
+                      Run
+                    </button>
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => setRunOpen(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
         </div>
     )
