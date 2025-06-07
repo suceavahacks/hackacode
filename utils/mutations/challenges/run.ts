@@ -18,7 +18,7 @@ export const useRunCode = (options?: any) => {
                     code: code, 
                     language: language,
                     input: input || "",
-                })
+                }),
             })
 
             if (!response.ok) {

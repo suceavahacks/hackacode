@@ -73,7 +73,7 @@ export default function Challenge() {
     const [runResults, setRunResults] = useState<any>(null)
     const run = useRunCode({
       onSuccess: (data : any) => {
-        console.log("Run results:", data);
+        setRunResults(data);
       }
     })
 
@@ -443,20 +443,22 @@ export default function Challenge() {
                 </div>
             )}
             {runOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-                <div className="bg-primary p-6 rounded-lg shadow-lg max-w-2xl w-full flex flex-col gap-4">
-                  <h2 className="text-xl font-bold mb-2 text-center">Custom Input for Run</h2>
+              <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000]">
+                <div className="bg-[#18181b] p-6 rounded-xl shadow-lg max-w-md w-full flex flex-col gap-4 border border-white/10">
+                  <h2 className="text-xl font-bold text-center text-white">Run with custom Input</h2>
+                  <p className="text-white/60 text-sm text-center">
+                    Input below will be sent to your program's <span className='text-accent'>stdin</span>.
+                  </p>
                   <textarea
-                    className="bg-secondary rounded p-2 text-white resize-none min-h-[80px] max-h-[200px] w-full"
-                    rows={4}
-                    placeholder="Paste or type your custom input here..."
+                    className="bg-[#23232a] rounded p-2 text-white text-base w-full min-h-[60px] max-h-[120px] border border-white/10"
+                    rows={3}
+                    placeholder="Custom input..."
                     value={runInput}
                     onChange={e => setRunInput(e.target.value)}
-                    style={{fontSize:16}}
                   />
-                  <div className="flex gap-4 justify-center mt-2">
+                  <div className="flex gap-2 justify-center">
                     <button
-                      className="btn btn-accent"
+                      className="px-5 py-2 rounded bg-accent text-white font-semibold"
                       onClick={() => {
                         run.mutate({
                           code: code,
@@ -468,12 +470,38 @@ export default function Challenge() {
                       Run
                     </button>
                     <button
-                      className="btn btn-outline"
+                      className="px-5 py-2 rounded border border-white/20 text-white bg-transparent"
                       onClick={() => setRunOpen(false)}
                     >
                       Cancel
                     </button>
                   </div>
+                  {runResults && (
+                    <table className="w-full mt-2 text-sm text-white border border-white/10 rounded overflow-hidden">
+                      <thead>
+                        <tr className="bg-[#23232a]">
+                          <th className="py-2 px-3 text-left font-semibold">Stdout</th>
+                          <th className="py-2 px-3 text-left font-semibold">Stderr</th>
+                          <th className="py-2 px-3 text-left font-semibold">Time</th>
+                          <th className="py-2 px-3 text-left font-semibold">Memory</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-[#1a1a1e] border-t border-white/10">
+                          <td className="py-2 px-3">
+                            <pre className="whitespace-pre-wrap text-white/90">{runResults.result?.Stdout || <span className="text-gray-400">(empty)</span>}</pre>
+                          </td>
+                          <td className="py-2 px-3">
+                            {runResults.result?.Stderr ? (
+                              <pre className="whitespace-pre-wrap text-yellow-400">{runResults.result.Stderr}</pre>
+                            ) : <span className="text-gray-400">(empty)</span>}
+                          </td>
+                          <td className="py-2 px-3">{runResults.result?.Time || '-'}s</td>
+                          <td className="py-2 px-3">{runResults.result?.Memory || '-'} KB</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             )}
