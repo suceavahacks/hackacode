@@ -3,8 +3,8 @@
 import { MessageCircleQuestionIcon } from "lucide-react"
 import { ReactNode } from "react";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 import { useUser } from "@/utils/queries/user/getUser";
+import { useSupportMutation } from "@/utils/mutations/support/useSupportMutation";
 
 interface CollapseProps {
     title: string;
@@ -140,42 +140,32 @@ const FAQ = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     
-    const supabase = createClient();
     const { user } = useUser();
+    const supportMutation = useSupportMutation();
 
     const handleSupportSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         if (!user || !subject.trim() || !message.trim()) return;
         
-        setIsSubmitting(true);
-        setError(null);
-        
-        const { error } = await supabase
-            .from('support')
-            .insert([
-                {
-                    user_id: user.id,
-                    subject: subject.trim(),
-                    message: message.trim(),
-                }
-            ]);
+        try {
+            await supportMutation.mutateAsync({
+                user_id: user.id,
+                subject: subject.trim(),
+                message: message.trim(),
+            });
             
-        setIsSubmitting(false);
-        
-        if (error) {
+            setSuccess(true);
+            setSubject("");
+            setMessage("");
+            
+            setTimeout(() => {
+                setShowSupportModal(false);
+                setSuccess(false);
+            }, 3000);
+        } catch (err) {
             setError('Something went wrong. Please try again.');
-            return;
         }
-        
-        setSuccess(true);
-        setSubject("");
-        setMessage("");
-        
-        setTimeout(() => {
-            setShowSupportModal(false);
-            setSuccess(false);
-        }, 3000);
     };
 
     return (
