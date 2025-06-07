@@ -1,24 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import useAllUserSubmissionsRealtime from "@/utils/mutations/challenges/realTimeSubmissions/useRealTimeSubmissions";
-import { createClient } from "@/utils/supabase/client";
 import { useUser } from "@/utils/queries/user/getUser";
 import NotAuth from "@/components/NeedAuth";
-
-type Submission = {
-    id: string;
-    challenge: string;
-    timestamp: string;
-    status: string;
-    score: number;
-};
-
-type UserSubmissions = {
-    slug: string;
-    submissions: Submission[];
-};
+import { useSubmissionsQuery, type Submission, type UserSubmissions } from "@/utils/queries/submission/useSubmissionQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 const getMessage = (slug: string, submission: Submission) => {
     const challengeLink = (
@@ -52,28 +39,12 @@ const getMessage = (slug: string, submission: Submission) => {
 };
 
 export default function RealtimeSubmissionsPage() {
-    const [allSubs, setAllSubs] = useState<UserSubmissions[]>([]);
+    const { data: allSubs = [] } = useSubmissionsQuery();
     const { user } = useUser();
 
-    useEffect(() => {
-        const supabase = createClient();
-        supabase
-            .from("users")
-            .select("slug, submissions")
-            .then(({ data }) => {
-                if (data) {
-                    setAllSubs(
-                        data.map((u: any) => ({
-                            slug: u.slug,
-                            submissions: u.submissions || [],
-                        }))
-                    );
-                }
-            });
-    }, []);
-
     const handleUpdate = (submissions: Submission[], slug: string) => {
-        setAllSubs((prev) => {
+        const queryClient = useQueryClient();
+        queryClient.setQueryData(['userSubmissions'], (prev: UserSubmissions[] = []) => {
             const filtered = prev.filter((u) => u.slug !== slug);
             return [...filtered, { slug, submissions }];
         });
