@@ -16,6 +16,7 @@ import { useSubmitDiscussion } from "@/utils/mutations/challenges/discussion/dis
 import { useRealTimeDiscussion } from "@/utils/mutations/challenges/discussion/useRealTimeDiscussion"
 import { createClient } from "@/utils/supabase/client";
 import { useRunCode } from "@/utils/mutations/challenges/run"
+import { useVoteChallenge, VoteType } from "@/utils/mutations/challenges/vote"
 
 interface JudgeResult {
     ExitCode: string;
@@ -76,6 +77,7 @@ export default function Challenge() {
         setRunResults(data);
       }
     })
+    const voteChallenge = useVoteChallenge()
 
     const [runInput, setRunInput] = useState<string>("")
 
@@ -156,6 +158,16 @@ export default function Challenge() {
         }
         return undefined;
     }
+    
+    const handleVote = (voteType: VoteType) => {
+      if (!user || !challenge?.slug) return;
+      
+      voteChallenge.mutate({
+        challengeSlug: challenge.slug,
+        userId: user.id,
+        voteType: voteType
+      });
+    }
 
     if(!user) {
       return <NotFound />
@@ -196,9 +208,27 @@ export default function Challenge() {
                         <div className="overflow-y-auto p-4 h-full">
                           {activeTab === "description" && (
                             <div>
-                              <h1 className="text-4xl font-bold mb-4">
-                                # {challenge.title}
-                              </h1>
+                              <div className="flex items-center gap-4 mb-4">
+                                <h1 className="text-4xl font-bold">
+                                  # {challenge.title}
+                                </h1>
+                                <div className="flex gap-2">
+                                  <button
+                                    className={`${challenge.upvotes?.includes(user.id) ? 'bg-green-600' : 'bg-accent'} text-white rounded px-3 py-1 text-sm hover:brightness-110 transition flex items-center gap-1`}
+                                    onClick={() => handleVote('upvote')}
+                                    title="Upvote this problem"
+                                  >
+                                    <span>👍</span> {challenge.upvotes?.length || 0}
+                                  </button>
+                                  <button
+                                    className={`${challenge.downvotes?.includes(user.id) ? 'bg-red-600' : 'bg-secondary'} text-white rounded px-3 py-1 text-sm hover:bg-red-500 transition flex items-center gap-1`}
+                                    onClick={() => handleVote('downvote')}
+                                    title="Downvote this problem"
+                                  >
+                                    <span>👎</span> {challenge.downvotes?.length || 0}
+                                  </button>
+                                </div>
+                              </div>
                               <section className="mb-4 challenge" dangerouslySetInnerHTML={{ __html: challenge.description }} />
                             </div>
                           )}
