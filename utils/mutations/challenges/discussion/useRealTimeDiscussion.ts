@@ -17,10 +17,8 @@ export function useRealTimeDiscussion(slug: string, onNewDiscussion: (discussion
           filter: `slug=eq.${slug}`,
         },
         (payload) => {
-          const newDiscussion = (payload.new as { discussion?: any })?.discussion;
-          if (newDiscussion) {
-            onNewDiscussion(newDiscussion);
-          }
+          const newDiscussion = (payload.new as { discussion?: any })?.discussion ?? [];
+          onNewDiscussion(newDiscussion);
         }
       )
       .subscribe();

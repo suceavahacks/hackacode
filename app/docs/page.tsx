@@ -65,6 +65,14 @@ const sections = [
 							"Click on a day to see challenge details.",
 						]
 					},
+					{
+						title: "7. Support & Help",
+						items: [
+							"If you need help or want to report a bug, go to the <a href='/faq' class='color decoration-wavy hover:underline'>FAQ & Support</a> page.",
+							"You can contact support directly from the form at the bottom of the FAQ page.",
+							"Check the FAQ for answers to common questions before submitting a ticket."
+						]
+					},
 				],
 			},
 		],
@@ -138,7 +146,7 @@ const sections = [
 						title: "Scoring algorithm",
 						items: [
 							"Each challenge has a max score (e.g. 100)",
-							"Your score = max score if you pass all tests",,
+							"Your score = max score if you pass all tests", ,
 							"Leaderboard: sum of unique challenge scores",
 						],
 					},
@@ -282,8 +290,7 @@ const sections = [
 							"Create a new branch for your feature/bug",
 							"Open a Pull Request with a clear description",
 							"Follow the style and naming guide",
-							"Add tests where needed",
-							"All contributions are reviewed by maintainers",
+							"All contributions are reviewed by Adelin :).",
 						],
 					},
 					{
@@ -310,6 +317,69 @@ const DocsPage = () => {
 
 	return (
 		<div className="min-h-screen bg-primary flex justify-center items-start">
+			<div className="w-full max-w-2xl mx-auto px-4 py-12">
+				<header className="mb-10 text-center">
+					<h1 className="text-4xl font-bold color mb-2 tracking-tight">Hackacode docs</h1>
+					<p className="text-white text-xl font-light">Everything you need to know about the platform, in one place.</p>
+				</header>
+				<nav className="flex flex-wrap justify-center gap-2 mb-10">
+					{sections.map((section, idx) => (
+						<button
+							key={section.title}
+							onClick={() => setActiveSection(idx)}
+							className={`px-4 py-1 rounded-md font-medium transition-all border text-base ${activeSection === idx
+								? "bg-accent/20 color border-accent"
+								: "bg-secondary text-gray-400 border-gray-800 hover:bg-accent/10 hover:text-accent"
+								}`}
+						>
+							<span className="flex items-center gap-2"><section.icon size={18} />{section.title}</span>
+						</button>
+					))}
+				</nav>
+				{(sections[activeSection].content as SectionContent[]).map((item, idx) => (
+					<section key={idx} className="mb-12 bg-secondary/70 border border-gray-800 rounded-xl p-8">
+						<h2 className="text-2xl font-semibold color mb-3 flex items-center gap-2">
+							<span className="inline-block w-1.5 h-6 bg-accent rounded-full mr-2" />
+							{item.title}
+						</h2>
+						{typeof item.description === 'string' ? (
+							<p className="text-white mb-5 text-lg leading-relaxed font-light" dangerouslySetInnerHTML={{ __html: item.description }} />
+						) : (
+							<p className="text-white mb-5 text-lg leading-relaxed font-light">{item.description}</p>
+						)}
+
+						{item.code ? (
+							<div className="mb-5">
+								<pre
+									className="bg-primary p-3 rounded border border-accent/20 code text-lg text-white overflow-x-auto cursor-pointer"
+									onClick={() => navigator.clipboard.writeText(item.code as string)}
+									title="Copy to clipboard"
+								>
+									<code>{item.code}</code>
+								</pre>
+								<p className="text-sm font-semibold color mt-2 pl-1">Did you know that if you click the commands, it puts in your clipboard?</p>
+							</div>
+						) : null}
+
+
+						{item.subsections?.map((subsection, subIdx) => (
+							<div key={subIdx} className="mb-4">
+								<h3 className="text-xl font-medium color mb-1 mt-3">{subsection.title}</h3>
+								<ul className="list-disc list-inside space-y-1 text-white text-lg font-light pl-2">
+									{subsection.items.map((listItem, itemIdx) => (
+										<li key={itemIdx}>
+											{typeof listItem === "string"
+												? <span dangerouslySetInnerHTML={{ __html: listItem }} />
+												: listItem}
+										</li>
+									))}
+								</ul>
+							</div>
+						))}
+					</section>
+				))}
+				PS: This platform is beta, so some features may have bugs or be incomplete. Please keep in mind that this is a work in progress and I am constantly improving it. If you find any issues, please contact @Adelin on Hack Club Slack.
+			</div>
 		</div>
 	);
 };

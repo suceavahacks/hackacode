@@ -65,7 +65,7 @@ const SearchPage = () => {
                         </ul>
                     )}
                     {showNoResults && (
-                        <div className="text-white/40">Niciun rezultat.</div>
+                        <div className="text-white/40">No result.</div>
                     )}
                 </div>
             </div>

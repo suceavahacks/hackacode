@@ -127,6 +127,7 @@ export default function Challenge() {
         };  
         try {
             submitDiscussion.mutate(newDiscussion);
+            setDiscussionInput("");
         } catch (error) {
             console.error("Failed to submit discussion:", error);
         }
