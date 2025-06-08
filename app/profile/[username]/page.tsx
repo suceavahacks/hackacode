@@ -5,8 +5,8 @@ import { useProfile } from '@/utils/queries/profile/getProfile';
 import { Loading } from '@/components/Loading';
 import NotFound from '@/app/not-found';
 import { useState, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import { Github } from "lucide-react";
+import Link from 'next/link';
 
 interface ActivityData {
     date: string;
@@ -267,27 +267,27 @@ const Profile = () => {
                     
                     {profile.submissions && profile.submissions.length > 0 ? (
                         <>
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="text-left border-b border-[#161617]">
-                                            <th className="pb-2 text-white opacity-80 font-medium">Challenge</th>
-                                            <th className="pb-2 text-white opacity-80 font-medium">Date</th>
-                                            <th className="pb-2 text-white opacity-80 font-medium text-center">Score</th>
-                                            <th className="pb-2 text-white opacity-80 font-medium text-right">Status</th>
+                            <div className="overflow-x-auto rounded-lg border border-gray-700">
+                                <table className="w-full text-sm">
+                                    <thead className="bg-secondary/80 text-gray-300 border-b border-gray-700">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left font-medium">Challenge</th>
+                                            <th className="px-4 py-3 text-left font-medium">Date</th>
+                                            <th className="px-4 py-3 text-center font-medium">Score</th>
+                                            <th className="px-4 py-3 text-right font-medium">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-gray-700">
                                         {currentSubmissions.map((submission: Submission, index: number) => (
                                             <tr key={`${submission.id || index}`} className="hover:bg-[#161617] transition-colors">
                                                 <td className="py-3 pr-4">
                                                     <div className="flex items-center">
-                                                        <div className={`w-2 h-2 rounded-full mr-2 ${
+                                                        <div className={`w-2 h-2 rounded-full ml-2 ${
                                                             submission.status === "ACCEPTED" ? "bg-[#3fcf8f]" : 
                                                             submission.status === "FAILED" ? "bg-red-500" : 
                                                             "bg-yellow-500"
                                                         }`}></div>
-                                                        <Link href={`/challenges/${submission.challenge}`} className='font-medium text-white hover:text-[#3fcf8f]'>
+                                                        <Link href={`/challenges/${submission.challenge}`} className='font-medium text-white hover:text-[#3fcf8f] ml-2'>
                                                             {submission.challenge}
                                                         </Link>
                                                     </div>
@@ -316,27 +316,32 @@ const Profile = () => {
                             </div>
 
                             {totalPages > 1 && (
-                                <div className="flex justify-center items-center gap-2 mt-6">
+                                <div className="flex justify-center items-center gap-3 mt-6">
                                     <button 
                                         onClick={goToPrevPage} 
                                         disabled={currentPage === 1}
-                                        className={`px-3 py-2 rounded-md ${currentPage === 1 
-                                            ? 'bg-[#161617] text-gray-500 cursor-not-allowed' 
-                                            : 'bg-[#161617] hover:bg-[#0f0f0f] text-white'}`}
+                                        className={`px-4 py-2 rounded-md flex items-center border ${currentPage === 1 
+                                            ? 'border-gray-700 bg-secondary/40 text-gray-500 cursor-not-allowed' 
+                                            : 'border-gray-700 bg-secondary hover:border-accent transition-colors text-white'}`}
                                     >
-                                        ← Prev
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                            <path d="m15 18-6-6 6-6"/>
+                                        </svg>
+                                        Prev
                                     </button>
                                     
-                                    <div className="flex gap-1">
+                                    <div className="flex gap-2">
                                         {Array.from({ length: totalPages }).map((_, index: number) => (
                                             <button
                                                 key={index}
                                                 onClick={() => goToPage(index + 1)}
-                                                className={`w-10 h-10 rounded-md ${
+                                                className={`w-9 h-9 flex items-center justify-center rounded-md transition-colors ${
                                                     currentPage === index + 1
-                                                        ? 'bg-[#3fcf8f] text-black font-bold'
-                                                        : 'bg-[#161617] text-white hover:bg-[#0f0f0f]'
+                                                        ? 'bg-accent text-white font-medium shadow-md'
+                                                        : 'bg-secondary border border-gray-700 text-white hover:border-accent'
                                                 }`}
+                                                aria-label={`Go to page ${index + 1}`}
+                                                aria-current={currentPage === index + 1 ? 'page' : undefined}
                                             >
                                                 {index + 1}
                                             </button>
@@ -346,18 +351,27 @@ const Profile = () => {
                                     <button 
                                         onClick={goToNextPage} 
                                         disabled={currentPage === totalPages}
-                                        className={`px-3 py-2 rounded-md ${currentPage === totalPages 
-                                            ? 'bg-[#161617] text-gray-500 cursor-not-allowed' 
-                                            : 'bg-[#161617] hover:bg-[#0f0f0f] text-white'}`}
+                                        className={`px-4 py-2 rounded-md flex items-center border ${currentPage === totalPages 
+                                            ? 'border-gray-700 bg-secondary/40 text-gray-500 cursor-not-allowed' 
+                                            : 'border-gray-700 bg-secondary hover:border-accent transition-colors text-white'}`}
                                     >
-                                        Next →
+                                        Next
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
                                     </button>
                                 </div>
                             )}
                         </>
                     ) : (
-                        <div className="text-center text-white p-8">
-                            No submissions found.
+                        <div className="bg-secondary/20 rounded-lg p-8 text-center border border-gray-700">
+                            <div className="inline-flex items-center justify-center w-12 h-12 bg-secondary/50 rounded-full mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 className="text-lg font-medium mb-1">No submissions yet</h3>
+                            <p className="text-white/60">Complete challenges to see your submissions history here.</p>
                         </div>  
                     )}
                 </div>
