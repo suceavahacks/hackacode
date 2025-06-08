@@ -15,6 +15,7 @@ hackacode is a vibey competitive programming platform where you can solve coding
 - luigi ai - get help from our ai assistant for code review and tips
 - cli integration - submit your solutions directly from your terminal
 - live feed - watch submissions happen in real-time
+- [codejugder](https://github.com/suceavahacks/codejudger)
 
 ## getting started
 
