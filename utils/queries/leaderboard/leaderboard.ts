@@ -30,12 +30,11 @@ export const useLeaderboard = (sortBy: keyof LeaderboardUser = "score", sortOrde
           const challenge = sub.challenge;
           const score = sub.score || sub.result?.score || 0;
 
-          uniqueAcceptedChallenges.set(challenge, score);
           if (isAccepted && challenge) {
             if (!uniqueAcceptedChallenges.has(challenge) || score > uniqueAcceptedChallenges.get(challenge)) {
+              uniqueAcceptedChallenges.set(challenge, score);
             }
           }
-
         });
         let totalScore = 0;
         uniqueAcceptedChallenges.forEach((score) => {
