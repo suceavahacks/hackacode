@@ -121,6 +121,19 @@ const categories = [
         ]
     },
     {
+        title: "Documentation",
+        questions: [
+            {
+                title: "Where can I find documentation for Hackacode?",
+                content: "You can find comprehensive documentation for Hackacode at the <a class='color underline decoration-wavy' href='/docs'>/docs</a> page. This documentation covers everything from getting started to advanced features, including: how to navigate the platform, solve challenges, participate in duels, use the CLI, understand the code judging system, and more. The documentation is organized into sections like 'How to use Hackacode', 'Overview', 'Challenges & submissions', 'Duels & realtime', 'CLI Integration', and 'Contributing & best practices'."
+            },
+            {
+                title: "How do I contribute to the documentation?",
+                content: "You can contribute to the documentation by submitting a pull request to our GitHub repository. We welcome improvements and additions to make our documentation more comprehensive and helpful."
+            }
+        ]
+    },
+    {
         title: "CLI integration",
         questions: [
             {
