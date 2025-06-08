@@ -29,7 +29,7 @@ const Sidebar = () => {
 
     return (
         <div
-            className="sidebar fixed top-0 left-0 h-full transition-all duration-300 ease-in-out shadow-lg bg-secondary z-50 max-md:hidden"
+            className="sidebar fixed top-0 left-0 h-full transition-all duration-300 ease-in-out shadow-lg bg-secondary z-50 md:block hidden"
             style={{ width: isHovered ? '200px' : '64px', zIndex: 1000 }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

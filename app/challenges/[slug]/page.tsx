@@ -120,6 +120,20 @@ export default function Challenge() {
       discussionEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [discussion]);
 
+    const [panelDirection, setPanelDirection] = useState<"horizontal" | "vertical">("horizontal");
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPanelDirection(window.innerWidth < 768 ? "vertical" : "horizontal");
+        };
+        
+        handleResize();
+        
+        window.addEventListener('resize', handleResize);
+        
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     if (loading) {
         return <Loading />
     }
@@ -175,19 +189,19 @@ export default function Challenge() {
     
     return (
         <div className="bg-primary text-white relative z-50 h-[calc(100vh-64px)] flex flex-col">
-            <div className="bg-secondary border-b border-gray-700 p-4 flex justify-between items-center ml-[64px]">
-                <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-bold">
+            <div className="bg-secondary border-b border-gray-700 p-4 flex flex-col md:flex-row justify-between items-start md:items-center md:ml-[64px]">
+                <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
+                    <h1 className="text-xl md:text-2xl font-bold truncate max-w-full">
                         #{challenge.title}
                     </h1>
                     
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 mt-2 md:mt-0 md:ml-4">
                         <button
                             className={`${
                                 challenge.upvotes?.includes(user.id) 
                                 ? 'bg-green-600 border-green-500' 
                                 : 'bg-secondary border-gray-600 hover:border-accent'
-                            } text-white rounded-md px-3 py-1 border transition-colors flex items-center gap-1`}
+                            } text-white rounded-md px-2 md:px-3 py-1 border transition-colors flex items-center gap-1 text-sm`}
                             onClick={() => handleVote('upvote')}
                             title="Upvote this problem"
                         >
@@ -199,7 +213,7 @@ export default function Challenge() {
                                 challenge.downvotes?.includes(user.id) 
                                 ? 'bg-red-600 border-red-500' 
                                 : 'bg-secondary border-gray-600 hover:border-accent'
-                            } text-white rounded-md px-3 py-1 border transition-colors flex items-center gap-1`}
+                            } text-white rounded-md px-2 md:px-3 py-1 border transition-colors flex items-center gap-1 text-sm`}
                             onClick={() => handleVote('downvote')}
                             title="Downvote this problem"
                         >
@@ -208,7 +222,7 @@ export default function Challenge() {
                         </button>
                     </div>
 
-                    <span className={`ml-4 px-2 py-1 text-xs font-medium rounded-md ${
+                    <span className={`mt-2 md:mt-0 md:ml-4 px-2 py-1 text-xs font-medium rounded-md inline-flex ${
                         challenge.difficulty === "easy" ? "bg-green-900/50 text-green-400 border border-green-700" :
                         challenge.difficulty === "medium" ? "bg-yellow-900/50 text-yellow-400 border border-yellow-700" :
                         "bg-red-900/50 text-red-400 border border-red-700"
@@ -217,12 +231,12 @@ export default function Challenge() {
                     </span>
                 </div>
                 
-                <div className="flex items-center gap-3 text-sm">
+                <div className="flex flex-wrap items-center gap-3 text-sm mt-3 md:mt-0">
                     <div className="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-accent"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         <span className="text-gray-300">Time: <span className="text-white">{challenge.time_limit}s</span></span>
                     </div>
-                    <div className="flex items-center ml-4">
+                    <div className="flex items-center md:ml-4">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-accent"><path d="M14 9V6c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v3"/><path d="M18 9H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z"/><path d="M6 9V6c0-1.1.9-2 2-2h0c1.1 0 2 .9 2 2v3"/></svg>
                         <span className="text-gray-300">Memory: <span className="text-white">{challenge.memory_limit}KB</span></span>
                     </div>
@@ -230,13 +244,13 @@ export default function Challenge() {
             </div>
 
             <div className="flex-1 flex overflow-hidden">
-                <PanelGroup direction="horizontal" className="flex-1">
-                    <Panel className="ml-[64px] overflow-hidden flex flex-col" minSize={40} defaultSize={50}>
+                <PanelGroup direction={panelDirection} className="flex-1">
+                    <Panel className="md:ml-[64px] overflow-hidden flex flex-col" minSize={20} defaultSize={panelDirection === "vertical" ? 40 : 50}>
                         <div className="border-b border-gray-700 bg-secondary/40">
-                            <div className="flex">
+                            <div className="flex overflow-x-auto">
                                 <button 
                                     onClick={() => setActiveTab("description")}
-                                    className={`px-6 py-3 font-medium text-sm ${
+                                    className={`px-3 md:px-6 py-3 font-medium text-xs md:text-sm whitespace-nowrap ${
                                         activeTab === "description" 
                                             ? "text-accent border-b-2 border-accent" 
                                             : "text-white/70 hover:text-white"
@@ -246,7 +260,7 @@ export default function Challenge() {
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab("submissions")}
-                                    className={`px-6 py-3 font-medium text-sm ${
+                                    className={`px-3 md:px-6 py-3 font-medium text-xs md:text-sm whitespace-nowrap ${
                                         activeTab === "submissions" 
                                             ? "text-accent border-b-2 border-accent" 
                                             : "text-white/70 hover:text-white"
@@ -256,7 +270,7 @@ export default function Challenge() {
                                 </button>
                                 <button 
                                     onClick={() => setActiveTab("discussion")}
-                                    className={`px-6 py-3 font-medium text-sm ${
+                                    className={`px-3 md:px-6 py-3 font-medium text-xs md:text-sm whitespace-nowrap ${
                                         activeTab === "discussion" 
                                             ? "text-accent border-b-2 border-accent" 
                                             : "text-white/70 hover:text-white"
@@ -282,15 +296,15 @@ export default function Challenge() {
                                     </h2>
                                     
                                     {user?.submissions?.filter((sub: Submission) => sub.challenge === challenge.slug).length > 0 ? (
-                                        <div className="rounded-lg border border-gray-700 overflow-hidden">
-                                            <table className="w-full text-sm">
+                                        <div className="rounded-lg border border-gray-700 overflow-x-auto">
+                                            <table className="w-full text-xs md:text-sm">
                                                 <thead className="bg-secondary text-gray-300">
                                                     <tr>
-                                                        <th className="px-4 py-3 text-left">Date</th>
-                                                        <th className="px-4 py-3 text-left">Language</th>
-                                                        <th className="px-4 py-3 text-left">Status</th>
-                                                        <th className="px-4 py-3 text-left">Score</th>
-                                                        <th className="px-4 py-3 text-left">Action</th>
+                                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left">Date</th>
+                                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left">Language</th>
+                                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left">Status</th>
+                                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left">Score</th>
+                                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -302,10 +316,10 @@ export default function Challenge() {
                                                                 className="cursor-pointer border-t border-gray-700 hover:bg-secondary/40"
                                                                 onClick={() => window.location.href = `/submissions/${submission.id}`}
                                                             >
-                                                                <td className="px-4 py-3 text-gray-300">{new Date(submission.timestamp).toLocaleString()}</td>
-                                                                <td className="px-4 py-3">{submission.language}</td>
-                                                                <td className="px-4 py-3">
-                                                                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                                                <td className="px-2 md:px-4 py-2 md:py-3 text-gray-300 text-xs whitespace-nowrap">{new Date(submission.timestamp).toLocaleString()}</td>
+                                                                <td className="px-2 md:px-4 py-2 md:py-3">{submission.language}</td>
+                                                                <td className="px-2 md:px-4 py-2 md:py-3">
+                                                                    <span className={`inline-flex items-center px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium ${
                                                                         submission.status == 'ACCEPTED' 
                                                                             ? 'bg-green-900/30 text-green-400 border border-green-700/50' 
                                                                             : 'bg-red-900/30 text-red-400 border border-red-700/50'
@@ -313,17 +327,17 @@ export default function Challenge() {
                                                                         {submission.status}
                                                                     </span>
                                                                 </td>
-                                                                <td className="px-4 py-3 font-mono">{submission.score}</td>
-                                                                <td className="px-4 py-3">
+                                                                <td className="px-2 md:px-4 py-2 md:py-3 font-mono">{submission.score}</td>
+                                                                <td className="px-2 md:px-4 py-2 md:py-3">
                                                                     <button
-                                                                        className="px-3 py-1 rounded text-xs font-medium bg-accent/20 border border-accent/30 text-accent hover:bg-accent/30"
+                                                                        className="px-2 md:px-3 py-1 rounded text-xs font-medium bg-accent/20 border border-accent/30 text-accent hover:bg-accent/30"
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
                                                                             setCode(submission.code);
                                                                             setLanguage(submission.language);
                                                                         }}
                                                                     >
-                                                                        Load code
+                                                                        Load
                                                                     </button>
                                                                 </td>
                                                             </tr>
@@ -377,9 +391,9 @@ export default function Challenge() {
                                         </div>
                                     </div>
                                     
-                                    <div className="mt-2 bg-secondary/20 border border-gray-700 p-3 rounded-lg">
+                                    <div className="mt-2 bg-secondary/20 border border-gray-700 p-2 md:p-3 rounded-lg">
                                         <textarea
-                                            className="bg-secondary/50 w-full rounded-lg p-3 text-white resize-none border border-gray-600 focus:border-accent focus:outline-none"
+                                            className="bg-secondary/50 w-full rounded-lg p-2 md:p-3 text-white resize-none border border-gray-600 focus:border-accent focus:outline-none text-sm md:text-base"
                                             rows={2}
                                             placeholder="Write your message..."
                                             value={discussionInput}
@@ -393,11 +407,11 @@ export default function Challenge() {
                                         />
                                         <div className="flex justify-end mt-2">
                                             <button
-                                                className="bg-accent px-4 py-2 rounded-lg text-white font-medium hover:bg-accent/80 flex items-center"
+                                                className="bg-accent px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-white text-sm md:text-base font-medium hover:bg-accent/80 flex items-center"
                                                 onClick={handleDiscussionSubmit}
                                                 disabled={!discussionInput.trim()}
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                                                 Post
                                             </button>
                                         </div>
@@ -407,11 +421,11 @@ export default function Challenge() {
                         </div>
                     </Panel>
                     
-                    <PanelResizeHandle className="w-[2px] bg-accent cursor-col-resize relative mx-[-2px] z-10">
-                        <div className="absolute left-1/2 inset-y-0 w-0.5 bg-accent-foreground/10"></div>
+                    <PanelResizeHandle className={`${panelDirection === "vertical" ? 'h-[2px] w-full' : 'w-[2px]'} bg-accent cursor-col-resize relative mx-[-2px] z-10`}>
+                        <div className={`absolute ${panelDirection === "vertical" ? 'top-1/2 inset-x-0 h-0.5' : 'left-1/2 inset-y-0 w-0.5'} bg-accent-foreground/10`}></div>
                     </PanelResizeHandle>
                     
-                    <Panel minSize={40}>
+                    <Panel minSize={25}>
                         <div className="h-full flex flex-col">
                             <div className="flex-1 overflow-hidden">
                                 <CodeMirror
@@ -428,11 +442,11 @@ export default function Challenge() {
                                 />
                             </div>
                             
-                            <div className="bg-secondary/90 border-t border-gray-700 p-2 px-4 flex justify-between items-center">
-                                <div className="flex items-center gap-1">
+                            <div className="bg-secondary/90 border-t border-gray-700 p-2 px-2 md:px-4 flex flex-wrap md:flex-nowrap justify-between items-center">
+                                <div className="flex flex-wrap items-center gap-1 w-full md:w-auto">
                                     <select
                                         value={language}
-                                        className="bg-secondary/90 text-white border border-gray-700 rounded-md py-1 px-3 text-sm focus:outline-none focus:border-accent"
+                                        className="bg-secondary/90 text-white border border-gray-700 rounded-md py-1 px-2 text-xs md:text-sm focus:outline-none focus:border-accent mb-2 md:mb-0"
                                         onChange={(e) => setLanguage(e.target.value)}
                                     >
                                         {languages.map((lang) => (
@@ -442,18 +456,18 @@ export default function Challenge() {
                                         ))}
                                     </select>
                                     
-                                    <div className="flex ml-4 items-center gap-2">
+                                    <div className="flex items-center gap-2 mb-2 md:mb-0 md:ml-2">
                                         <button 
-                                            className="bg-accent hover:bg-accent/80 text-white px-4 py-1 text-sm rounded-md flex items-center" 
+                                            className="bg-accent hover:bg-accent/80 text-white px-2 md:px-4 py-1 text-xs md:text-sm rounded-md flex items-center" 
                                             onClick={() => setRunOpen(true)}
                                             disabled={loadingSubmit}
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                             Run
                                         </button>
                                         
                                         <button 
-                                            className="bg-accent hover:bg-accent/80 text-white px-4 py-1 text-sm rounded-md flex items-center"
+                                            className="bg-accent hover:bg-accent/80 text-white px-2 md:px-4 py-1 text-xs md:text-sm rounded-md flex items-center"
                                             onClick={() => {
                                                 handleSubmit.mutate({
                                                     code: code,
@@ -483,7 +497,7 @@ export default function Challenge() {
                                     </div>
                                 </div>
                                 
-                                <div>
+                                <div className="flex-shrink-0 mt-2 md:mt-0">
                                     <Luigi code={code} setCode={setCode} description={challenge.description} />
                                 </div>
                             </div>
@@ -492,11 +506,11 @@ export default function Challenge() {
                 </PanelGroup>
             </div>
             {modalOpen && (
-                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000]">
-                    <div className="bg-secondary border border-gray-700 rounded-lg shadow-xl max-w-2xl w-full">
-                        <div className="border-b border-gray-700 px-6 py-4 flex items-center justify-between">
-                            <h2 className="text-xl font-semibold flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-accent"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000] p-4 overflow-y-auto">
+                    <div className="bg-secondary border border-gray-700 rounded-lg shadow-xl max-w-2xl w-full my-auto">
+                        <div className="border-b border-gray-700 px-4 md:px-6 py-4 flex items-center justify-between">
+                            <h2 className="text-lg md:text-xl font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-accent"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
                                 Submission Results
                             </h2>
                             <button 
@@ -599,11 +613,11 @@ export default function Challenge() {
             )}
             
             {runOpen && (
-                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000]">
-                    <div className="bg-secondary border border-gray-700 rounded-lg shadow-xl max-w-xl w-full">
-                        <div className="border-b border-gray-700 px-6 py-4 flex items-center justify-between">
-                            <h2 className="text-xl font-semibold flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-accent"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000] p-4 overflow-y-auto">
+                    <div className="bg-secondary border border-gray-700 rounded-lg shadow-xl max-w-xl w-full my-auto">
+                        <div className="border-b border-gray-700 px-4 md:px-6 py-4 flex items-center justify-between">
+                            <h2 className="text-lg md:text-xl font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-accent"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 Run code
                             </h2>
                             <button 
