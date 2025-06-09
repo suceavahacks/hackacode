@@ -151,6 +151,82 @@ export default function CodePage() {
                         </div>
                     </div>
                 </div>
+
+                <div className="h-80 lg:h-full lg:w-[40%] border-t lg:border-t-0 lg:border-l border-gray-700 flex flex-col overflow-hidden">
+                    <div className="bg-secondary/40 border-b border-gray-700 p-3 flex justify-between items-center">
+                        <h2 className="font-medium flex items-center">
+                            <Terminal size={16} className="text-accent mr-2" />
+                            Input / Output
+                        </h2>
+                    </div>
+                    <div className="flex-1 flex flex-col">
+                        <div className="p-3 border-b border-gray-700">
+                            <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                                <span>Input</span> 
+                                <span className="text-gray-400 text-xs ml-2">(will be passed to stdin)</span>
+                            </label>
+                            <textarea
+                                className="w-full bg-primary/50 text-white border border-gray-700 rounded-lg p-3 font-mono focus:border-accent focus:outline-none text-sm transition-colors"
+                                rows={4}
+                                placeholder="Enter input for your program..."
+                                value={runInput}
+                                onChange={e => setRunInput(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex-1 overflow-auto p-3">
+                            <div className="mb-2 flex items-center">
+                                <label className="block text-sm font-medium text-gray-300">Output</label>
+                                {runResults && 
+                                    <div className="ml-auto text-xs flex items-center">
+                                        <span className="text-gray-400 mr-2">Time:</span>
+                                        <span className="font-mono">{runResults.result?.Time || '0'}s</span>
+                                        <span className="text-gray-400 mx-2">Memory:</span>
+                                        <span className="font-mono">{runResults.result?.Memory || '0'} KB</span>
+                                    </div>
+                                }
+                            </div>
+                            {!runResults ? (
+                                <div className="bg-primary/30 text-gray-400 rounded-lg p-4 h-full flex items-center justify-center border border-gray-700">
+                                    <p>Run your code to see the output here</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    <div>
+                                        <h4 className="text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-green-400"><polyline points="8 18 12 22 16 18"></polyline><path d="M12 2v20"></path></svg>
+                                            Standard output
+                                        </h4>
+                                        <pre className="bg-black/30 text-white/90 p-3 rounded-lg text-sm font-mono whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-800">
+                                            {runResults.result?.Stdout || <span className="text-gray-500 italic">No output</span>}
+                                        </pre>
+                                    </div>
+                                    {runResults.result?.Stderr && (
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-yellow-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                                Standard error
+                                            </h4>
+                                            <pre className="bg-black/30 text-yellow-400 p-3 rounded-lg text-sm font-mono whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-800">
+                                                {runResults.result.Stderr}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    {runResults.result?.CompilationError && (
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-red-400"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                                Compilation error
+                                            </h4>
+                                            <pre className="bg-black/30 text-red-400 p-3 rounded-lg text-sm font-mono whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-800">
+                                                {runResults.result.CompilationError}
+                                            </pre>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
