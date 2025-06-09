@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 interface ProfileVisibility {
   show_linked_github: boolean;
   show_linked_discord: boolean;
+  show_linked_slack: boolean;
   show_linked_email: boolean;
   show_profile: boolean;
 }
@@ -18,10 +19,12 @@ interface ProfileUser {
   prg_languages?: string[];
   githubAccount?: string;
   discordAccount?: string;
+  slackAccount?: string;
   email?: string;
   role?: string;
   submissions?: Submission[];
   show_linked_email?: boolean;
+  show_linked_slack?: boolean;
 }
 
 interface Submission {
@@ -44,7 +47,7 @@ const fetchProfile = async (username: string): Promise<ProfileUser | null> => {
 
   const { data: visibilityData, error: visibilityError } = await supabase
     .from("users")
-    .select("show_linked_github, show_linked_discord, show_linked_email, show_profile")
+    .select("show_linked_github, show_linked_discord, show_linked_slack, show_linked_email, show_profile")
     .or(`username.eq.${username},slug.eq.${username}`)
     .single();
   
@@ -57,7 +60,7 @@ const fetchProfile = async (username: string): Promise<ProfileUser | null> => {
     return null;
   }
 
-  const { show_linked_github, show_linked_discord, show_linked_email, show_profile } = visibilityData as ProfileVisibility;
+  const { show_linked_github, show_linked_discord, show_linked_slack, show_linked_email, show_profile } = visibilityData as ProfileVisibility;
   
   if (!show_profile) {
     return null;
@@ -65,7 +68,7 @@ const fetchProfile = async (username: string): Promise<ProfileUser | null> => {
 
   const { data: userDetails, error: detailsError } = await supabase
     .from("users")
-    .select("created_at, bio, profile_picture, username, slug, full_name, prg_languages, githubAccount, discordAccount, email, role, submissions")
+    .select("created_at, bio, profile_picture, username, slug, full_name, prg_languages, githubAccount, discordAccount, slackAccount, email, role, submissions")
     .or(`username.eq.${username},slug.eq.${username}`)
     .single();
 
@@ -83,6 +86,7 @@ const fetchProfile = async (username: string): Promise<ProfileUser | null> => {
     ...userDetails,
     githubAccount: show_linked_github ? userDetails.githubAccount : undefined,
     discordAccount: show_linked_discord ? userDetails.discordAccount : undefined,
+    slackAccount: show_linked_slack ? userDetails.slackAccount : undefined,
     email: show_linked_email ? userDetails.email : undefined,
   };
 

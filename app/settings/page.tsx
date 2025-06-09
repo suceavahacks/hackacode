@@ -51,6 +51,10 @@ export default function Settings() {
             .min(3, "Discord account must be at least 3 characters long")
             .or(string().length(0))
             .optional(),
+        slackAccount: string()
+            .min(3, "Slack username must be at least 3 characters long")
+            .or(string().length(0))
+            .optional(),
         oldPassword: string().optional(),
         newPassword: string().optional(),
         confirmPassword: string().optional(),
@@ -67,6 +71,7 @@ export default function Settings() {
     const privacySchema = z.object({
         show_linked_github: z.boolean(),
         show_linked_discord: z.boolean(),
+        show_linked_slack: z.boolean(),
         show_linked_email: z.boolean(),
         show_profile: z.boolean(),
     })
@@ -87,6 +92,7 @@ export default function Settings() {
         defaultValues: {
             githubAccount: user?.githubAccount || "",
             discordAccount: user?.discordAccount || "",
+            slackAccount: user?.slackAccount || "",
             oldPassword: "",
             newPassword: "",
             confirmPassword: "",
@@ -98,6 +104,7 @@ export default function Settings() {
         defaultValues: {
             show_linked_github: user?.show_linked_github || false,
             show_linked_discord: user?.show_linked_discord || false,
+            show_linked_slack: user?.show_linked_slack || false,
             show_linked_email: user?.show_linked_email || false,
             show_profile: user?.show_profile || false,
         }
@@ -148,6 +155,7 @@ export default function Settings() {
             accountForm.reset({
                 githubAccount: user.githubAccount || "",
                 discordAccount: user.discordAccount || "",
+                slackAccount: user.slackAccount || "",
                 oldPassword: "",
                 newPassword: "",
                 confirmPassword: "",
@@ -155,6 +163,7 @@ export default function Settings() {
             privacyForm.reset({
                 show_linked_github: user.show_linked_github || false,
                 show_linked_discord: user.show_linked_discord || false,
+                show_linked_slack: user.show_linked_slack || false,
                 show_linked_email: user.show_linked_email || false,
                 show_profile: user.show_profile || false,
             })
@@ -208,6 +217,7 @@ export default function Settings() {
                 id: user.id,
                 githubAccount: data.githubAccount,
                 discordAccount: data.discordAccount,
+                slackAccount: data.slackAccount,
                 oldPassword: data.oldPassword,
                 newPassword: data.newPassword,
             },
@@ -225,6 +235,7 @@ export default function Settings() {
                 id: user.id,
                 show_linked_github: data.show_linked_github,
                 show_linked_discord: data.show_linked_discord,
+                show_linked_slack: data.show_linked_slack,
                 show_linked_email: data.show_linked_email,
                 show_profile: data.show_profile,
             },
@@ -482,6 +493,18 @@ export default function Settings() {
                                                 />
                                                 {accountForm.formState.errors.discordAccount && <span className="text-red-500 text-xs">{accountForm.formState.errors.discordAccount.message as string}</span>}
                                             </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-2">
+                                                    Slack username
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="slack username"
+                                                    className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-secondary"
+                                                    {...accountForm.register("slackAccount")}
+                                                />
+                                                {accountForm.formState.errors.slackAccount && <span className="text-red-500 text-xs">{accountForm.formState.errors.slackAccount.message as string}</span>}
+                                            </div>
                                         </div>
                                         <div className="flex space-x-4 mt-8">
                                             <button type="submit" className="btn text-white px-8 py-2 rounded">Save</button>
@@ -513,6 +536,10 @@ export default function Settings() {
                                             <div className="flex items-center gap-3">
                                                 <input type="checkbox" {...privacyForm.register("show_linked_discord")} id="show_linked_discord" className="mr-2" />
                                                 <label htmlFor="show_linked_discord" className="text-sm">Show my linked Discord account</label>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <input type="checkbox" {...privacyForm.register("show_linked_slack")} id="show_linked_slack" className="mr-2" />
+                                                <label htmlFor="show_linked_slack" className="text-sm">Show my linked Slack username</label>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <input type="checkbox" {...privacyForm.register("show_linked_email")} id="show_linked_email" className="mr-2" />

@@ -5,6 +5,7 @@ export interface UpdatePrivacyInput {
     id: string;
     show_linked_github: boolean;
     show_linked_discord: boolean;
+    show_linked_slack: boolean;
     show_linked_email: boolean;
     show_profile: boolean;
 }
@@ -19,6 +20,7 @@ export const useUpdatePrivacy = () => {
                 .update({
                     show_linked_github: input.show_linked_github,
                     show_linked_discord: input.show_linked_discord,
+                    show_linked_slack: input.show_linked_slack,
                     show_linked_email: input.show_linked_email,
                     show_profile: input.show_profile,
                 })

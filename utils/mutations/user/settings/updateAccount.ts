@@ -5,6 +5,7 @@ export interface UpdateAccountInput {
     id: string;
     githubAccount?: string;
     discordAccount?: string;
+    slackAccount?: string;
     oldPassword?: string;
     newPassword?: string;
 }
@@ -25,6 +26,7 @@ export const useUpdateAccount = () => {
                 .update({
                     githubAccount: input.githubAccount,
                     discordAccount: input.discordAccount,
+                    slackAccount: input.slackAccount,
                 })
                 .eq("id", input.id);
             if (error) throw new Error(error.message);
