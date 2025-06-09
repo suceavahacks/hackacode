@@ -437,6 +437,11 @@ export default function Challenge() {
                                     basicSetup={{
                                         lineNumbers: true,
                                         highlightActiveLine: true,
+                                        highlightSelectionMatches: true,
+                                        bracketMatching: true,
+                                        autocompletion: true,
+                                        foldGutter: true,
+                                        indentOnInput: true,
                                     }}
                                     style={{ height: "100%", overflow: "hidden" }}
                                 />

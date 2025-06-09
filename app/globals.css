@@ -142,7 +142,6 @@ ul {
 
 .cm-editor {
     background-color: var(--bg--primary) !important;
-    border-left: var(--bg-button-hover) 1px solid !important;
 }
 
 .cm-gutters {
@@ -157,4 +156,22 @@ ul {
 body {
     background-color: var(--bg-primary) !important;
     color: white !important;
+}
+
+.code-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.code-editor-scrollable {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.cm-editor {
+    height: 100% !important;
+    overflow: auto !important;
 }

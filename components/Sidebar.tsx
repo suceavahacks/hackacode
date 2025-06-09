@@ -14,6 +14,7 @@ const Sidebar = () => {
     const menuItems = [
         { icon: <Home size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Application", href: "/app" },
         { icon: <FlagIcon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Challenges", href: "/challenges" },
+        { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Code playground", href: "/code" },
         { icon: <Code2Icon size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Duels", href: "/duels" },
         { icon: <ChartBar size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Leaderboard", href: "/leaderboard" },
         { icon: <Zap size={20} className="transition-transform duration-300 group-hover:scale-110" />, label: "Live feed", href: "/realtime" },
