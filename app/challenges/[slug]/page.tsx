@@ -78,6 +78,7 @@ export default function Challenge() {
       }
     })
     const voteChallenge = useVoteChallenge()
+    const username = user.user_metadata?.user_name
 
     const [runInput, setRunInput] = useState<string>("")
 
@@ -487,6 +488,7 @@ export default function Challenge() {
                                                     setModalOpen: setModalOpen,
                                                     setLoading: setLoading,
                                                     daily: getValidDailyParam(),
+                                                    username: username
                                                 })
                                             }}
                                             disabled={loadingSubmit}

@@ -10,12 +10,13 @@ interface HandleSubmitProps {
     setModalOpen: (open: boolean) => void;
     setLoading: (loading: boolean) => void;
     duelId?: string;
-    daily?: string
+    daily?: string,
+    username: string
 }
 
 export const useSubmitChallenge = () => {
     return useMutation({
-        mutationFn: async ({ code, challenge, language, user, setResults, setModalOpen, setLoading, duelId, daily }: HandleSubmitProps) => {
+        mutationFn: async ({ code, challenge, language, user, username, setResults, setModalOpen, setLoading, duelId, daily }: HandleSubmitProps) => {
             const supabase = createClient();
             const { data } = await supabase.auth.getSession()
             const accessToken = data.session?.access_token
@@ -34,6 +35,7 @@ export const useSubmitChallenge = () => {
                     challenge: challenge.slug,
                     time: challenge.time_limit,
                     memory: challenge.memory_limit,
+                    username: username
                 }),
             });
 
