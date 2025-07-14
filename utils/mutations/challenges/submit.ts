@@ -21,7 +21,7 @@ export const useSubmitChallenge = () => {
             const accessToken = data.session?.access_token
             setLoading(true)
 
-            const response = await fetch("https://judger.hackacode.xyz/api/v1", {
+            const response = await fetch("https://codejudger.onrender.com/api/v1", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
