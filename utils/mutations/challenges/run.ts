@@ -9,7 +9,7 @@ interface HandleRunProps {
 export const useRunCode = (options?: any) => {
     return useMutation<any, any, HandleRunProps>({
         mutationFn: async ({ code, language, input }: HandleRunProps) => {
-            const response = await fetch("https://judger.hackacode.xyz/api/v1/run", {
+            const response = await fetch("https://codejudger.onrender.com/api/v1/run", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
