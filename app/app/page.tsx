@@ -130,7 +130,7 @@ export default function App() {
                         Use our CLI to submit code straight from your terminal!
                     </p>
                     <pre className="bg-black/80 text-green-300 rounded-md p-4 text-sm overflow-x-auto select-all">
-                        curl https://hackacode.xyz/download &#124; bash
+                        curlhttps://hackacode-lake.vercel.app/download &#124; bash
                     </pre>
                     <p className="text-xs text-gray-500 mt-2">
                         <span className="font-bold">Tip:</span> Make sure you export your JWT token from settings <span className="font-mono">export HACKACODE_API_KEY="..."</span>
